@@ -13,7 +13,6 @@ function App() {
                 <Route path="/fp1" element={<ForgetPasswordForm/>}/>
             </Routes>
         </BrowserRouter>
-
     </>
   )
 }
