@@ -1,14 +1,11 @@
-import { useState } from 'react'
 import './App.css'
-import {BrowserRouter, Route, Router, Routes} from "react-router-dom";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 import ForgetPasswordPage from "./pages/forget-password.jsx";
 import ForgetPasswordForm from "./components/forget-password-com1.jsx";
 
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
+    return (
     <>
         <BrowserRouter>
             <Routes>
