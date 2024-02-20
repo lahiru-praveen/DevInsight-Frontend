@@ -9,7 +9,7 @@ import {
     useColorModeValue,
 } from '@chakra-ui/react';
 
-export default function ForgotPasswordForm() {
+export default function ForgetPasswordForm() {
     return (
         <Flex
             minH={'100vh'}

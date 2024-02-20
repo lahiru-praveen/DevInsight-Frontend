@@ -1,9 +1,13 @@
-function page() {
+import ForgetPasswordForm from "../components/forget-password-com1.jsx";
+
+export default function ForgetPasswordPage() {
   return (
-    <div>page</div>
+      <>
+        <ForgetPasswordForm/>
+        <h1>Hello Hello</h1>
+      </>
   )
 }
 
-export default page
+//export default ForgetPasswordPage()
 
-//import forgetPasswordCom1 from "../components/forget-password-com1.jsx";
