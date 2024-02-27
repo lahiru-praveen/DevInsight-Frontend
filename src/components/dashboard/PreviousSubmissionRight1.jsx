@@ -1,9 +1,17 @@
-import React from 'react';
-import { Button, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Input, useDisclosure } from '@chakra-ui/react';
+import {
+    Drawer,
+    DrawerBody,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerOverlay,
+    DrawerContent,
+    DrawerCloseButton, Button, Input, useDisclosure,
+} from '@chakra-ui/react'
+import React from "react";
 
-function PreviousSubmissionRight1() {
-    const { isOpen, onOpen, onClose } = useDisclosure();
-    const btnRef = React.useRef();
+export default function PreviousSubmissionRight1() {
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const btnRef = React.useRef()
 
     return (
         <>
@@ -12,7 +20,7 @@ function PreviousSubmissionRight1() {
             </Button>
             <Drawer
                 isOpen={isOpen}
-                placement='left'
+                placement='right'
                 onClose={onClose}
                 finalFocusRef={btnRef}
             >
@@ -34,7 +42,5 @@ function PreviousSubmissionRight1() {
                 </DrawerContent>
             </Drawer>
         </>
-    );
+    )
 }
-
-export default PreviousSubmissionRight1;
