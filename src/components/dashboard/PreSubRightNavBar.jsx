@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react'
 import React from "react";
 
-export default function PreviousSubmissionRight1() {
+export default function PreSubRightNavBar() {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const btnRef = React.useRef()
 

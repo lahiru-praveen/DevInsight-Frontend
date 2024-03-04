@@ -1,6 +1,6 @@
 //import './App.css'
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import DashboardMain from "./pages/DashboardMain.jsx";
+import DashboardMain from "./pages/dashboard/DashboardMain.jsx";
 
 
 function App() {
