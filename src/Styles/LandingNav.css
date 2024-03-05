@@ -1,0 +1,123 @@
+@import url("https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;700&display=swap");
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+}
+
+:root {
+    --mainColor: white;
+    --mainColorLight: #5767aa;
+    --secondaryColor: #db2b39;
+    --textColor: #eee;
+}
+
+header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    height: 35px;
+    padding: 0 0 0 0;
+    background-color: var(--mainColor);
+    color: black;
+}
+
+nav a {
+    margin: 0 10px;
+    color: #1A202C;
+    text-decoration: none;
+}
+
+nav a:nth-of-type(1) {
+
+    color: White;
+    width: 100px; /* Set the initial width to represent a rectangle with curved borders */
+    height: 35px; /* Set the initial height to represent a rectangle with curved borders */
+    border-radius: 20px;
+    background-color: #4299E1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+nav a:nth-of-type(4) {
+    margin: 0 0 0 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #3182CE;
+    width: 150px;
+    height: 45px;
+    border-color: #3182CE;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 8px;
+}
+nav a:nth-of-type(5) {
+    margin: 0 0 0 10px;
+    color: White;
+    width: 150px;
+    height: 45px;
+    border-radius: 8px;
+    background-color: #3182CE;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+header .nav-btn {
+    padding: 5px;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--textColor);
+    visibility: hidden;
+    opacity: 0;
+    font-size: 1.8rem;
+}
+
+header div,
+nav {
+    display: flex;
+    align-items: center;
+}
+
+@media only screen and (max-width: 1024px) {
+    header .nav-btn {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    header nav {
+        position: fixed;
+        top: -100vh;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: right;
+        gap: 1.5rem;
+        background-color: var(--mainColor);
+        transition: 1s;
+    }
+
+    header .responsive_nav {
+        transform: translateY(100vh);
+    }
+
+    nav .nav-close-btn {
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+    }
+
+    nav a {
+        font-size: 1.5rem;
+    }
+}
