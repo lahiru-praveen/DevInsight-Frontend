@@ -6,82 +6,89 @@ export default function CodePreview() {
     // Initialize highlight.js
     hljs.configure({ useBR: true }); // Configure highlight.js to recognize line breaks
 
-    // Highlight the code snippet
-    const highlightedCode = hljs.highlight(
-        `/* Reset default browser styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    // Highlight the code snippet with automatic language detection
+    const codeSnippet = `import java.util.Scanner;
+        
+        public class Main {
+            public static void main(String[] args) {
+                Scanner scanner = new Scanner(System.in);
+                System.out.print("Enter the number of elements: ");
+                int n = scanner.nextInt();
+                
+                int[] arr = new int[n];
+                System.out.println("Enter the elements:");
+                for (int i = 0; i < n; i++) {
+                    arr[i] = scanner.nextInt();
+                }
+                
+                System.out.println("The elements entered are:");
+                for (int i = 0; i < n; i++) {
+                    System.out.print(arr[i] + " ");
+                }
+                System.out.println();
+                
+                int sum = 0;
+                for (int i = 0; i < n; i++) {
+                    sum += arr[i];
+                }
+                System.out.println("The sum of the elements is: " + sum);
+                
+                System.out.println("Printing a pattern:");
+                for (int i = 1; i <= n; i++) {
+                    for (int j = 1; j <= i; j++) {
+                        System.out.print(j + " ");
+                    }
+                    System.out.println();
+                }
+                
+                System.out.println("Calculating factorial:");
+                int factorial = 1;
+                for (int i = 1; i <= n; i++) {
+                    factorial *= i;
+                }
+                System.out.println("Factorial of " + n + " is: " + factorial);
+                
+                System.out.println("Checking for prime numbers:");
+                for (int i = 2; i <= n; i++) {
+                    boolean isPrime = true;
+                    for (int j = 2; j <= Math.sqrt(i); j++) {
+                        if (i % j == 0) {
+                            isPrime = false;
+                            break;
+                        }
+                    }
+                    if (isPrime) {
+                        System.out.print(i + " ");
+                    }
+                }
+                System.out.println();
+                
+                System.out.println("Printing Fibonacci series:");
+                int fib1 = 0, fib2 = 1;
+                for (int i = 0; i < n; i++) {
+                    System.out.print(fib1 + " ");
+                    int nextFib = fib1 + fib2;
+                    fib1 = fib2;
+                    fib2 = nextFib;
+                }
+                System.out.println();
+            }
+        }`;
 
-        /* Set body styles */
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            background-color: #f4f4f4;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Header styles */
-        header {
-            background-color: #333;
-            color: #fff;
-            padding: 10px 20px;
-            text-align: center;
-        }
-
-        /* Navigation styles */
-        nav {
-            background-color: #444;
-            padding: 10px;
-        }
-
-        nav ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        nav ul li {
-            display: inline;
-            margin-right: 10px;
-        }
-
-        nav ul li a {
-            color: #fff;
-            text-decoration: none;
-        }
-
-        /* Main content styles */
-        .main-content {
-            padding: 20px;
-        }
-
-        /* Footer styles */
-        footer {
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            padding: 10px 0;
-        }`,
-        { language: 'css' }
-    ).value;
+    const highlightedCode = hljs.highlightAuto(codeSnippet).value;
 
     return (
         <div className="flex flex-col h-screen">
-            <div className="h-1/10 bg-yellow-500">
-                <h1>Heading component</h1>
+            <div className="bg-yellow-500">
+                <h1>Heading component</h1><br/>
             </div>
 
-            <div className="flex flex-row h-9/10">
+            <div className="flex flex-row h-auto">
                 <div className="w-1/6 bg-blue-600">
-                    <h1>Navigation Bar component</h1>
+                    <h1>Folder Navigation Bar component</h1>
                 </div>
 
-                <div className="w-5/6 p-4 flex flex-col bg-[#EBEBEB] m-3">
+                <div className="w-5/6 p-4 flex flex-col bg-[#EBEBEB] m-3 h-auto">
                     <Tabs isFitted variant="enclosed">
                         <TabList mb="1em">
                             <Tab _selected={{ color: 'white', bg: 'blue.500' }}>Preview</Tab>
@@ -91,13 +98,12 @@ export default function CodePreview() {
                             <TabPanel>
                                 <div className="flex flex-row justify-end mb-3">
                                     <Button border="2px" size="md" borderColor="blue.500" textColor="white"
-                                            className="w-[281px] !bg-blue-500">
+                                            className="w-[150px] !bg-blue-500">
                                         Start Review
                                     </Button>
                                 </div>
                                 <pre>
-                                        <code className="hljs language-css"
-                                              dangerouslySetInnerHTML={{__html: highlightedCode}}/>
+                                    <code className="hljs" dangerouslySetInnerHTML={{__html: highlightedCode}}/>
                                 </pre>
                             </TabPanel>
                             <TabPanel>

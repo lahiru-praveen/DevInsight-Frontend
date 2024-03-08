@@ -39,7 +39,7 @@ export default function DashboardMain() {
                 <h1>Heading component</h1>
             </div>
 
-            <div className="flex flex-row h-[90vh]">
+            <div className="flex flex-row h-auto">
                 <div className="basis-1/6 bg-blue-600">
                     <h1>Navigation Bar component</h1>
                 </div>
