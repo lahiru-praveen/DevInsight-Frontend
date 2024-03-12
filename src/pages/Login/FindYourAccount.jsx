@@ -1,6 +1,3 @@
-//import SignIn from "../../components/Login/SignIn"
-
-
 import React, { useState } from 'react';
 import {
     Button,
@@ -13,19 +10,20 @@ import {
     useColorModeValue,
 } from '@chakra-ui/react';
 
-export default function SignIn() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+export default function FindYourAccount() {
+    const [Email, setEmail] = useState('');
+    ;
     const [isFilled, setIsFilled] = useState(false);
 
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
-        setIsFilled(email !== '' && password !== '');
+        setIsFilled(event.target.value !== '' && organizationCode !== '');
     };
 
-    const handlePasswordChange = (event) => {
-        setPassword(event.target.value);
-        setIsFilled(email !== '' && password !== '');
+   
+
+    const handleNext = () => {
+        
     };
 
     return (
@@ -42,39 +40,30 @@ export default function SignIn() {
                 p={6}
                 my={12}>
                 <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
-                    Sign In
+                    Find Your Account
                 </Heading>
-                <FormControl id="email">
+                <FormControl id="Email">
                     <Input
-                        placeholder="Enter Username or Email "
+                        placeholder="Enter email"
                         _placeholder={{ color: 'gray.500' }}
-                        type="email"
-                        value={email}
+                        type="text"
+                        value={Email}
                         onChange={handleEmailChange}
                     />
                 </FormControl>
-                <FormControl id="password">
-                    <Input
-                        placeholder="Password"
-                        _placeholder={{ color: 'gray.500' }}
-                        type="password"
-                        value={password}
-                        onChange={handlePasswordChange}
-                    />
-                </FormControl>
+              
                 <Stack spacing={6}>
                     <Button
                         bg={isFilled ? 'blue.500' : 'blue.200'}
                         color={'white'}
-                      
-                        >
-                        LOGIN
+                        onClick={handleNext}
+                        disabled={!isFilled}
+                    >
+                        Search
                     </Button>
                 </Stack>
                 
-                <Text textAlign="center">
-                    <Button variant="link"  color="black">Create a new account</Button> <br/> <Button variant="link" as="span" color="black">Forgot password</Button>
-                </Text>
+               
                
             </Stack>
         </Flex>
