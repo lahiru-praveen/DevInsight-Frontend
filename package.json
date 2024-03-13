@@ -16,10 +16,12 @@
     "@emotion/styled": "^11.11.0",
     "@react-buddy/ide-toolbox": "^2.4.0",
     "@react-buddy/palette-chakra-ui": "^2.3.1",
+    "axios": "^1.6.7",
     "framer-motion": "^11.0.5",
     "highlight.js": "^11.9.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
     "react-icons": "^5.0.1",
     "react-router-dom": "^6.22.1"
   },
