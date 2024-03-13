@@ -5,6 +5,7 @@ import CodePreview from "./pages/dashboard/CodePreview.jsx";
 import SignInDemo from "./pages/Login/SignInDemo.jsx";
 import SignUpDemo from "./pages/Login/SignUpDemo.jsx";
 import HelpRequests from "./pages/QAE/HelpRequests.jsx";
+import ReviewPage from "./pages/dashboard/ReviewPage.jsx";
 
 function App() {
     return (
@@ -16,6 +17,7 @@ function App() {
                 <Route path="/hr" element={<HelpRequests/>}/>
                 <Route path="/si" element={<SignInDemo/>}/>
                 <Route path="/su" element={<SignUpDemo/>}/>
+                <Route path="/rp" element={<ReviewPage/>}/>
             </Routes>
         </BrowserRouter>
     </>
