@@ -5,6 +5,7 @@ import CodePreview from "./pages/dashboard/CodePreview.jsx";
 import SignInDemo from "./pages/Login/SignInDemo.jsx";
 import SignUpDemo from "./pages/Login/SignUpDemo.jsx";
 import HelpRequests from "./pages/QAE/HelpRequests.jsx";
+import QAECodePreview from "./pages/QAE/QAECodePreview.jsx";
 
 function App() {
     return (
@@ -13,7 +14,8 @@ function App() {
             <Routes>
                 <Route path="/db" element={<DashboardMain/>}/>
                 <Route path="/cp" element={<CodePreview/>}/>
-                <Route path="/hr" element={<HelpRequests/>}/>
+                <Route path="/hr" element={<HelpRequests/>} />
+                <Route path="/qcp" element={<QAECodePreview/>} />
                 <Route path="/si" element={<SignInDemo/>}/>
                 <Route path="/su" element={<SignUpDemo/>}/>
             </Routes>
