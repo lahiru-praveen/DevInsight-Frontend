@@ -6,7 +6,8 @@ import SignInDemo from "./pages/Login/SignInDemo.jsx";
 import SignUpDemo from "./pages/Login/SignUpDemo.jsx";
 import HelpRequests from "./pages/QAE/HelpRequests.jsx";
 import ReviewPage from "./pages/dashboard/ReviewPage.jsx";
-
+import Landing from "./pages/Landing/Landing.jsx";
+import Createorg1 from "./pages/CreateOrg/Createorg1.jsx";
 function App() {
     return (
     <>
@@ -17,6 +18,8 @@ function App() {
                 <Route path="/hr" element={<HelpRequests/>}/>
                 <Route path="/si" element={<SignInDemo/>}/>
                 <Route path="/su" element={<SignUpDemo/>}/>
+                <Route path="/ld" element={<Landing/>}/>
+                <Route path="/co" element={<Createorg1/>}/>
                 <Route path="/rp" element={<ReviewPage/>}/>
             </Routes>
         </BrowserRouter>
