@@ -1,7 +1,7 @@
-import { useState,useEffect } from 'react';
-import { Button, Tabs, TabList, TabPanels, Tab, TabPanel, Textarea, Text, Box, Select } from '@chakra-ui/react';
-import { AiOutlineFolderAdd, AiOutlineFileAdd , AiFillFileAdd } from "react-icons/ai";
-import { FaWindowClose } from "react-icons/fa";
+import { useState, useEffect } from 'react';
+import { Button, Tabs, TabList, TabPanels, Tab, TabPanel, Textarea, Text } from '@chakra-ui/react';
+import LanguageSelectMenu from "../../components/dashboard/LanguageSelectMenu.jsx";
+import FileUploadBox from "../../components/dashboard/FileUploadBox.jsx";
 
 export default function DashboardMain() {
     const [values, setValues] = useState({
@@ -12,16 +12,8 @@ export default function DashboardMain() {
 
     const [files, setFiles] = useState([]);
     const [submitEnabled, setSubmitEnabled] = useState(false);
-
-    const handleDrop = (event) => {
-        event.preventDefault();
-        const fileList = event.dataTransfer.files;
-        setFiles(Array.from(fileList));
-    };
-
-    const handleDragOver = (event) => {
-        event.preventDefault();
-    };
+    const [fileTabDisabled, setFileTabDisabled] = useState(false);
+    const [codeTabDisabled, setCodeTabDisabled] = useState(false);
 
     const handleChange = (event, identifier) => {
         setValues({
@@ -35,60 +27,25 @@ export default function DashboardMain() {
         return numberOfLines * 20; // Adjust this value according to your needs
     };
 
-    const handleFileInputChange = (event) => {
-        setFiles(Array.from(event.target.files));
-    };
-
-    const handleFileRemove = (index) => {
-        const updatedFiles = [...files];
-        updatedFiles.splice(index, 1);
-        setFiles(updatedFiles);
-    };
-
-    const handleCancel = () => {
-        setFiles([]);
-    };
-
     const handleSubmit = async (event) => {
         event.preventDefault();
-
-        const formData = new FormData();
-        files.forEach(file => {
-            formData.append('file_uploads', file);
-        });
-
-        try {
-            const endpoint = "http://localhost:8000/uploadfile/";
-            const response = await fetch(endpoint, {
-                method: "POST",
-                body: formData
-            });
-
-            if (response.ok) {
-                console.log("File uploaded successfully!");
-                setFiles([]);
-                setValues({
-                    value0: '',
-                    value1: '',
-                    value2: ''
-                });
-                setSubmitEnabled(false);
-            } else {
-                console.error("Failed to upload file.");
-            }
-        } catch (error) {
-            console.error(error);
-        }
+        // Your submit logic here
     };
 
-    // Enable submit button if files are chosen or "Paste code here" textarea is filled
     useEffect(() => {
-        if (files.length > 0 || values.value2.trim() !== '') {
-            setSubmitEnabled(true);
-        } else {
-            setSubmitEnabled(false);
-        }
+        // Enable submit button if files are chosen or textarea is filled
+        setSubmitEnabled(files.length > 0 || values.value2.trim() !== '');
     }, [files, values.value2]);
+
+    useEffect(() => {
+        // Disable "Upload File" tab if textarea is filled
+        setFileTabDisabled(values.value2.trim() !== '');
+    }, [values.value2]);
+
+    useEffect(() => {
+        // Disable "Upload Code" tab if files are uploaded
+        setCodeTabDisabled(files.length > 0);
+    }, [files]);
 
     return (
         <div className="flex flex-col h-screen">
@@ -111,8 +68,8 @@ export default function DashboardMain() {
                     <div className="p-4">
                         <Tabs isFitted variant='enclosed'>
                             <TabList mb='1em'>
-                                <Tab _selected={{ color: 'white', bg: 'blue.500' }} fontSize="18px" isDisabled={values.value2.trim() !== ''}>Upload File</Tab>
-                                <Tab _selected={{ color: 'white', bg: 'blue.500' }} fontSize="18px" isDisabled={files.length > 0}>Upload Code</Tab>
+                                <Tab _selected={{ color: 'white', bg: 'blue.500' }} fontSize="18px" isDisabled={fileTabDisabled}>Upload File</Tab>
+                                <Tab _selected={{ color: 'white', bg: 'blue.500' }} fontSize="18px" isDisabled={codeTabDisabled}>Upload Code</Tab>
                             </TabList>
                             <TabPanels>
                                 <TabPanel>
@@ -121,46 +78,7 @@ export default function DashboardMain() {
                                         <Text className="font-bold mt-2" fontSize='18px'>
                                             Upload the source file or Project folder
                                         </Text>
-                                        <div>
-                                            <Box onDrop={handleDrop} onDragOver={handleDragOver} mt={4} p={4} borderWidth="1px" borderRadius="md" bgColor={'#EBEBEB'} color={'#646464'} fontSize="18px" className="min-h-[30rem]" overflow='hidden'>
-                                                <div>
-                                                    <label htmlFor="fileInput">
-                                                        <AiFillFileAdd className="size-10 p-2 bg-white"/>
-                                                    </label>
-                                                    <input id="fileInput" type="file" style={{ display: 'none' }} onChange={handleFileInputChange} multiple />
-                                                    {files.length === 0 && (
-                                                        <div className="text-red-300 font-bold">No File Has Chosen:</div>
-                                                    )}
-                                                </div>
-                                                {files.length > 0 ? (
-                                                    <div>
-                                                        <div className="text-red-300 font-bold">Files Chosen:
-                                                            <Button size="sm" onClick={handleCancel} borderColor='blue.500' textColor='blue.500' className={" border-2 ml-3"} bgColor="'#EBEBEB'">
-                                                                Cancel
-                                                            </Button>
-                                                        </div>
-                                                        <ul>
-                                                            {files.map((file, index) => (
-                                                                <li className="flex" key={index}>
-                                                                    <div className="pt-1"><FaWindowClose onClick={() => handleFileRemove(index)} /></div>
-                                                                    <div className="pl-4 text-red-400">{file.name}</div>
-                                                                </li>
-                                                            ))}
-                                                        </ul>
-                                                    </div>
-                                                ) : (
-                                                    <div className="flex flex-col items-center justify-center h-[45vh]">
-                                                        <div className="flex-row flex">
-                                                            <AiOutlineFolderAdd className="size-10" />
-                                                            <AiOutlineFileAdd className="size-10" />
-                                                        </div>
-                                                        <div>
-                                                            <text className="font-bold">You can drag and drop files here to add them.</text>
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            </Box>
-                                        </div>
+                                        <FileUploadBox /> {/* Removed setFiles prop */}
                                     </div>
                                 </TabPanel>
                                 <TabPanel>
@@ -169,21 +87,7 @@ export default function DashboardMain() {
                                         <Text fontSize='18px' className="font-bold mt-3 mb-3">
                                             Enter the Code
                                         </Text>
-                                        <div className="w-[250px]">
-                                            <Select placeholder='Select Language' style={{ marginBottom: '1rem' }}>
-                                                <option value="python">Python</option>
-                                                <option value="javascript">JavaScript</option>
-                                                <option value="java">Java</option>
-                                                <option value="csharp">C#</option>
-                                                <option value="cpp">C++</option>
-                                                <option value="php">PHP</option>
-                                                <option value="ruby">Ruby</option>
-                                                <option value="swift">Swift</option>
-                                                <option value="go">Go</option>
-                                                <option value="typescript">TypeScript</option>
-                                                <option value="other">Other</option>
-                                            </Select>
-                                        </div>
+                                        <LanguageSelectMenu/>
                                         <div className="flex-grow relative">
                                             <Textarea bgColor={'#EBEBEB'} color={'#646464'} fontSize="18px" placeholder='Paste code here' value={values.value2} onChange={(event) => handleChange(event, 'value2')} style={{ height: calculateHeight(values.value2), minHeight: '27rem' }} />
                                         </div>
