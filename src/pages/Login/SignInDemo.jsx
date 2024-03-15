@@ -13,6 +13,8 @@ import {
     useColorModeValue,
 } from '@chakra-ui/react';
 
+import logo from '../../assets/devsign.png'
+
 export default function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -41,9 +43,8 @@ export default function SignIn() {
                 rounded={'xl'}
                 p={6}
                 my={12}>
-                <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
-                    Sign In
-                </Heading>
+              
+              <center>  <img src={logo} height={200} width={200} /></center> 
                 <FormControl id="email">
                     <Input
                         placeholder="Enter Username or Email "

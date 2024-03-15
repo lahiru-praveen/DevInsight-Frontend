@@ -10,6 +10,8 @@ import {
     useColorModeValue,
 } from '@chakra-ui/react';
 
+import logo from '../../assets/devsign.png'
+
 export default function FindYourAccount() {
     const [Email, setEmail] = useState('');
     ;
@@ -39,9 +41,10 @@ export default function FindYourAccount() {
                 rounded={'xl'}
                 p={6}
                 my={12}>
-                <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
-                    Find Your Account
-                </Heading>
+                    <center>  <img src={logo} height={200} width={200} /></center> 
+                
+                   <p>Find Your Account</p> 
+                
                 <FormControl id="Email">
                     <Input
                         placeholder="Enter email"

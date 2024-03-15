@@ -10,6 +10,8 @@ import {
     useColorModeValue,
 } from '@chakra-ui/react';
 
+import logo from '../../assets/devsign.png'
+
 export default function CreateOrg() {
     const [organizationName, setOrganizationName] = useState('');
     const [organizationCode, setOrganizationCode] = useState('');
@@ -42,9 +44,7 @@ export default function CreateOrg() {
                 rounded={'xl'}
                 p={6}
                 my={12}>
-                <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
-                    Create Organization Account
-                </Heading>
+                <center>  <img src={logo} height={200} width={200} /></center> 
                 <FormControl id="organizationName">
                     <Input
                         placeholder="Enter Organization Name"

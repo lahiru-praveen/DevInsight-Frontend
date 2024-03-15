@@ -9,7 +9,7 @@ import OrganRegister from "./pages/Login/OrganizationCreateAccount.jsx";
 import ForgetPassword from "./pages/Login/ForgetPassword.jsx";
 import CreateOrg from "./pages/Login/OrganizationCreateAccount.jsx";
 import FindYourAccount from "./pages/Login/FindYourAccount.jsx";
-
+import EditProfile from "./pages/Profile/EditProfile.jsx";
 
 function App() {
     return (
@@ -25,6 +25,7 @@ function App() {
                 <Route path="/fp" element={<ForgetPassword/>}/>
                 <Route path="/oa" element={<CreateOrg/>}/>
                 <Route path="/fa" element={<FindYourAccount/>}/>
+                <Route path="/ep" element={<EditProfile/>}/>
             </Routes>
         </BrowserRouter>
     </>

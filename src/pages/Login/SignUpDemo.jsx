@@ -10,6 +10,8 @@ import {
     useColorModeValue,
 } from '@chakra-ui/react';
 
+import logo from '../../assets/devsign.png'
+
 export default function SignUp() {
     
     const [firstName, setFirstName] = useState('');
@@ -63,9 +65,10 @@ export default function SignUp() {
                 rounded={'xl'}
                 p={6}
                 my={12}>
-                <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
-                    Sign Up
-                </Heading>
+                
+                  <center>  <img src={logo} height={200} width={200} /></center> 
+                    
+                
                 <Flex>
                     <FormControl id="firstName" mr={3} flex={1}>
                         <Input

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import {
+    PinInput,
+    PinInputField,
     Button,
     FormControl,
     Flex,
@@ -10,6 +12,8 @@ import {
     Text,
     useColorModeValue,
 } from '@chakra-ui/react';
+
+import logo from '../../assets/devsign.png'
 
 export default function ForgetPassword() {
     
@@ -36,73 +40,23 @@ export default function ForgetPassword() {
                 p={6}
                 my={12}>
 
-                <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
-                    Forget Password
-                </Heading>
+                <center>  <img src={logo} height={200} width={200} /></center> 
+                <p >Enter the 6 digit code</p>
                
                 <FormControl>
-                    <Flex>
-                        
-                        <Input
-                            placeholder=""
-                            _placeholder={{ color: 'gray.500' }}
-                            type="text"
-                            value={password}
-                            onChange={handlePasswordChange}
-                            maxLength={1}
-                            style={{width: '40px', height: '40px', borderRadius: '8px', textAlign: 'center', marginRight: '32px' }}
-                        />
+                <Stack>
+                    <flex >
+                    <PinInput otp>
+                        <PinInputField   style={{ marginRight: '30px' }}/>
+                        <PinInputField  style={{ marginRight: '25px' }}/>
+                        <PinInputField  style={{ marginRight: '25px' }}/>
+                        <PinInputField  style={{ marginRight: '25px' }}/>
+                        <PinInputField  style={{ marginRight: '25px' }}/>
+                        <PinInputField  style={{ marginRight: '25px' }}/>
+                    </PinInput>
+                    </flex>
+                </Stack>
 
-<Input
-                            placeholder=""
-                            _placeholder={{ color: 'gray.500' }}
-                            type="text"
-                            value={password}
-                            onChange={handlePasswordChange}
-                            maxLength={1}
-                            style={{ width: '40px', height: '40px', borderRadius: '8px', textAlign: 'center', marginRight: '30px' }}
-                        />
-
-<Input
-                            placeholder=""
-                            _placeholder={{ color: 'gray.500' }}
-                            type="text"
-                            value={password}
-                            onChange={handlePasswordChange}
-                            maxLength={1}
-                            style={{ width: '40px', height: '40px', borderRadius: '8px', textAlign: 'center', marginRight: '32px' }}
-                        />
-
-<Input
-                            placeholder=""
-                            _placeholder={{ color: 'gray.500' }}
-                            type="text"
-                            value={password}
-                            onChange={handlePasswordChange}
-                            maxLength={1}
-                            style={{ width: '40px', height: '40px', borderRadius: '8px', textAlign: 'center', marginRight: '30px' }}
-                        />
-
-<Input
-                            placeholder=""
-                            _placeholder={{ color: 'gray.500' }}
-                            type="text"
-                            value={password}
-                            onChange={handlePasswordChange}
-                            maxLength={1}
-                            style={{ width: '40px', height: '40px', borderRadius: '8px', textAlign: 'center', marginRight: '32px' }}
-                        />
-                        <Input
-                            placeholder=""
-                            _placeholder={{ color: 'gray.500' }}
-                            type="text"
-                            value={password}
-                            onChange={handlePasswordChange}
-                            maxLength={1}
-                            style={{ width: '40px', height: '40px', borderRadius: '8px', textAlign: 'center' }}
-                        />
-                  
-                    </Flex>
                 </FormControl>
                 <Stack spacing={6}>
                     <Button
