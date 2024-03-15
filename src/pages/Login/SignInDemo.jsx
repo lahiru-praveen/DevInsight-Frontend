@@ -14,6 +14,7 @@ import {
 } from '@chakra-ui/react';
 
 import logo from '../../assets/devsign.png'
+import NavBar from '../../components/QAE/NavBar';
 
 export default function SignIn() {
     const [email, setEmail] = useState('');
@@ -31,10 +32,18 @@ export default function SignIn() {
     };
 
     return (
+        <>
+        <Flex>
+        <div>
+                <NavBar/>
+                </div>
+        </Flex>
         <Flex
+       
             minH={'100vh'}
             align={'center'}
             justify={'center'}>
+                
             <Stack
                 spacing={6}
                 w={'full'}
@@ -43,6 +52,9 @@ export default function SignIn() {
                 rounded={'xl'}
                 p={6}
                 my={12}>
+
+               
+                
               
               <center>  <img src={logo} height={200} width={200} /></center> 
                 <FormControl id="email">
@@ -79,5 +91,9 @@ export default function SignIn() {
                
             </Stack>
         </Flex>
+        
+        </>
+       
+      
     );
 }

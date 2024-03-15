@@ -1,22 +1,10 @@
-import React, { useState } from 'react';
-import {
-    PinInput,
-    PinInputField,
-    Button,
-    FormControl,
-    Flex,
-    Heading,
-    Input,
-    Spacer,
-    Stack,
-    Text,
-    useColorModeValue,
-} from '@chakra-ui/react';
+import React, {useState} from 'react';
+import {Button, Flex, FormControl, PinInput, PinInputField, Stack, Text, useColorModeValue,} from '@chakra-ui/react';
 
 import logo from '../../assets/devsign.png'
 
 export default function ForgetPassword() {
-    
+
     const [password, setPassword] = useState('');
     const [isFilled, setIsFilled] = useState(false);
 
@@ -40,41 +28,41 @@ export default function ForgetPassword() {
                 p={6}
                 my={12}>
 
-                <center>  <img src={logo} height={200} width={200} /></center> 
-                <p >Enter the 6 digit code</p>
-               
+                <center><img src={logo} height={200} width={200}/></center>
+                <p>Enter the 6 digit code</p>
+
                 <FormControl>
-                <Stack>
-                    <flex >
-                    <PinInput otp>
-                        <PinInputField   style={{ marginRight: '30px' }}/>
-                        <PinInputField  style={{ marginRight: '25px' }}/>
-                        <PinInputField  style={{ marginRight: '25px' }}/>
-                        <PinInputField  style={{ marginRight: '25px' }}/>
-                        <PinInputField  style={{ marginRight: '25px' }}/>
-                        <PinInputField  style={{ marginRight: '25px' }}/>
-                    </PinInput>
-                    </flex>
-                </Stack>
+                    <Stack>
+                        <flex>
+                            <PinInput otp>
+                                <PinInputField style={{marginRight: '30px'}}/>
+                                <PinInputField style={{marginRight: '25px'}}/>
+                                <PinInputField style={{marginRight: '25px'}}/>
+                                <PinInputField style={{marginRight: '25px'}}/>
+                                <PinInputField style={{marginRight: '25px'}}/>
+                                <PinInputField style={{marginRight: '25px'}}/>
+                            </PinInput>
+                        </flex>
+                    </Stack>
 
                 </FormControl>
                 <Stack spacing={6}>
                     <Button
                         bg={isFilled ? 'blue.500' : 'blue.200'}
                         color={'white'}
-                      
-                        >
+
+                    >
                         Verify
                     </Button>
                 </Stack>
 
                 <div align={'right'}>
                     <Text color="black" align={'right'}>If you have not received an email</Text>
-                        <Button variant="link" colorScheme="blue" >Re-send the email</Button><br/>
-                        <Button variant="link" colorScheme="blue" >Check the email</Button>
+                    <Button variant="link" colorScheme="blue">Re-send the email</Button><br/>
+                    <Button variant="link" colorScheme="blue">Check the email</Button>
                 </div>
-                
-               
+
+
             </Stack>
         </Flex>
     );
