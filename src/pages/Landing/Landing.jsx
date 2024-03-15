@@ -1,9 +1,22 @@
 import React from 'react'
 
-function Landing() {
+import Hero from '../../components/Landing/Hero.jsx'
+import Footer from '../../components/Landing/Footer.jsx'
+
+import { Navbar } from '../../components/Landing/Navbar.jsx'
+
+
+
+export default function Landing() {
   return (
-    <div>Landing</div>
+    <div>
+      <Navbar/>
+      <Hero/>
+      <Footer/>
+        
+    
+    
+    </div>
   )
 }
 
-export default Landing
