@@ -7,6 +7,10 @@ import SignUpDemo from "./pages/Login/SignUpDemo.jsx";
 import HelpRequests from "./pages/QAE/HelpRequests.jsx";
 import Landing from "./pages/Landing/Landing.jsx";
 import Createorg1 from "./pages/CreateOrg/Createorg1.jsx";
+import Createorg2 from "./pages/CreateOrg/Createorg2.jsx";
+import ManageStaff from "./pages/ManageStaff/ManageStaff.jsx";
+
+
 function App() {
     return (
     <>
@@ -18,7 +22,9 @@ function App() {
                 <Route path="/si" element={<SignInDemo/>}/>
                 <Route path="/su" element={<SignUpDemo/>}/>
                 <Route path="/ld" element={<Landing/>}/>
-                <Route path="/co" element={<Createorg1/>}/>
+                <Route path="/co1" element={<Createorg1/>}/>
+                <Route path="/co2" element={<Createorg2/>}/>
+                <Route path="/ms" element={<ManageStaff/>}/>
             </Routes>
         </BrowserRouter>
     </>
