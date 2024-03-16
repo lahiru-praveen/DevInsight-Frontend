@@ -5,6 +5,8 @@ import  { Stack }  from '@chakra-ui/react'
 import { Heading } from '@chakra-ui/react'
 import { Button, ButtonGroup } from '@chakra-ui/react'
 import { ArrowForwardIcon } from '@chakra-ui/icons';
+import { Link } from 'react-router-dom';
+
 
 
 function Createorg1() {
@@ -57,9 +59,11 @@ function Createorg1() {
        
        
       <div className='py-6'>
-      <Button rightIcon={<ArrowForwardIcon />} colorScheme='blue' variant='solid' className='w-full'>
+      <Link to="/co2">
+  <Button rightIcon={<ArrowForwardIcon />} colorScheme='blue' variant='solid' className='w-full'>
     Next
   </Button>
+</Link>
         
       </div>
             

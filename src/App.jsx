@@ -14,6 +14,9 @@ import ForgetPassword from "./pages/Login/ForgetPassword.jsx";
 import CreateOrg from "./pages/Login/OrganizationCreateAccount.jsx";
 import FindYourAccount from "./pages/Login/FindYourAccount.jsx";
 import EditProfile from "./pages/Profile/EditProfile.jsx";
+import Createorg2 from "./pages/CreateOrg/Createorg2.jsx";
+import ManageStaff from "./pages/ManageStaff/ManageStaff.jsx";
+
 
 function App() {
     return (
@@ -34,6 +37,9 @@ function App() {
                 <Route path="/oa" element={<CreateOrg/>}/>
                 <Route path="/fa" element={<FindYourAccount/>}/>
                 <Route path="/ep" element={<EditProfile/>}/>
+                <Route path="/co1" element={<Createorg1/>}/>
+                <Route path="/co2" element={<Createorg2/>}/>
+                <Route path="/ms" element={<ManageStaff/>}/>
             </Routes>
         </BrowserRouter>
     </>
