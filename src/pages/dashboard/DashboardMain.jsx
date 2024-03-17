@@ -1,7 +1,8 @@
-import { useState,useEffect } from 'react';
-import { Button, Tabs, TabList, TabPanels, Tab, TabPanel, Textarea, Text, Box, Select } from '@chakra-ui/react';
-import { AiOutlineFolderAdd, AiOutlineFileAdd , AiFillFileAdd } from "react-icons/ai";
+import { useState, useEffect } from 'react';
+import { Button, Tabs, TabList, TabPanels, Tab, TabPanel, Textarea, Text, Box } from '@chakra-ui/react';
+import { AiOutlineFolderAdd, AiOutlineFileAdd, AiFillFileAdd } from "react-icons/ai";
 import { FaWindowClose } from "react-icons/fa";
+import LanguageSelectMenu from "../../components/dashboard/LanguageSelectMenu.jsx";
 
 export default function DashboardMain() {
     const [values, setValues] = useState({
@@ -13,10 +14,31 @@ export default function DashboardMain() {
     const [files, setFiles] = useState([]);
     const [submitEnabled, setSubmitEnabled] = useState(false);
 
+    const allowedExtensions = ['.txt', '.pdf'];
+
     const handleDrop = (event) => {
         event.preventDefault();
-        const fileList = event.dataTransfer.files;
-        setFiles(Array.from(fileList));
+        const fileList = event.dataTransfer.items;
+
+        const droppedFiles = [];
+
+        // Iterate through dropped items
+        for (let i = 0; i < fileList.length; i++) {
+            const item = fileList[i];
+
+            // Check if the item is a file
+            if (item.kind === 'file') {
+                const file = item.getAsFile();
+                const extension = file.name.split('.').pop().toLowerCase();
+                // Check if the file extension is allowed
+                if (allowedExtensions.includes('.' + extension)) {
+                    droppedFiles.push(file);
+                }
+            }
+        }
+
+        // Add dropped files to the existing files state
+        setFiles((prevFiles) => [...prevFiles, ...droppedFiles]);
     };
 
     const handleDragOver = (event) => {
@@ -36,7 +58,16 @@ export default function DashboardMain() {
     };
 
     const handleFileInputChange = (event) => {
-        setFiles(Array.from(event.target.files));
+        const selectedFiles = Array.from(event.target.files);
+
+        // Filter selected files to allow only .txt and .pdf extensions
+        const filteredFiles = selectedFiles.filter(file => {
+            const extension = file.name.split('.').pop().toLowerCase();
+            return allowedExtensions.includes('.' + extension);
+        });
+
+        // Add filtered files to the files state
+        setFiles((prevFiles) => [...prevFiles, ...filteredFiles]);
     };
 
     const handleFileRemove = (index) => {
@@ -45,7 +76,7 @@ export default function DashboardMain() {
         setFiles(updatedFiles);
     };
 
-    const handleCancel = () => {
+    const handleClearFiles = () => {
         setFiles([]);
     };
 
@@ -135,7 +166,7 @@ export default function DashboardMain() {
                                                 {files.length > 0 ? (
                                                     <div>
                                                         <div className="text-red-300 font-bold">Files Chosen:
-                                                            <Button size="sm" onClick={handleCancel} borderColor='blue.500' textColor='blue.500' className={" border-2 ml-3"} bgColor="'#EBEBEB'">
+                                                            <Button size="sm" onClick={handleClearFiles} borderColor='blue.500' textColor='blue.500' className="border-2 ml-3" bgColor="'#EBEBEB'">
                                                                 Cancel
                                                             </Button>
                                                         </div>
@@ -169,21 +200,7 @@ export default function DashboardMain() {
                                         <Text fontSize='18px' className="font-bold mt-3 mb-3">
                                             Enter the Code
                                         </Text>
-                                        <div className="w-[250px]">
-                                            <Select placeholder='Select Language' style={{ marginBottom: '1rem' }}>
-                                                <option value="python">Python</option>
-                                                <option value="javascript">JavaScript</option>
-                                                <option value="java">Java</option>
-                                                <option value="csharp">C#</option>
-                                                <option value="cpp">C++</option>
-                                                <option value="php">PHP</option>
-                                                <option value="ruby">Ruby</option>
-                                                <option value="swift">Swift</option>
-                                                <option value="go">Go</option>
-                                                <option value="typescript">TypeScript</option>
-                                                <option value="other">Other</option>
-                                            </Select>
-                                        </div>
+                                        <LanguageSelectMenu/>
                                         <div className="flex-grow relative">
                                             <Textarea bgColor={'#EBEBEB'} color={'#646464'} fontSize="18px" placeholder='Paste code here' value={values.value2} onChange={(event) => handleChange(event, 'value2')} style={{ height: calculateHeight(values.value2), minHeight: '27rem' }} />
                                         </div>
