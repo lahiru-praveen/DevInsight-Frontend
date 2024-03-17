@@ -316,7 +316,7 @@ function HelpRequests() {
     return (
         <div>
             <NavBar/>
-            <div className="text-3xl mr-10"><p>Help Desk</p></div>
+            <div className="text-3xl mr-10 pl-5"><p>Help Desk</p></div>
             <div className="p-5 mx-10 mt-20 font-inter">
                 {items.map((item, index) => (
                     <div key={index}
