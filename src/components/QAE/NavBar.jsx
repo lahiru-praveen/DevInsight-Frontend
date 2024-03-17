@@ -5,7 +5,7 @@ export default function NavBar() {
             <div className="flex items-center justify-between bg-white text-black text-3xl border-2 border-solid">
                 <div>
                     <a href="/">
-                        <img className="h-5 w-auto" src="src/assets/FooterLogo.png" alt="Logo"/>
+                        <img className="pl-4 h-10 w-auto" src="src/assets/FooterLogo.png" alt="Logo"/>
                     </a>
                 </div>
                 <div className="flex items-center space-x-10  p-5">
@@ -19,7 +19,7 @@ export default function NavBar() {
                         Help Desk
                     </a>
                     <a className="text-gray-700" href="/">
-                        Link 4
+                        Profile
                     </a>
                 </div>
             </div>
