@@ -1,6 +1,8 @@
 import { Tabs, TabList, TabPanels, Tab, TabPanel, Button } from '@chakra-ui/react';
 import hljs from 'highlight.js';
-import 'highlight.js/styles/atom-one-dark.css'; // Import the stylesheet for the syntax highlighting theme
+import 'highlight.js/styles/atom-one-dark.css';
+import FileList from "../../components/dashboard/FileList.jsx"; // Import the stylesheet for the syntax highlighting theme
+//import {useState} from "react";
 
 export default function CodePreview() {
     // Initialize highlight.js
@@ -84,8 +86,8 @@ export default function CodePreview() {
             </div>
 
             <div className="flex flex-row h-auto">
-                <div className="w-1/6 bg-blue-600">
-                    <h1>Folder Navigation Bar component</h1>
+                <div className="w-1/6">
+                    <FileList/>
                 </div>
 
                 <div className="w-5/6 p-4 flex flex-col bg-[#EBEBEB] m-3 h-auto">

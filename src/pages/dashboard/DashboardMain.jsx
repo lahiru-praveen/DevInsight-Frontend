@@ -3,6 +3,7 @@ import { Button, Tabs, TabList, TabPanels, Tab, TabPanel, Textarea, Text, Box } 
 import { AiOutlineFolderAdd, AiOutlineFileAdd, AiFillFileAdd } from "react-icons/ai";
 import { FaWindowClose } from "react-icons/fa";
 import LanguageSelectMenu from "../../components/dashboard/LanguageSelectMenu.jsx";
+import {useNavigate} from "react-router-dom";
 
 export default function DashboardMain() {
     const [values, setValues] = useState({
@@ -11,6 +12,7 @@ export default function DashboardMain() {
         value2: ''
     });
 
+    const navigate = useNavigate();
     const [files, setFiles] = useState([]);
     const [submitEnabled, setSubmitEnabled] = useState(false);
 
@@ -104,12 +106,14 @@ export default function DashboardMain() {
                     value2: ''
                 });
                 setSubmitEnabled(false);
+
             } else {
                 console.error("Failed to upload file.");
             }
         } catch (error) {
             console.error(error);
         }
+        navigate('/cp');
     };
 
     // Enable submit button if files are chosen or "Paste code here" textarea is filled
