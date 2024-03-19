@@ -1,17 +1,16 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export default function FileList() {
+export default function FileList({ onSelectFile }) {
     const [files, setFiles] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get('http://localhost:8000/files');
-                console.log("Response:", response.data); // Log response data for debugging
                 setFiles(response.data);
             } catch (error) {
-                console.error("Error fetching files:", error); // Log any errors to console
+                console.error("Error fetching files:", error);
             }
         };
 
@@ -20,11 +19,11 @@ export default function FileList() {
 
     return (
         <div>
-            <h1>File Manager</h1>
+            <h1 className="text-xl font-bold">Uploaded-Project</h1>
             <ul>
                 {files.map((file, index) => (
                     <li key={index}>
-                        <div><a href={`http://localhost:8000/files/${file.name}`} target="_blank">{file.name}</a></div>
+                        <div className="ml-4"><a href="#" onClick={() => onSelectFile(file.name)}>{file.name}</a></div>
                     </li>
                 ))}
             </ul>

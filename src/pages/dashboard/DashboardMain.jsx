@@ -16,7 +16,7 @@ export default function DashboardMain() {
     const [files, setFiles] = useState([]);
     const [submitEnabled, setSubmitEnabled] = useState(false);
 
-    const allowedExtensions = ['.txt', '.pdf'];
+    const allowedExtensions = ['.txt', '.pdf','.py'];
 
     const handleDrop = (event) => {
         event.preventDefault();
