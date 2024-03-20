@@ -304,7 +304,7 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { items } from "../../components/QAE/DataHelpRequests.jsx";
-import NavBar from "../../components/QAE/NavBar.jsx";
+import NavBar from "../../components/dashboard/NavBar.jsx";
 
 function HelpRequests() {
     const [expandedRow, setExpandedRow] = useState(null);
