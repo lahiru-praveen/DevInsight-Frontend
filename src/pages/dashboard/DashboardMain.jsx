@@ -4,6 +4,7 @@ import { AiOutlineFolderAdd, AiOutlineFileAdd, AiFillFileAdd } from "react-icons
 import { FaWindowClose } from "react-icons/fa";
 import LanguageSelectMenu from "../../components/dashboard/LanguageSelectMenu.jsx";
 import {useNavigate} from "react-router-dom";
+import NavBar from "../../components/dashboard/NavBar.jsx";
 
 export default function DashboardMain() {
     const [values, setValues] = useState({
@@ -16,7 +17,7 @@ export default function DashboardMain() {
     const [files, setFiles] = useState([]);
     const [submitEnabled, setSubmitEnabled] = useState(false);
 
-    const allowedExtensions = ['.txt', '.pdf','.py'];
+    const allowedExtensions = ['.txt', '.pdf','.py','.java'];
 
     const handleDrop = (event) => {
         event.preventDefault();
@@ -127,18 +128,18 @@ export default function DashboardMain() {
 
     return (
         <div className="flex flex-col h-screen">
-            <div className="h-20 bg-yellow-500">
-                <h1 className="text-3xl font-bold text-center">Heading component</h1>
+            <div className=" bg-yellow-500">
+                <NavBar/>
             </div>
 
-            <div className="flex flex-row h-auto">
-                <div className="w-1/6 bg-blue-600">
-                    <h1>Navigation Bar component</h1>
+            <div className="flex flex-row ">
+                <div className="w-1/6 bg-[#EBEBEB] mt-4 ml-2 ">
+                    <h1>Previous Submission Select List</h1>
                 </div>
 
                 <form onSubmit={handleSubmit} className="w-5/6 p-4 flex flex-col">
                     <div className="flex justify-end mb-4">
-                        <Button isDisabled={!submitEnabled} border='2px' size="md" borderColor='blue.500' textColor='blue.500' className="w-64" type={"submit"}>
+                        <Button isDisabled={!submitEnabled} border='2px' size="md" colorScheme='blue' className="w-64" type={"submit"}>
                             Submit
                         </Button>
                     </div>

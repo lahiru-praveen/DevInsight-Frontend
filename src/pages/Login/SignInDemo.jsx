@@ -1,12 +1,11 @@
 //import SignIn from "../../components/Login/SignIn"
 
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
     Button,
     FormControl,
     Flex,
-    Heading,
     Input,
     Stack,
     Text,
@@ -14,7 +13,7 @@ import {
 } from '@chakra-ui/react';
 
 import logo from '../../assets/devsign.png'
-import NavBar from '../../components/QAE/NavBar';
+import NavBar from '../../components/dashboard/NavBar.jsx';
 
 export default function SignIn() {
     const [email, setEmail] = useState('');
@@ -56,7 +55,7 @@ export default function SignIn() {
                
                 
               
-              <center>  <img src={logo} height={200} width={200} /></center> 
+              <center>  <img src={logo} alt="logo" height={200} width={200} /></center>
                 <FormControl id="email">
                     <Input
                         placeholder="Enter Username or Email "
