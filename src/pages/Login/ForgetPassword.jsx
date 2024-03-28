@@ -1,18 +1,14 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 import {Button, Flex, FormControl, PinInput, PinInputField, Stack, Text, useColorModeValue,} from '@chakra-ui/react';
 
 import logo from '../../assets/devsign.png'
 
 export default function ForgetPassword() {
 
-    const [password, setPassword] = useState('');
-    const [isFilled, setIsFilled] = useState(false);
 
-    const handlePasswordChange = (e) => {
-        const value = e.target.value.slice(0, 1); // Limit to one character
-        setPassword(value);
-        setIsFilled(value.length === 1);
-    };
+    const [isFilled] = useState(false);
+
+   
 
     return (
         <Flex
@@ -55,6 +51,7 @@ export default function ForgetPassword() {
                         Verify
                     </Button>
                 </Stack>
+
 
                 <div align={'right'}>
                     <Text color="black" align={'right'}>If you have not received an email</Text>

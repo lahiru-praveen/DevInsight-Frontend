@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import {
     Button,
     FormControl,
     Flex,
-    Heading,
     Input,
     Stack,
-    Text,
     useColorModeValue,
 } from '@chakra-ui/react';
 
@@ -14,11 +12,11 @@ import logo from '../../assets/devsign.png'
 
 export default function FindYourAccount() {
     const [Email, setEmail] = useState('');
-    ;
     const [isFilled, setIsFilled] = useState(false);
 
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
+        let organizationCode;
         setIsFilled(event.target.value !== '' && organizationCode !== '');
     };
 

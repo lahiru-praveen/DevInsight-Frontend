@@ -3,20 +3,23 @@ import {
     Button,
     FormControl,
     Flex,
-    Heading,
     Input,
     Stack,
-    Text,
     useColorModeValue,
+    Alert,
+    AlertIcon,
 } from '@chakra-ui/react';
 
-import logo from '../../assets/devsign.png'
+import logo from '../../assets/devsign.png';
 
 export default function CreateOrg() {
+    // State variables to store organization data and manage form state
     const [organizationName, setOrganizationName] = useState('');
     const [organizationCode, setOrganizationCode] = useState('');
     const [isFilled, setIsFilled] = useState(false);
+    const [showAccountCreatedAlert, setShowAccountCreatedAlert] = useState(false);
 
+    // Event handlers to update organization data and manage form state
     const handleOrganizationNameChange = (event) => {
         setOrganizationName(event.target.value);
         setIsFilled(event.target.value !== '' && organizationCode !== '');
@@ -27,10 +30,14 @@ export default function CreateOrg() {
         setIsFilled(organizationName !== '' && event.target.value !== '');
     };
 
+    // Function to handle "NEXT" button click
     const handleNext = () => {
-        
+        // Perform account creation logic here
+        // For demonstration purposes, we'll just show an alert
+        setShowAccountCreatedAlert(true);
     };
 
+    // JSX code for the component layout and structure
     return (
         <Flex
             minH={'100vh'}
@@ -44,7 +51,18 @@ export default function CreateOrg() {
                 rounded={'xl'}
                 p={6}
                 my={12}>
-                <center>  <img src={logo} height={200} width={200} /></center> 
+                {/* Display an alert for account created */}
+                {showAccountCreatedAlert && (
+                    <Alert status="success">
+                        <AlertIcon />
+                        Account created successfully!
+                    </Alert>
+                )}
+                <center>
+                    {' '}
+                    <img src={logo} height={200} width={200} />
+                </center>
+                {/* Organization name input */}
                 <FormControl id="organizationName">
                     <Input
                         placeholder="Enter Organization Name"
@@ -54,6 +72,7 @@ export default function CreateOrg() {
                         onChange={handleOrganizationNameChange}
                     />
                 </FormControl>
+                {/* Organization code input */}
                 <FormControl id="organizationCode">
                     <Input
                         placeholder="Enter Organization Code"
@@ -63,6 +82,7 @@ export default function CreateOrg() {
                         onChange={handleOrganizationCodeChange}
                     />
                 </FormControl>
+                {/* "NEXT" button */}
                 <Stack spacing={6}>
                     <Button
                         bg={isFilled ? 'blue.500' : 'blue.200'}
@@ -73,9 +93,6 @@ export default function CreateOrg() {
                         NEXT
                     </Button>
                 </Stack>
-                
-               
-               
             </Stack>
         </Flex>
     );
