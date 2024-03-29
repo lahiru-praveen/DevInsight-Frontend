@@ -1,15 +1,5 @@
 import { useState, useEffect } from 'react';
-import {
-    Button,
-    Tabs,
-    TabList,
-    TabPanels,
-    Tab,
-    TabPanel,
-    Textarea,
-    Text,
-    Box,
-} from '@chakra-ui/react';
+import {Button, Tabs, TabList, TabPanels, Tab, TabPanel, Textarea, Text, Box,} from '@chakra-ui/react';
 import { AiOutlineFolderAdd, AiOutlineFileAdd, AiFillFileAdd } from "react-icons/ai";
 import { FaWindowClose } from "react-icons/fa";
 import LanguageSelectMenu from "../../components/dashboard/LanguageSelectMenu.jsx";
@@ -27,8 +17,8 @@ export default function DashboardMain() {
     const [files, setFiles] = useState([]);
     const [submitEnabled, setSubmitEnabled] = useState(false);
     const location = useLocation();
-    const selectedLanguage = location.state?.selectedLanguage || '';
-    //const [selectedLanguage, setSelectedLanguage] = useState('');
+    //const selectedLanguage = location.state?.selectedLanguage || '';
+    const [selectedLanguage, setSelectedLanguage] = useState('');
     const allowedExtensions = ['.txt', '.py','.java','.html','.php','.rb','.cs','.cpp','.css','.go','.rs','.swift','.js'];
 
     const handleDrop = (event) => {
@@ -106,14 +96,20 @@ export default function DashboardMain() {
         }
     };
 
+    // Function to handle language change
+    const handleLanguageChange = (language) => {
+        setSelectedLanguage(language);
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         const formData = new FormData(); // Initialize FormData here
 
         try {
+            const endpoint = "http://localhost:8000/uploadfile/";
+            const endpoint2 = "http://localhost:8000/detect-language/"
             // Handle file uploads
             if (files.length > 0) {
-                const endpoint = "http://localhost:8000/uploadfile/";
                 // Append files to FormData
                 files.forEach(file => {
                     formData.append('file_uploads', file);
@@ -138,14 +134,16 @@ export default function DashboardMain() {
             }
 
             if(values.value2.trim() !== ""){
-                formData.append(values.value2,selectedLanguage)
-                const endpoint2 = "http://localhost:8000/detect-language/"
+                console.log("Hello");
+                formData.append("language",selectedLanguage)
+                formData.append("code",values.value2);
                 const upload_response = await fetch(endpoint2, {
                     method: "POST",
                     body: formData // Pass formData to the fetch request
                 });
                 if(upload_response.ok){
-                    alert("Try");
+                    const data = await upload_response.json();
+                    console.log(data);
                 }
             }
 
