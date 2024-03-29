@@ -1,5 +1,6 @@
 import logo from "../../assets/Devinsight.png"
 import { Avatar, AvatarBadge, Wrap, WrapItem, Button, } from '@chakra-ui/react'
+import {Menu, MenuButton, MenuList, MenuItem, Text, MenuDivider,} from '@chakra-ui/react'
 
 export default function NavBar() {
 
@@ -8,7 +9,7 @@ export default function NavBar() {
             <div className="flex flex-row items-center justify-between bg-white text-black text-xl border-2 border-solid">
                 <div>
                     <a href="/public">
-                        <img className="pl-4 h-10 w-auto" src={logo} alt="Logo"/>
+                        <img className="pl-4 h-10 w-aut0" src={logo} alt="Logo"/>
                     </a>
                 </div>
                 <div className="flex items-center  p-5">
@@ -25,20 +26,31 @@ export default function NavBar() {
                 <div className="flex flex-row">
                     <div className="flex-col">
                         <div>
-                            <text>Lahiru Praveen</text>
+                            <Text>Lahiru Praveen</Text>
                         </div>
                         <div>
-                            <text>99X</text>
+                            <Text>99X</Text>
                         </div>
                     </div>
                     <div>
-                        <Wrap>
-                            <WrapItem className="mr-2">
-                                <Avatar size="lg" name='Dan Abrahmov' src='https://bit.ly/dan-abramov'>
-                                    <AvatarBadge boxSize='1.25em' bg='green.500' />
-                                </Avatar>
-                            </WrapItem>
-                        </Wrap>
+                        <Menu>
+                            <MenuButton>
+                                <Wrap>
+                                    <WrapItem className="mr-2">
+                                        <Avatar size="lg" name='Dan Abrahmov' src='https://bit.ly/dan-abramov'>
+                                            <AvatarBadge boxSize='1.25em' bg='green.500' />
+                                        </Avatar>
+                                    </WrapItem>
+                                </Wrap>
+                            </MenuButton>
+                            <MenuList>
+                                <MenuItem as='a' href='#'>Profile</MenuItem>
+                                <MenuDivider />
+                                <MenuItem as='a' href='#'>Settings</MenuItem>
+                                <MenuDivider />
+                                <MenuItem as='a' href='#'>Log Out</MenuItem>
+                            </MenuList>
+                        </Menu>
                     </div>
                 </div>
             </div>

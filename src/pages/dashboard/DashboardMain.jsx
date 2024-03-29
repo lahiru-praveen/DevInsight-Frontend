@@ -1,9 +1,19 @@
 import { useState, useEffect } from 'react';
-import { Button, Tabs, TabList, TabPanels, Tab, TabPanel, Textarea, Text, Box } from '@chakra-ui/react';
+import {
+    Button,
+    Tabs,
+    TabList,
+    TabPanels,
+    Tab,
+    TabPanel,
+    Textarea,
+    Text,
+    Box,
+} from '@chakra-ui/react';
 import { AiOutlineFolderAdd, AiOutlineFileAdd, AiFillFileAdd } from "react-icons/ai";
 import { FaWindowClose } from "react-icons/fa";
 import LanguageSelectMenu from "../../components/dashboard/LanguageSelectMenu.jsx";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import NavBar from "../../components/dashboard/NavBar.jsx";
 
 export default function DashboardMain() {
@@ -16,8 +26,10 @@ export default function DashboardMain() {
     const navigate = useNavigate();
     const [files, setFiles] = useState([]);
     const [submitEnabled, setSubmitEnabled] = useState(false);
-
-    const allowedExtensions = ['.txt', '.pdf','.py','.java'];
+    const location = useLocation();
+    const selectedLanguage = location.state?.selectedLanguage || '';
+    //const [selectedLanguage, setSelectedLanguage] = useState('');
+    const allowedExtensions = ['.txt', '.py','.java','.html','.php','.rb','.cs','.cpp','.css','.go','.rs','.swift','.js'];
 
     const handleDrop = (event) => {
         event.preventDefault();
@@ -35,7 +47,10 @@ export default function DashboardMain() {
                 const extension = file.name.split('.').pop().toLowerCase();
                 // Check if the file extension is allowed
                 if (allowedExtensions.includes('.' + extension)) {
+                    // File extension is allowed
                     droppedFiles.push(file);
+                } else {
+                    window.alert("File - "+ file.name + "\nInvalid file extension: "+ extension)
                 }
             }
         }
@@ -66,7 +81,12 @@ export default function DashboardMain() {
         // Filter selected files to allow only .txt and .pdf extensions
         const filteredFiles = selectedFiles.filter(file => {
             const extension = file.name.split('.').pop().toLowerCase();
-            return allowedExtensions.includes('.' + extension);
+            if(allowedExtensions.includes('.' + extension)){
+                return allowedExtensions.includes('.' + extension);
+            } else {
+                window.alert("File - "+ file.name + "\nInvalid file extension - "+ extension)
+            }
+
         });
 
         // Add filtered files to the files state
@@ -80,42 +100,68 @@ export default function DashboardMain() {
     };
 
     const handleClearFiles = () => {
-        setFiles([]);
+        const confirmed = window.confirm("Are you sure you want to clear all selected files?");
+        if (confirmed) {
+            setFiles([]);
+        }
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
-        const formData = new FormData();
-        files.forEach(file => {
-            formData.append('file_uploads', file);
-        });
+        const formData = new FormData(); // Initialize FormData here
 
         try {
-            const endpoint = "http://localhost:8000/uploadfile/";
-            const response = await fetch(endpoint, {
-                method: "POST",
-                body: formData
-            });
-
-            if (response.ok) {
-                console.log("File uploaded successfully!");
-                setFiles([]);
-                setValues({
-                    value0: '',
-                    value1: '',
-                    value2: ''
+            // Handle file uploads
+            if (files.length > 0) {
+                const endpoint = "http://localhost:8000/uploadfile/";
+                // Append files to FormData
+                files.forEach(file => {
+                    formData.append('file_uploads', file);
                 });
-                setSubmitEnabled(false);
+                const file_response = await fetch(endpoint, {
+                    method: "POST",
+                    body: formData // Pass formData to the fetch request
+                });
+                if (file_response.ok) {
+                    setFiles([]);
+                    setValues({
+                        value0: '',
+                        value1: '',
+                        value2: ''
+                    });
+                    setSubmitEnabled(false);
 
-            } else {
-                console.error("Failed to upload file.");
+                    navigate("/cp", {state : {code: "No Code", mode: 2}});
+
+                    console.log("File uploaded successfully!");
+                }
             }
+
+            if(values.value2.trim() !== ""){
+                formData.append(values.value2,selectedLanguage)
+                const endpoint2 = "http://localhost:8000/detect-language/"
+                const upload_response = await fetch(endpoint2, {
+                    method: "POST",
+                    body: formData // Pass formData to the fetch request
+                });
+                if(upload_response.ok){
+                    alert("Try");
+                }
+            }
+
+            // Handle code submission
+            if (values.value2.trim() !== '') {
+                    console.log("Code uploaded successfully!");
+                    navigate('/cp', { state: { code: values.value2, mode: 1 } });
+                    setSubmitEnabled(false);
+            }
+
         } catch (error) {
-            console.error(error);
+            console.error("An error occurred:", error);
         }
-        navigate('/cp');
     };
+
+
 
     // Enable submit button if files are chosen or "Paste code here" textarea is filled
     useEffect(() => {
@@ -153,7 +199,7 @@ export default function DashboardMain() {
                             <TabPanels>
                                 <TabPanel>
                                     <div className="flex flex-col">
-                                        <Textarea bgColor={'#EBEBEB'} color={'#646464'} height="auto" fontSize="18px" placeholder='Enter Key words about your code' value={values.value0} onChange={(event) => handleChange(event, 'value0')} style={{ height: calculateHeight(values.value0) }} />
+                                        <Textarea bgColor={'#EBEBEB'} color={'#646464'} fontSize="18px" placeholder='Enter Key words about your code' value={values.value0} onChange={(event) => handleChange(event, 'value0')} style={{ height: calculateHeight(values.value0) }} />
                                         <Text className="font-bold mt-2" fontSize='18px'>
                                             Upload the source file or Project folder
                                         </Text>
@@ -191,7 +237,7 @@ export default function DashboardMain() {
                                                             <AiOutlineFileAdd className="size-10" />
                                                         </div>
                                                         <div>
-                                                            <text className="font-bold">You can drag and drop files here to add them.</text>
+                                                            <Text className="font-bold">You can drag and drop files here to add them.</Text>
                                                         </div>
                                                     </div>
                                                 )}
@@ -207,7 +253,7 @@ export default function DashboardMain() {
                                         </Text>
                                         <LanguageSelectMenu/>
                                         <div className="flex-grow relative">
-                                            <Textarea bgColor={'#EBEBEB'} color={'#646464'} fontSize="18px" placeholder='Paste code here' value={values.value2} onChange={(event) => handleChange(event, 'value2')} style={{ height: calculateHeight(values.value2), minHeight: '27rem' }} />
+                                            <Textarea bgColor={'#EBEBEB'} color={'#646464'} fontSize="18px" placeholder='Paste code here' value={values.value2} name={values.value2} onChange={(event) => handleChange(event, 'value2')} style={{ height: calculateHeight(values.value2), minHeight: '27rem' }} />
                                         </div>
                                     </div>
                                 </TabPanel>

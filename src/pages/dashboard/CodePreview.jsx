@@ -2,33 +2,49 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/vs.css';
-import {Tabs, TabList, TabPanels, Tab, TabPanel, Button} from '@chakra-ui/react'
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Button } from '@chakra-ui/react';
 import FileList from "../../components/dashboard/FileList.jsx";
 import CodeReviewPageHeading from "../../components/dashboard/CodeReviewPageHeading.jsx";
+import {useLocation} from "react-router-dom";
 
 export default function CodePreview() {
     const [selectedFileContent, setSelectedFileContent] = useState('');
     const [selectedFileName, setSelectedFileName] = useState('');
+    const { state } = useLocation();
+    let { code, mode } = state || {}; // Destructure state with default value to avoid errors if state is undefined
 
     useEffect(() => {
-        if (selectedFileName !== '') {
+        if (mode === 1 && code !== '') {
+            setSelectedFileContent(code);
+        }
+    }, [code, mode]);
+
+    useEffect(() => {
+        if (selectedFileName !== '') { //Mode === 2 then there is a error
             const fetchData = async () => {
                 try {
                     const response = await axios.get(`http://localhost:8000/files/${selectedFileName}`);
                     setSelectedFileContent(response.data);
                 } catch (error) {
                     console.error("Error fetching file content:", error);
+                    // Handle error more gracefully, such as showing an error message to the user
                 }
             };
-
             fetchData();
         }
-    }, [selectedFileName]);
+    }, [mode, selectedFileName]);
+
+
+    useEffect(() => {
+        if (selectedFileContent) {
+            hljs.highlightAll(); // Highlight.js initialization
+        }
+    }, [selectedFileContent]);
 
     return (
         <div className="flex flex-col h-screen">
             <div>
-                <CodeReviewPageHeading/>
+                <CodeReviewPageHeading />
             </div>
 
             <div className="flex flex-row flex-grow">
@@ -48,17 +64,19 @@ export default function CodePreview() {
                                         Review
                                     </Button>
                                 </div>
-                                <pre>
-                                    <code className="hljs" dangerouslySetInnerHTML={{__html: hljs.highlightAuto(selectedFileContent).value}}/>
-                                </pre>
+                                {selectedFileContent ? (
+                                    <pre>
+                                        <code className="hljs" dangerouslySetInnerHTML={{ __html: hljs.highlightAuto(selectedFileContent).value }} />
+                                    </pre>
+                                ) : (
+                                    <div>No file or code selected</div>
+                                )}
                             </TabPanel>
                             <TabPanel>
-                                Hello
+                                hello
                             </TabPanel>
                         </TabPanels>
                     </Tabs>
-
-
                 </div>
             </div>
         </div>
