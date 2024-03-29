@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import {Button} from "@chakra-ui/react";
 
 export default function FileList({ onSelectFile }) {
     const [files, setFiles] = useState([]);
@@ -23,7 +24,10 @@ export default function FileList({ onSelectFile }) {
             <ul>
                 {files.map((file, index) => (
                     <li key={index}>
-                        <div className="ml-4"><a href="#" onClick={() => onSelectFile(file.name)}>{file.name}</a></div>
+                        <Button colorScheme='gray' variant="outline" size="sm" className="mt-1 ">
+                            <a href="#" className="ml-1 mr-1 hover:bg-blue-100 focus:bg-blue-200 focus:outline-none active:bg-blue-200" onClick={() => onSelectFile(file.name)}>{file.name}</a>
+                        </Button>
+
                     </li>
                 ))}
             </ul>
