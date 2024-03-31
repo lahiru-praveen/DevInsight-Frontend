@@ -1,6 +1,7 @@
 import logo from "../../assets/Devinsight.png"
 import { Avatar, AvatarBadge, Wrap, WrapItem, Button, } from '@chakra-ui/react'
 import {Menu, MenuButton, MenuList, MenuItem, Text, MenuDivider,} from '@chakra-ui/react'
+import {Link} from "react-router-dom";
 
 export default function NavBar() {
 
@@ -13,15 +14,9 @@ export default function NavBar() {
                     </a>
                 </div>
                 <div className="flex items-center  p-5">
-                    <Button colorScheme='blue'>
-                        Dashboard
-                    </Button>
-                    <Button className="text-gray-700" variant='ghost'>
-                        Submissions
-                    </Button>
-                    <Button className="text-gray-700" variant='ghost'>
-                        Help Desk
-                    </Button>
+                    <Link to="#"><Button colorScheme='blue'>Dashboard</Button></Link>
+                    <Link to="#"><Button className="text-gray-700" variant='ghost'>Submissions</Button></Link>
+                    <Link to="#"><Button className="text-gray-700" variant='ghost'>Help Desk</Button></Link>
                 </div>
                 <div className="flex flex-row">
                     <div className="flex-col">
