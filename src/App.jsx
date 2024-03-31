@@ -15,7 +15,7 @@ import FindYourAccount from "./pages/Login/FindYourAccount.jsx";
 import EditProfile from "./pages/Profile/EditProfile.jsx";
 import Createorg2 from "./pages/CreateOrg/Createorg2.jsx";
 import ManageStaff from "./pages/ManageStaff/ManageStaff.jsx";
-import Test01 from "./pages/dashboard/Test01.jsx";
+import CodeReview from "./pages/dashboard/CodeReview.jsx";
 
 
 export default function App() {
@@ -29,7 +29,7 @@ export default function App() {
                 <Route path="/qcp" element={<QAECodePreview/>} />
                 <Route path="/si" element={<SignInDemo/>}/>
                 <Route path="/su" element={<SignUpDemo/>}/>
-                <Route path="/ld" element={<Landing/>}/>
+                <Route path="/" element={<Landing/>}/>
                 <Route path="/co" element={<Createorg1/>}/>
                 <Route path="/og" element={<OrganRegister/>}/>
                 <Route path="/fp" element={<ForgetPassword/>}/>
@@ -39,7 +39,7 @@ export default function App() {
                 <Route path="/co1" element={<Createorg1/>}/>
                 <Route path="/co2" element={<Createorg2/>}/>
                 <Route path="/ms" element={<ManageStaff/>}/>
-                <Route path="/te" element={<Test01/>}/>
+                <Route path="/cr" element={<CodeReview/>}/>
             </Routes>
         </BrowserRouter>
     </>

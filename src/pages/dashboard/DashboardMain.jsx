@@ -1,20 +1,12 @@
 import { useState, useEffect } from 'react';
-import {
-    Button,
-    Tabs,
-    TabList,
-    TabPanels,
-    Tab,
-    TabPanel,
-    Textarea,
-    Text,
-    Box,
-} from '@chakra-ui/react';
+import {Button, Tabs, TabList, TabPanels, Tab, TabPanel, Textarea, Text, Box,} from '@chakra-ui/react';
 import { AiOutlineFolderAdd, AiOutlineFileAdd, AiFillFileAdd } from "react-icons/ai";
 import { FaWindowClose } from "react-icons/fa";
 import LanguageSelectMenu from "../../components/dashboard/LanguageSelectMenu.jsx";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import NavBar from "../../components/dashboard/NavBar.jsx";
+import axios from "axios";
+import {MdDriveFolderUpload} from "react-icons/md";
 
 export default function DashboardMain() {
     const [values, setValues] = useState({
@@ -26,10 +18,12 @@ export default function DashboardMain() {
     const navigate = useNavigate();
     const [files, setFiles] = useState([]);
     const [submitEnabled, setSubmitEnabled] = useState(false);
-    const location = useLocation();
-    const selectedLanguage = location.state?.selectedLanguage || '';
-    //const [selectedLanguage, setSelectedLanguage] = useState('');
+    const [selectedLanguage, setSelectedLanguage] = useState('');
     const allowedExtensions = ['.txt', '.py','.java','.html','.php','.rb','.cs','.cpp','.css','.go','.rs','.swift','.js'];
+
+    const handleLanguageChange = (language) => {
+        setSelectedLanguage(language);
+    };
 
     const handleDrop = (event) => {
         event.preventDefault();
@@ -106,14 +100,20 @@ export default function DashboardMain() {
         }
     };
 
+    // Function to handle language change
+    // const handleLanguageChange = (language) => {
+    //     setSelectedLanguage(language);
+    // };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         const formData = new FormData(); // Initialize FormData here
 
         try {
+            const endpoint = "http://localhost:8000/uploadfile/";
+            // const endpoint2 = "http://localhost:8000/detect-language/"
             // Handle file uploads
             if (files.length > 0) {
-                const endpoint = "http://localhost:8000/uploadfile/";
                 // Append files to FormData
                 files.forEach(file => {
                     formData.append('file_uploads', file);
@@ -137,17 +137,25 @@ export default function DashboardMain() {
                 }
             }
 
-            if(values.value2.trim() !== ""){
-                formData.append(values.value2,selectedLanguage)
-                const endpoint2 = "http://localhost:8000/detect-language/"
-                const upload_response = await fetch(endpoint2, {
-                    method: "POST",
-                    body: formData // Pass formData to the fetch request
-                });
-                if(upload_response.ok){
-                    alert("Try");
-                }
+            if (values.value2.trim() !== "") {
+                formData.append("language", selectedLanguage);
+                console.log(formData);
+                formData.append("code", values.value2);
+                console.log(formData)
+                // setValues({
+                //     value0: values.value0,
+                //     value1: values.value1,
+                //     value2: values.value2
+                // });
+                // axios.post("http://localhost:8000/detect-language/", {
+                //     language: selectedLanguage,
+                //     code: values.value2
+                // })
+                axios.post("http://localhost:8000/detect-language/", formData)
+                    .then(res => console.log(res))
+                    .catch(error => console.error(error));
             }
+
 
             // Handle code submission
             if (values.value2.trim() !== '') {
@@ -185,8 +193,8 @@ export default function DashboardMain() {
 
                 <form onSubmit={handleSubmit} className="w-5/6 p-4 flex flex-col">
                     <div className="flex justify-end mb-4">
-                        <Button isDisabled={!submitEnabled} border='2px' size="md" colorScheme='blue' className="w-64" type={"submit"}>
-                            Submit
+                        <Button isDisabled={!submitEnabled} border='2px' size="lg" colorScheme='blue' className="w-64" type={"submit"}>
+                            <MdDriveFolderUpload className="mr-2" />Submit
                         </Button>
                     </div>
 
@@ -251,7 +259,7 @@ export default function DashboardMain() {
                                         <Text fontSize='18px' className="font-bold mt-3 mb-3">
                                             Enter the Code
                                         </Text>
-                                        <LanguageSelectMenu/>
+                                        <LanguageSelectMenu onLanguageChange={handleLanguageChange}/>
                                         <div className="flex-grow relative">
                                             <Textarea bgColor={'#EBEBEB'} color={'#646464'} fontSize="18px" placeholder='Paste code here' value={values.value2} name={values.value2} onChange={(event) => handleChange(event, 'value2')} style={{ height: calculateHeight(values.value2), minHeight: '27rem' }} />
                                         </div>

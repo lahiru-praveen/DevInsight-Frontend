@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/vs.css';
-import { Tabs, TabList, TabPanels, Tab, TabPanel, Button } from '@chakra-ui/react';
+import {Tabs, TabList, TabPanels, Tab, TabPanel, Button, TabIndicator} from '@chakra-ui/react';
 import FileList from "../../components/dashboard/FileList.jsx";
-import CodeReviewPageHeading from "../../components/dashboard/CodeReviewPageHeading.jsx";
+import CodePreviewPageHeading from "../../components/dashboard/CodePreviewPageHeading.jsx";
 import {useLocation} from "react-router-dom";
+import { GoCodeReview } from "react-icons/go";
 
 export default function CodePreview() {
     const [selectedFileContent, setSelectedFileContent] = useState('');
@@ -20,7 +21,7 @@ export default function CodePreview() {
     }, [code, mode]);
 
     useEffect(() => {
-        if (selectedFileName !== '') { //Mode === 2 then there is a error
+        if (selectedFileName !== '') { //Mode === 2 then there is an error
             const fetchData = async () => {
                 try {
                     const response = await axios.get(`http://localhost:8000/files/${selectedFileName}`);
@@ -30,7 +31,7 @@ export default function CodePreview() {
                     // Handle error more gracefully, such as showing an error message to the user
                 }
             };
-            fetchData();
+            fetchData().then(r => console.log(r));
         }
     }, [mode, selectedFileName]);
 
@@ -44,7 +45,7 @@ export default function CodePreview() {
     return (
         <div className="flex flex-col h-screen">
             <div>
-                <CodeReviewPageHeading />
+                <CodePreviewPageHeading />
             </div>
 
             <div className="flex flex-row flex-grow">
@@ -52,16 +53,17 @@ export default function CodePreview() {
                     <FileList onSelectFile={(fileName) => setSelectedFileName(fileName)} />
                 </div>
                 <div className="w-5/6 p-4 mt-3 ml-2 mr-2 h-auto font-bold bg-[#EBEBEB] color-[#898989]">
-                    <Tabs isFitted variant='enclosed'>
+                    <Tabs  position="relative" isFitted variant="enclosed" >
                         <TabList mb='1em'>
                             <Tab>Preview</Tab>
                             <Tab isDisabled>Review</Tab>
                         </TabList>
+                        <TabIndicator mt="-1.5px" height="2px" bg="blue.500" borderRadius="1px"/>
                         <TabPanels>
                             <TabPanel className="flex flex-col">
                                 <div className="flex justify-end mb-2">
-                                    <Button colorScheme="blue" border='2px' size="sm" type={"submit"}>
-                                        Review
+                                    <Button colorScheme="blue" border='2px' size="lg" className="w-64" type={"submit"}>
+                                        <GoCodeReview className="mr-2"/>Review
                                     </Button>
                                 </div>
                                 {selectedFileContent ? (
