@@ -55,9 +55,9 @@ function ProfileEditPage() {
             <div className="float-left mr-4 mt-16">
               <img src={ComLogo} alt="Company Logo"  width="200" height="100" />
             </div>
-            <Text className='text-right'>99x</Text><br/>
-            <Text className='text-right'>125ILM</Text><br/>
-            <Text className='text-right'>99Xprvt</Text><br/>
+            <Text className='text-right mr-10'>99x</Text><br/>
+            <Text className='text-right mr-10'>125ILM</Text><br/>
+            <Text className='text-right mr-10'>99Xprvt</Text><br/>
             <a href="https://99x.io" class="text-right"> 99x - Creating impactful digital products | 99x</a>
           </CardBody>
         </Card>
