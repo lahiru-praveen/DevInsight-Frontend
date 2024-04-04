@@ -12,7 +12,7 @@ import {
     AlertIcon,
 } from '@chakra-ui/react';
 
-import logo from '../../assets/devsign.png';
+import logo from '../../assets/devsign.png'
 
 export default function SignIn() {
     const [email, setEmail] = useState('');
@@ -60,7 +60,7 @@ export default function SignIn() {
                             <AlertIcon />
                             Incorrect password. Please try again.
                         </Alert>
-                    )} 
+                    )}
 
                     {showIncorrectUsernameAlert && (
                         <Alert status="error">
