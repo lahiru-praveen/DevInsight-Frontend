@@ -229,8 +229,7 @@ if (redirect) {
                    <Button
                        bg={isFilled && password === reEnterPassword ? 'blue.400' : 'blue.200'}
                        color={'white'}
-                       onClick={handleSubmit}
-                   >
+                       onClick={handleSubmit}>
                        NEXT
                    </Button>
                </Stack>

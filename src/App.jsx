@@ -15,7 +15,7 @@ import FindYourAccount from "./pages/Login/FindYourAccount.jsx";
 import EditProfile from "./pages/Profile/EditProfile.jsx";
 import Createorg2 from "./pages/CreateOrg/Createorg2.jsx";
 import ManageStaff from "./pages/ManageStaff/ManageStaff.jsx";
-import Test01 from "./pages/dashboard/Test01.jsx";
+//import Test01 from "./pages/dashboard/Test01.jsx";
 
 
 export default function App() {
