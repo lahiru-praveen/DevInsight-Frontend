@@ -39,7 +39,7 @@ export default function App() {
                 <Route path="/co1" element={<Createorg1/>}/>
                 <Route path="/co2" element={<Createorg2/>}/>
                 <Route path="/ms" element={<ManageStaff/>}/>
-                <Route path="/te" element={<Test01/>}/>
+                
             </Routes>
         </BrowserRouter>
     </>
