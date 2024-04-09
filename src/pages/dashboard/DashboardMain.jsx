@@ -7,6 +7,7 @@ import {useNavigate} from "react-router-dom";
 import NavBar from "../../components/dashboard/NavBar.jsx";
 import axios from "axios";
 import {MdDriveFolderUpload} from "react-icons/md";
+import { FaFlagCheckered } from "react-icons/fa";
 
 export default function DashboardMain() {
     const [values, setValues] = useState({
@@ -137,26 +138,6 @@ export default function DashboardMain() {
                 }
             }
 
-            if (values.value2.trim() !== "") {
-                formData.append("language", selectedLanguage);
-                console.log(formData);
-                formData.append("code", values.value2);
-                console.log(formData)
-                // setValues({
-                //     value0: values.value0,
-                //     value1: values.value1,
-                //     value2: values.value2
-                // });
-                // axios.post("http://localhost:8000/detect-language/", {
-                //     language: selectedLanguage,
-                //     code: values.value2
-                // })
-                axios.post("http://localhost:8000/detect-language/", formData)
-                    .then(res => console.log(res))
-                    .catch(error => console.error(error));
-            }
-
-
             // Handle code submission
             if (values.value2.trim() !== '') {
                     console.log("Code uploaded successfully!");
@@ -164,6 +145,34 @@ export default function DashboardMain() {
                     setSubmitEnabled(false);
             }
 
+        } catch (error) {
+            console.error("An error occurred:", error);
+        }
+    };
+
+    const checkLanguage = async (event) => {
+        event.preventDefault();
+        const formData = new FormData();
+
+        try {
+            if (values.value2.trim() !== "" && selectedLanguage !== "") {
+                formData.append("language", selectedLanguage); // Include selected language in the request
+                formData.append("code", values.value2);
+
+                axios.post("http://localhost:8000/detect-language/", formData)
+                    .then(res => {
+                        // Check the response from the server and handle accordingly
+                        console.log(res.data);
+                        if (res.data.message === "Code is in the specified language") {
+                            console.log("Language matches");
+                        } else {
+                            console.log("Language does not match");
+                        }
+                    })
+                    .catch(error => console.error(error));
+            } else {
+                console.log("Please select a language and enter code before checking.");
+            }
         } catch (error) {
             console.error("An error occurred:", error);
         }
@@ -261,6 +270,11 @@ export default function DashboardMain() {
                                         </Text>
                                         <LanguageSelectMenu onLanguageChange={handleLanguageChange}/>
                                         <div className="flex-grow relative">
+                                            <div className="flex justify-end">
+                                                 <Button onClick={checkLanguage} border='2px' size="md" colorScheme='blue' className="w-44" type={"submit"}>
+                                                    <FaFlagCheckered className="mr-2" />Check
+                                                </Button>
+                                            </div>
                                             <Textarea bgColor={'#EBEBEB'} color={'#646464'} fontSize="18px" placeholder='Paste code here' value={values.value2} name={values.value2} onChange={(event) => handleChange(event, 'value2')} style={{ height: calculateHeight(values.value2), minHeight: '27rem' }} />
                                         </div>
                                     </div>
