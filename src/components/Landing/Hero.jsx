@@ -4,6 +4,7 @@ import  l1  from '../../assets/l1.png';
 import  l2  from '../../assets/l2.svg';
 import  l3  from '../../assets/l3.svg';
 import  Devinsight  from '../../assets/Devinsight.png';
+import { Link } from 'react-router-dom';
 
 
 const Hero = () => {
@@ -20,9 +21,13 @@ const Hero = () => {
                     Code review platform</p>
 
                     <div class="grid grid-cols-2">
-                    <div><button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">
+                    <div>
+                    <Link to="/co1">
+                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">
                     Get for Your Oganization
-                    </button></div>
+                    </button>
+                    </Link>
+                    </div>
                     <div><button class="mx-4 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded w-full">
                     Log in
                     </button></div>

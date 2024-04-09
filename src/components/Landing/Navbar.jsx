@@ -15,8 +15,9 @@ export const Navbar = () => {
   
   <Tabs variant='soft-rounded' colorScheme='blue'>
   <TabList className="flex space-x-4">
-    <Tab>Tab 1</Tab>
-    <Tab>Tab 2</Tab>
+    <Tab>Home</Tab>
+    <Tab>About Us</Tab>
+    <Tab>Contact Us</Tab>
   </TabList>
   <TabPanels>
     <TabPanel>

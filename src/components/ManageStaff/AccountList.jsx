@@ -3,6 +3,7 @@ import { Select } from '@chakra-ui/react'
 import { Input, InputGroup, InputLeftElement, InputRightAddon} from '@chakra-ui/react';
 import { Search2Icon } from "@chakra-ui/icons";
 import { Button, ButtonGroup } from '@chakra-ui/react'
+import  pp  from '../../assets/pp.jpeg';
 
 const MyComponent = () => {
   return (
@@ -35,7 +36,7 @@ const MyComponent = () => {
             </InputGroup>
             </div>
             <div class='basis-1/4'>
-            <Button className='w-full' colorScheme='blue'>Button</Button>
+            <Button className='w-full' colorScheme='blue'>Search</Button>
             </div>
 
         </div>
@@ -47,7 +48,7 @@ const MyComponent = () => {
             <li class="py-3 sm:py-4">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        {/* <img class="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-1.jpg" alt="Neil image"> */}
+                        <img class="w-8 h-8 rounded-full" src={pp} alt="Neil image"/>
                     </div>
                     <div class="flex-1 min-w-0 ms-4">
                         <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
@@ -57,15 +58,15 @@ const MyComponent = () => {
                             email@windster.com
                         </p>
                     </div>
-                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                        $320
-                    </div>
+                    <Button colorScheme='blue' size='xs'>
+                        Edit Role
+                    </Button>
                 </div>
             </li>
             <li class="py-3 sm:py-4">
                 <div class="flex items-center ">
                     <div class="flex-shrink-0">
-                        {/* <img class="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-3.jpg" alt="Bonnie image"> */}
+                    <img class="w-8 h-8 rounded-full" src={pp} alt="Neil image"/>
                     </div>
                     <div class="flex-1 min-w-0 ms-4">
                         <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
@@ -75,15 +76,15 @@ const MyComponent = () => {
                             email@windster.com
                         </p>
                     </div>
-                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                        $3467
-                    </div>
+                    <Button colorScheme='blue' size='xs'>
+                        Edit Role
+                    </Button>
                 </div>
             </li>
             <li class="py-3 sm:py-4">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        {/* <img class="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-2.jpg" alt="Michael image"> */}
+                    <img class="w-8 h-8 rounded-full" src={pp} alt="Neil image"/>
                     </div>
                     <div class="flex-1 min-w-0 ms-4">
                         <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
@@ -93,15 +94,15 @@ const MyComponent = () => {
                             email@windster.com
                         </p>
                     </div>
-                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                        $67
-                    </div>
+                    <Button colorScheme='blue' size='xs'>
+                        Edit Role
+                    </Button>
                 </div>
             </li>
             <li class="py-3 sm:py-4">
                 <div class="flex items-center ">
                     <div class="flex-shrink-0">
-                        {/* <img class="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-4.jpg" alt="Lana image"> */}
+                       <img class="w-8 h-8 rounded-full" src={pp} alt="Neil image"/>
                     </div>
                     <div class="flex-1 min-w-0 ms-4">
                         <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
@@ -111,15 +112,15 @@ const MyComponent = () => {
                             email@windster.com
                         </p>
                     </div>
-                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                        $367
-                    </div>
+                    <Button colorScheme='blue' size='xs'>
+                        Edit Role
+                    </Button>
                 </div>
             </li>
             <li class="pt-3 pb-0 sm:pt-4">
                 <div class="flex items-center ">
                     <div class="flex-shrink-0">
-                        {/* <img class="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-5.jpg" alt="Thomas image"> */}
+                    <img class="w-8 h-8 rounded-full" src={pp} alt="Neil image"/>
                     </div>
                     <div class="flex-1 min-w-0 ms-4">
                         <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
@@ -129,9 +130,9 @@ const MyComponent = () => {
                             email@windster.com
                         </p>
                     </div>
-                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                        $2367
-                    </div>
+                    <Button colorScheme='blue' size='xs'>
+                        Edit Role
+                    </Button>
                 </div>
             </li>
         </ul>

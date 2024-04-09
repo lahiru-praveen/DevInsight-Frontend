@@ -10,7 +10,7 @@ const Footer = () => {
         </button>
       </div>
 
-      <div className="flex w-full h-1/3 ">
+      <div className="flex w-full h-1/3 p-5">
         <hr className="w-full bg-gray-600 h-[2px]" />
       </div>
       <div className="flex w-full h-1/3">
