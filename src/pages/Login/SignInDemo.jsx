@@ -1,7 +1,5 @@
-//import SignIn from "../../components/Login/SignIn"
-
-
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
     Button,
     FormControl,
@@ -57,7 +55,7 @@ export default function SignIn() {
                     rounded={'xl'}
                     p={6}
                     my={12}>
-                    {showIncorrectPasswordAlert && (
+                    {/* {showIncorrectPasswordAlert && (
                         <Alert status="error">
                             <AlertIcon />
                             Incorrect password. Please try again.
@@ -69,7 +67,8 @@ export default function SignIn() {
                             <AlertIcon />
                             Incorrect Username or Email. Please try again.
                         </Alert>
-                    )}
+                    )} */}
+
                     {showLoggingInAlert && (
                         <Alert status="info">
                             <AlertIcon />
@@ -98,6 +97,7 @@ export default function SignIn() {
                             onChange={handlePasswordChange}
                         />
                     </FormControl>
+                    <Link to="/db">
                     <Stack spacing={6}>
                         <Button
                             bg={isFilled ? 'blue.500' : 'blue.200'}
@@ -106,14 +106,19 @@ export default function SignIn() {
                             LOGIN
                         </Button>
                     </Stack>
+                    </Link>
                     <Text textAlign="center">
+                        <Link to="/su">
                         <Button variant="link" color="black">
                             Create a new account
                         </Button>{' '}
+                        </Link>
                         <br />{' '}
+                        <Link to="/fp">
                         <Button variant="link" as="span" color="black">
                             Forgot password
                         </Button>
+                        </Link>
                     </Text>
                 </Stack>
             </Flex>

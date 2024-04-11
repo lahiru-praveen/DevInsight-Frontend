@@ -112,7 +112,6 @@ export default function DashboardMain() {
 
         try {
             const endpoint = "http://localhost:8000/uploadfile/";
-            // const endpoint2 = "http://localhost:8000/detect-language/"
             // Handle file uploads
             if (files.length > 0) {
                 // Append files to FormData
@@ -164,17 +163,17 @@ export default function DashboardMain() {
                         // Check the response from the server and handle accordingly
                         console.log(res.data);
                         if (res.data.message === "Code is in the specified language") {
-                            console.log("Language matches");
+                            alert("Language matches");
                         } else {
-                            console.log("Language does not match");
+                            alert("Language does not match");
                         }
                     })
                     .catch(error => console.error(error));
             } else {
-                console.log("Please select a language and enter code before checking.");
+                alert("Please select a language and enter code before checking.");
             }
         } catch (error) {
-            console.error("An error occurred:", error);
+            console.log("An error occurred:", error);
         }
     };
 
