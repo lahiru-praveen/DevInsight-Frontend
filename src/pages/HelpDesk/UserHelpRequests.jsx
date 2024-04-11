@@ -124,15 +124,15 @@
 // };
 //
 // export default QAEHelpRequests;
-import React, { useState } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { items } from "../../components/QAE/UserRequestsData.jsx";
 import NavBar from "../../components/QAE/NavBar.jsx";
 
-function UserHelpRequests() {
+export default function UserHelpRequests() {
     const [sortedItems, setSortedItems] = useState([...items]);
     const [searchQuery, setSearchQuery] = useState('');
-    const [sortBy, setSortBy] = useState(null);
+    const [setSortBy] = useState(null);
     const [deleteIndex, setDeleteIndex] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
 
@@ -238,4 +238,4 @@ UserHelpRequests.propTypes = {
     ).isRequired,
 };
 
-export default UserHelpRequests;
+
