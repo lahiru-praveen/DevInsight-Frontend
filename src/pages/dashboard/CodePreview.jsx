@@ -5,12 +5,13 @@ import 'highlight.js/styles/vs.css';
 import {Tabs, TabList, TabPanels, Tab, TabPanel, Button, TabIndicator} from '@chakra-ui/react';
 import FileList from "../../components/dashboard/FileList.jsx";
 import CodePreviewPageHeading from "../../components/dashboard/CodePreviewPageHeading.jsx";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom"; // Import useNavigate
 import { GoCodeReview } from "react-icons/go";
 
 export default function CodePreview() {
     const [selectedFileContent, setSelectedFileContent] = useState('');
     const [selectedFileName, setSelectedFileName] = useState('');
+    const navigate = useNavigate(); // Initialize navigate function
     const { state } = useLocation();
     let { code, mode } = state || {}; // Destructure state with default value to avoid errors if state is undefined
 
@@ -42,6 +43,10 @@ export default function CodePreview() {
         }
     }, [selectedFileContent]);
 
+    const handleSubmit = async () => {
+        navigate('/cr'); // Navigate to the /cr page
+    };
+
     return (
         <div className="flex flex-col h-screen">
             <div>
@@ -62,7 +67,7 @@ export default function CodePreview() {
                         <TabPanels>
                             <TabPanel className="flex flex-col">
                                 <div className="flex justify-end mb-2">
-                                    <Button colorScheme="blue" border='2px' size="lg" className="w-64" type={"submit"}>
+                                    <Button colorScheme="blue" border='2px' size="lg" className="w-64" onClick={handleSubmit} type={"submit"}>
                                         <GoCodeReview className="mr-2"/>Review
                                     </Button>
                                 </div>
