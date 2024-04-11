@@ -1,4 +1,7 @@
-import { useState } from 'react';
+
+import { useState, Redirect } from 'react';
+import { Link } from 'react-router-dom';
+
 import {
     Button,
     FormControl,
@@ -114,17 +117,27 @@ export default function SignUp() {
         }
     };
 
-    // Function to handle form submission
-    const handleSubmit = () => {
-        // Check if the form is filled and passwords match before submission
-        if (isFilled && password === reEnterPassword) {
-            // Perform your form submission logic here
-            // For demonstration purposes, we'll just show an alert
-            alert('Form submitted successfully!');
-        } else {
-            setPasswordError('Passwords do not match');
-        }
-    };
+  
+  // State variable for redirection
+const [redirect, setRedirect] = useState(false);
+
+// Function to handle form submission
+const handleSubmit = () => {
+    // Check if the form is filled and passwords match before submission
+    if (isFilled && password === reEnterPassword) {
+        // Perform your form submission logic here
+        // For demonstration purposes, we'll just simulate a successful submission
+        setRedirect(true);
+    } else {
+        setPasswordError('Passwords do not match');
+    }
+};
+
+// Redirect to landing page after successful form submission
+if (redirect) {
+    return <Redirect to="/SignInDemo" />;
+}
+
 
     return (
         <Flex minH={'100vh'} align={'center'} justify={'center'}>
@@ -210,15 +223,18 @@ export default function SignUp() {
                 </FormControl>
 
                 {/* Submit button */}
+                <Link to="/db">
                 <Stack spacing={6}>
-                    <Button
-                        bg={isFilled && password === reEnterPassword ? 'blue.400' : 'blue.200'}
-                        color={'white'}
-                        onClick={handleSubmit}
-                    >
-                        NEXT
-                    </Button>
-                </Stack>
+                   
+                   <Button
+                       bg={isFilled && password === reEnterPassword ? 'blue.400' : 'blue.200'}
+                       color={'white'}
+                       onClick={handleSubmit}>
+                       NEXT
+                   </Button>
+               </Stack>
+               </Link>
+               
             </Stack>
         </Flex>
     );
