@@ -26,17 +26,25 @@ function QAECodePreview() {
     //     setShowConfirmationModal(true);
     // };
 // QAECodePreview.jsx
-
     const handleSubmit = async (event) => {
         event.preventDefault();
+        console.log('handleSubmit function called'); // Log when handleSubmit is called
         try {
-            const response = await axios.post('/api/save-response/', { response: responseText });
-            console.log('Response saved successfully with ID:', response.data.response_id);
+            const response = await axios.post(
+                'http://localhost:8000/api/sam/',
+                { "response_text": responseText },
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+            console.log('Response saved successfully:', response.data);
             // Add any additional logic after successful response submission
         } catch (error) {
             console.error('Failed to save response:', error);
+            // Log error details
+            console.error('Error details:', error.response);
         }
+        console.log('handleSubmit function completed'); // Log when handleSubmit is completed
     };
+
 
     // Function to confirm submission
     const confirmSubmission = () => {
@@ -131,8 +139,7 @@ if operation_choice not in ('1', '2', '3', '4'):
 
                 </div>
             </div>
-            {/* Confirmation Modal */}
-            // Confirmation Modal
+
             {showConfirmationModal && (
                 <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white rounded-lg text-2xl shadow-lg p-8 w-100"> {/* Adjust the width here */}
