@@ -3,8 +3,23 @@ import CodeReviewPageHeading from "../../components/dashboard/CodeReviewPageHead
 import { RxDividerVertical } from "react-icons/rx";
 import { IoMdDownload } from "react-icons/io";
 import { BsFillQuestionSquareFill } from "react-icons/bs";
+import {useEffect, useState} from "react";
+import axios from "axios";
 
 export default function CodeReview() {
+    const [reviewContent, setReviewContent] = useState('');
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8000/get_code`);
+                setReviewContent(response.data);
+            } catch (error) {
+                console.error("Error fetching :", error);
+            }
+        };
+        fetchData().then(r => console.log(r));
+    }, []);  // Removed reviewContent from the dependency array
 
     return (
         <div className="flex flex-col h-screen">
@@ -32,14 +47,23 @@ export default function CodeReview() {
                                 </div>
                             </TabPanel>
                             <TabPanel>
-                                <div className="flex justify-end mb-2">
-                                    <Button colorScheme="blue" border='2px' size="md" className="w-64" type={"submit"}>
-                                        <BsFillQuestionSquareFill className="mr-1"/>Ask Help
-                                    </Button>
-                                    <RxDividerVertical className="mt-3" />
-                                    <Button colorScheme="blue" border='2px' size="md" className="w-64" type={"submit"}>
-                                        <IoMdDownload className="mr-1"/> Download
-                                    </Button>
+                                <div className="flex flex-col ">
+                                    <div className="flex justify-end mb-2">
+                                        <Button colorScheme="blue" border='2px' size="md" className="w-64" type={"submit"}>
+                                            <BsFillQuestionSquareFill className="mr-1"/>Ask Help
+                                        </Button>
+                                        <RxDividerVertical className="mt-3"/>
+                                        <Button colorScheme="blue" border='2px' size="md" className="w-64" type={"submit"}>
+                                            <IoMdDownload className="mr-1"/> Download
+                                        </Button>
+                                    </div>
+                                    <div>
+                                        {reviewContent ? (
+                                            <pre>{reviewContent}</pre>
+                                        ) : (
+                                            <div>No file or code selected</div>
+                                        )}
+                                    </div>
                                 </div>
                             </TabPanel>
                         </TabPanels>
