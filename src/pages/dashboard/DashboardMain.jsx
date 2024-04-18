@@ -151,18 +151,18 @@ export default function DashboardMain() {
 
     const checkLanguage = async (event) => {
         event.preventDefault();
-        const formData = new FormData();
 
         try {
             if (values.value2.trim() !== "" && selectedLanguage !== "") {
-                formData.append("language", selectedLanguage); // Include selected language in the request
-                formData.append("code", values.value2);
+                const requestData = {
+                    language: selectedLanguage,
+                    code: values.value2
+                };
 
-                axios.post("http://localhost:8000/detect-language/", formData)
+                axios.post("http://localhost:8000/detect-language/", requestData)
                     .then(res => {
-                        // Check the response from the server and handle accordingly
                         console.log(res.data);
-                        if (res.data.message === "Code is in the specified language") {
+                        if (res.data === 1) {
                             alert("Language matches");
                         } else {
                             alert("Language does not match");
@@ -176,8 +176,6 @@ export default function DashboardMain() {
             console.log("An error occurred:", error);
         }
     };
-
-
 
     // Enable submit button if files are chosen or "Paste code here" textarea is filled
     useEffect(() => {
