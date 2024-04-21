@@ -1,10 +1,11 @@
-import {Button, Tab, TabIndicator, TabList, TabPanel, TabPanels, Tabs} from "@chakra-ui/react";
+import {Button, Flex, Tab, TabIndicator, TabList, TabPanel, TabPanels, Tabs} from "@chakra-ui/react";
 import CodeReviewPageHeading from "../../components/dashboard/CodeReviewPageHeading.jsx";
 import { RxDividerVertical } from "react-icons/rx";
 import { IoMdDownload } from "react-icons/io";
 import { BsFillQuestionSquareFill } from "react-icons/bs";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import { CircularProgress} from '@chakra-ui/react'
 
 export default function CodeReview() {
     const [reviewContent, setReviewContent] = useState('');
@@ -61,7 +62,10 @@ export default function CodeReview() {
                                         {reviewContent ? (
                                             <pre>{reviewContent}</pre>
                                         ) : (
-                                            <div>No file or code selected</div>
+                                            <Flex alignItems="center" justifyContent="center" className="mt-20">
+                                                    <div><CircularProgress isIndeterminate color='blue.300'/></div>
+                                            </Flex>
+
                                         )}
                                     </div>
                                 </div>
