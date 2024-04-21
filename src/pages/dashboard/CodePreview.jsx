@@ -2,78 +2,105 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/vs.css';
-import {Tabs, TabList, TabPanels, Tab, TabPanel, Button, TabIndicator} from '@chakra-ui/react';
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Button } from '@chakra-ui/react';
 import FileList from "../../components/dashboard/FileList.jsx";
 import CodePreviewPageHeading from "../../components/dashboard/CodePreviewPageHeading.jsx";
-import {useLocation, useNavigate} from "react-router-dom"; // Import useNavigate
+import { useLocation, useNavigate } from "react-router-dom";
 import { GoCodeReview } from "react-icons/go";
+import { useCode } from '../../context/CodeContext.jsx';
 
 export default function CodePreview() {
-    const [selectedFileContent, setSelectedFileContent] = useState('');
+    const { selectedFileContent, setSelectedFileContent } = useCode();
     const [selectedFileName, setSelectedFileName] = useState('');
-    const navigate = useNavigate(); // Initialize navigate function
+    const [selectedLine, setSelectedLine] = useState(null);
+    const navigate = useNavigate();
     const { state } = useLocation();
-    let { code, mode } = state || {}; // Destructure state with default value to avoid errors if state is undefined
+    let { code, mode } = state || {};
 
     useEffect(() => {
         if (mode === 1 && code !== '') {
             setSelectedFileContent(code);
         }
-    }, [code, mode]);
+    }, [code, mode, setSelectedFileContent]);
 
     useEffect(() => {
-        if (selectedFileName !== '') { //Mode === 2 then there is an error
+        if (selectedFileName !== '') {
             const fetchData = async () => {
                 try {
                     const response = await axios.get(`http://localhost:8000/files/${selectedFileName}`);
                     setSelectedFileContent(response.data);
                 } catch (error) {
                     console.error("Error fetching file content:", error);
-                    // Handle error more gracefully, such as showing an error message to the user
                 }
             };
             fetchData().then(r => console.log(r));
         }
-    }, [mode, selectedFileName]);
-
+    }, [mode, selectedFileName, setSelectedFileContent]);
 
     useEffect(() => {
-        if (selectedFileContent) {
-            hljs.highlightAll(); // Highlight.js initialization
+        if (setSelectedFileContent) {
+            hljs.highlightAll();
         }
-    }, [selectedFileContent]);
+    }, [setSelectedFileContent]);
 
     const handleSubmit = async () => {
-        navigate('/cr'); // Navigate to the /cr page
+        navigate('/cr');  // navigate to the review page
     };
+
+    function addLineNumbersToCode(code) {
+        const lines = code.split('\n');
+        const numberedCode = lines.map((line, index) => {
+            const isSelected = selectedLine === index;
+            const lineClass = isSelected ? 'bg-blue-100' : '';
+
+            return (
+                <div
+                    key={index}
+                    className={`flex ${lineClass}`}
+                    onClick={() => setSelectedLine(index)}
+                >
+                    <div className="w-6 text-left text-gray-500 pr-20 user-select-none">
+                        {index + 1}
+                    </div>
+                    <div dangerouslySetInnerHTML={{ __html: hljs.highlightAuto(line).value }} />
+                </div>
+            );
+        });
+
+        return (
+            <pre className="line-numbers">
+                {numberedCode}
+            </pre>
+        );
+    }
 
     return (
         <div className="flex flex-col h-screen">
             <div>
-                <CodePreviewPageHeading />
+                <CodePreviewPageHeading/>
             </div>
 
             <div className="flex flex-row flex-grow">
                 <div className="w-1/6 p-4 mt-3 ml-2 mr-2 bg-[#EBEBEB]">
-                    <FileList onSelectFile={(fileName) => setSelectedFileName(fileName)} />
+                    <FileList onSelectFile={(fileName) => setSelectedFileName(fileName)}/>
                 </div>
                 <div className="w-5/6 p-4 mt-3 ml-2 mr-2 h-auto font-bold bg-[#EBEBEB] color-[#898989]">
-                    <Tabs  position="relative" isFitted variant="enclosed" >
+                    <Tabs position="relative" isFitted variant="enclosed">
                         <TabList mb='1em'>
                             <Tab>Preview</Tab>
                             <Tab isDisabled>Review</Tab>
                         </TabList>
-                        <TabIndicator mt="-1.5px" height="2px" bg="blue.500" borderRadius="1px"/>
                         <TabPanels>
                             <TabPanel className="flex flex-col">
                                 <div className="flex justify-end mb-2">
-                                    <Button colorScheme="blue" border='2px' size="lg" className="w-64" onClick={handleSubmit} type={"submit"}>
+                                    <Button colorScheme="blue" border='2px' size="lg" className="w-64"
+                                            onClick={handleSubmit} type={"submit"}>
                                         <GoCodeReview className="mr-2"/>Review
                                     </Button>
                                 </div>
                                 {selectedFileContent ? (
-                                    <pre>
-                                        <code className="hljs" dangerouslySetInnerHTML={{ __html: hljs.highlightAuto(selectedFileContent).value }} />
+                                    <pre className="line-numbers">
+                                        {addLineNumbersToCode(selectedFileContent)}
                                     </pre>
                                 ) : (
                                     <div>No file or code selected</div>
@@ -86,6 +113,13 @@ export default function CodePreview() {
                     </Tabs>
                 </div>
             </div>
+            <style>
+                {`
+                    .user-select-none {
+                        user-select: none;
+                    }
+                `}
+            </style>
         </div>
     );
 }
