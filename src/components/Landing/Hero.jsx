@@ -15,20 +15,20 @@ const Hero = () => {
             <div className='flex flex-col justify-start gap-2 flex justify-center h-full mx-5'>
                 {/* <p className='py-2 text-2xl text-[#20B486] font-medium'>START TO SUCCESS</p> */}
                 <div className='flex justify-start '>
-            <img src={Devinsight} class="w-1/2 " />
+            <img src={Devinsight} className="w-1/2 " />
             </div>
                 <p className='py-2 text-lg text-gray-600'>Master You Coding Practices with our new Ai Powerd 
                     Code review platform</p>
 
-                    <div class="grid grid-cols-2">
+                    <div className="grid grid-cols-2">
                     <div>
                     <Link to="/co1">
-                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">
+                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">
                     Get for Your Oganization
                     </button>
                     </Link>
                     </div>
-                    <div><button class="mx-4 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded w-full">
+                    <div><button className="mx-4 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded w-full">
                     Log in
                     </button></div>
                     </div>    
@@ -38,7 +38,7 @@ const Hero = () => {
             </div>
             
             <div className='flex justify-center items-center mx-5'>
-            <img src={l1} class="md:order-last order-first scale-75" />
+            <img src={l1} className="md:order-last order-first scale-75" />
             </div>
 
 
@@ -47,8 +47,8 @@ const Hero = () => {
 
         <div className='md:max-w-[1480px] m-auto grid md:grid-cols-2 max-w-[600px]  px-4 md:px-0 my-40'>
 
-            <div class="flex justify-center items-center mx-5">
-            <img src={l2} class="" />
+            <div className="flex justify-center items-center mx-5">
+            <img src={l2} className="" />
             </div>
             
             <div className='flex flex-col justify-start gap-8 mx-5 justify-center h-full mx-5'>
@@ -71,8 +71,8 @@ const Hero = () => {
 
         <div className='md:max-w-[1480px] m-auto grid md:grid-cols-2 max-w-[600px]  px-4 md:px-0 my-40'>
 
-            <div class="flex justify-center items-center mx-5">
-            <img src={l2} class="" />
+            <div className="flex justify-center items-center mx-5">
+            <img src={l2} className="" />
             </div>
             
             <div className='flex flex-col justify-start gap-8 mx-5 justify-center h-full mx-5'>
@@ -95,8 +95,8 @@ const Hero = () => {
 
         <div className='md:max-w-[1480px] m-auto grid md:grid-cols-2 max-w-[600px]  px-4 md:px-0 my-40'>
 
-            <div class="flex justify-center items-center mx-5">
-            <img src={l3} class="" />
+            <div className="flex justify-center items-center mx-5">
+            <img src={l3} className="" />
             </div>
             
             <div className='flex flex-col justify-start gap-8 mx-5 justify-center h-full mx-5'>

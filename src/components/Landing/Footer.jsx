@@ -5,7 +5,7 @@ const Footer = () => {
     <div className="w-full bg-[#E7ECFF] py-24 flex flex-col lg:px-[100px] ">
       <div className="flex justify-between h-1/3 w-full ">
         <p>@Devinsight2024</p>
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-[250px]">
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-[250px]">
           Get for Your Oganization
         </button>
       </div>
