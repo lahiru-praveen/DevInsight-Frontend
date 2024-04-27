@@ -14,8 +14,20 @@ export default function CodePreview() {
     const [selectedFileName, setSelectedFileName] = useState('');
     const [selectedLine, setSelectedLine] = useState(null);
     const navigate = useNavigate();
-    const { state } = useLocation();
-    let { code, mode } = state || {};
+    const location = useLocation();
+    const { state } = location;
+    const { code, mode, description, language } = state || {};
+    const des = description;
+    const lan = language;
+    // const des = localStorage.getItem(description);
+    // const lan = localStorage.getItem(language);
+
+    // useEffect(() =>{
+    //     if (description != '' || language != ''){
+    //
+    //     }
+    // });
+
 
     useEffect(() => {
         if (mode === 1 && code !== '') {
@@ -24,16 +36,21 @@ export default function CodePreview() {
     }, [code, mode, setSelectedFileContent]);
 
     useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8000/files/${selectedFileName}`);
+                setSelectedFileContent(response.data);
+                const des = description; // Separate variable for description
+                const lan = language; // Separate variable for language
+                console.log(des);
+                console.log(lan);
+            } catch (error) {
+                console.error("Error fetching file content:", error);
+            }
+        };
+
         if (selectedFileName !== '') {
-            const fetchData = async () => {
-                try {
-                    const response = await axios.get(`http://localhost:8000/files/${selectedFileName}`);
-                    setSelectedFileContent(response.data);
-                } catch (error) {
-                    console.error("Error fetching file content:", error);
-                }
-            };
-            fetchData().then(r => console.log(r));
+            fetchData();
         }
     }, [mode, selectedFileName, setSelectedFileContent]);
 
@@ -44,7 +61,14 @@ export default function CodePreview() {
     }, [setSelectedFileContent]);
 
     const handleSubmit = async () => {
-        navigate('/cr');  // navigate to the review page
+        console.log(des);
+        console.log(lan);
+        if (des || lan) {
+            navigate('/cr', { state: { description: des, language: lan } });
+        } else {
+            // Handle the case when description or language is missing
+            console.error("Description or language is missing");
+        }
     };
 
     function addLineNumbersToCode(code) {
