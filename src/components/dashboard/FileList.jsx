@@ -1,10 +1,11 @@
+// FileList component
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button } from "@chakra-ui/react";
 import PropTypes from "prop-types";
-import {Link} from "react-router-dom"; // Import PropTypes
+import { Link } from "react-router-dom";
 
-export default function FileList({ onSelectFile }) { // Destructure onSelectFile from props directly
+export default function FileList({ onSelectFile }) {
     const [files, setFiles] = useState([]);
 
     useEffect(() => {
@@ -27,7 +28,7 @@ export default function FileList({ onSelectFile }) { // Destructure onSelectFile
                 {files.map((file, index) => (
                     <li key={index}>
                         <Button colorScheme='gray' variant="outline" size="sm" className="mt-1 ">
-                            <Link to="#" className="ml-1 mr-1 hover:bg-blue-100 focus:bg-blue-200 focus:outline-none active:bg-blue-200" onClick={() => onSelectFile(file.name)}>{file.name}</Link>
+                            <Link to="#" className="ml-1 mr-1 hover:bg-blue-100 focus:bg-blue-200 focus:outline-none active:bg-blue-200" onClick={(e) => { e.preventDefault(); onSelectFile(file.name) }}>{file.name}</Link>
                         </Button>
                     </li>
                 ))}
@@ -37,7 +38,6 @@ export default function FileList({ onSelectFile }) { // Destructure onSelectFile
     );
 }
 
-// Define propTypes outside the component
 FileList.propTypes = {
-    onSelectFile: PropTypes.func.isRequired // Specify the type for onSelectFile
+    onSelectFile: PropTypes.func.isRequired
 };

@@ -19,15 +19,8 @@ export default function CodePreview() {
     const { code, mode, description, language } = state || {};
     const des = description;
     const lan = language;
-    // const des = localStorage.getItem(description);
-    // const lan = localStorage.getItem(language);
-
-    // useEffect(() =>{
-    //     if (description != '' || language != ''){
-    //
-    //     }
-    // });
-
+    console.log(description);
+    console.log(language);
 
     useEffect(() => {
         if (mode === 1 && code !== '') {
