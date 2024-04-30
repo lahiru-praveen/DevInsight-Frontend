@@ -16,11 +16,13 @@ export default function CodePreview() {
     const navigate = useNavigate();
     const location = useLocation();
     const { state } = location;
-    const { code, mode, description, language } = state || {};
-    const des = description;
-    const lan = language;
-    console.log(description);
-    console.log(language);
+    let { code, mode, description, language } = state || {};
+    if (language === ""){
+        language = "Not given";
+    }
+    if (description === ""){
+        description = "Not given";
+    }
 
     useEffect(() => {
         if (mode === 1 && code !== '') {
@@ -33,10 +35,6 @@ export default function CodePreview() {
             try {
                 const response = await axios.get(`http://localhost:8000/files/${selectedFileName}`);
                 setSelectedFileContent(response.data);
-                const des = description; // Separate variable for description
-                const lan = language; // Separate variable for language
-                console.log(des);
-                console.log(lan);
             } catch (error) {
                 console.error("Error fetching file content:", error);
             }
@@ -54,10 +52,8 @@ export default function CodePreview() {
     }, [setSelectedFileContent]);
 
     const handleSubmit = async () => {
-        console.log(des);
-        console.log(lan);
-        if (des || lan) {
-            navigate('/cr', { state: { description: des, language: lan } });
+        if (description || language) {
+            navigate('/cr', { state: { description: description, language: language } });
         } else {
             // Handle the case when description or language is missing
             console.error("Description or language is missing");
