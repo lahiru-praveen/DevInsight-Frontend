@@ -1,4 +1,4 @@
-import {Button, Flex, Tab, TabList, TabPanel, TabPanels, Tabs} from "@chakra-ui/react";
+import { Button, Flex, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import CodeReviewPageHeading from "../../components/dashboard/CodeReviewPageHeading.jsx";
 import { RxDividerVertical } from "react-icons/rx";
 import { IoMdDownload } from "react-icons/io";
@@ -8,25 +8,56 @@ import axios from "axios";
 import { CircularProgress } from '@chakra-ui/react'
 import { useCode } from '../../context/CodeContext.jsx';
 import hljs from "highlight.js";
+import { useLocation } from "react-router-dom";
+
 export default function CodeReview() {
     const [reviewContent, setReviewContent] = useState('');
     const { selectedFileContent } = useCode();
     const [selectedLine, setSelectedLine] = useState(null);
-
-    const fetchData = async () => {
-        try {
-            const response = await axios.post("http://localhost:8000/get_code", { data: selectedFileContent });
-            setReviewContent(response.data);
-        } catch (error) {
-            console.error("Error fetching review:", error);
-        }
-    };
+    const location = useLocation();
+    const { state } = location;
+    let { description , language } = state || {};
+    console.log(description);
+    console.log(language);
 
     useEffect(() => {
-        if (selectedFileContent) {
-            fetchData();
+        const fetchData = async (description, language) => {
+            try {
+                if (!selectedFileContent) {
+                    throw new Error("Selected file content is empty.");
+                }
+
+                const response = await axios.post("http://localhost:8000/get_code", { code: selectedFileContent, language:language , description:description });
+                setReviewContent(response.data);
+            } catch (error) {
+                console.error("Error fetching review:", error);
+            }
+        };
+        fetchData(description, language).then(r =>
+            console.log(r)
+        ); // Call fetchData with description and language
+    }, );
+
+    const handleDownloadPdf = async () => {
+        try {
+            const response = await axios.post("http://localhost:8000/generate-pdf", {
+                review_content: reviewContent
+            }, {
+                responseType: 'blob', // to receive binary data
+            });
+
+            // Create a temporary anchor element to trigger the download
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'review_content.pdf');
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
+        } catch (error) {
+            console.error("Error downloading PDF:", error);
         }
-    }, [selectedFileContent]);
+    };
 
     function addLineNumbersToCode(code) {
         const lines = code.split('\n');
@@ -101,8 +132,7 @@ export default function CodeReview() {
                                             <BsFillQuestionSquareFill className="mr-1"/>Ask Help
                                         </Button>
                                         <RxDividerVertical className="mt-3"/>
-                                        <Button colorScheme="blue" border='2px' size="md" className="w-64"
-                                                type={"submit"}>
+                                        <Button colorScheme="blue" border='2px' size="md" className="w-64" onClick={handleDownloadPdf}>
                                             <IoMdDownload className="mr-1"/> Download
                                         </Button>
                                     </div>
