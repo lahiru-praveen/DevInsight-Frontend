@@ -58,7 +58,7 @@ function ProfileEditPage() {
             <Text className='text-right mr-10'>99x</Text><br/>
             <Text className='text-right mr-10'>125ILM</Text><br/>
             <Text className='text-right mr-10'>99Xprvt</Text><br/>
-            <a href="https://99x.io" class="text-right"> 99x - Creating impactful digital products | 99x</a>
+            <a href="https://99x.io" className="text-right"> 99x - Creating impactful digital products | 99x</a>
           </CardBody>
         </Card>
 

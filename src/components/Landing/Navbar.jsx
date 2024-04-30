@@ -1,6 +1,5 @@
-import React from 'react'
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
-import { Button, ButtonGroup } from '@chakra-ui/react'
+import { Button} from '@chakra-ui/react'
 import  Devinsight  from '../../assets/Devinsight.png';
 
 export const Navbar = () => {
@@ -8,15 +7,16 @@ export const Navbar = () => {
 <div className='flex justify-between py-10 px-10'>
             
   <div className='flex justify-start '>
-      <img src={Devinsight} className="w-40 h-10" />
+      <img src={Devinsight} className="w-40 h-10"  alt={"Pic"}/>
   </div>
 
   <div className='flex justify-center'>
   
   <Tabs variant='soft-rounded' colorScheme='blue'>
   <TabList className="flex space-x-4">
-    <Tab>Tab 1</Tab>
-    <Tab>Tab 2</Tab>
+    <Tab>Home</Tab>
+    <Tab>About Us</Tab>
+    <Tab>Contact Us</Tab>
   </TabList>
   <TabPanels>
     <TabPanel>

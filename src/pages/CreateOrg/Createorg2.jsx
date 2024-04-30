@@ -15,7 +15,7 @@ function Createorg2() {
       <div className='flex flex-col space-y-40 h-full justify-between'>
       
       <div className='flex justify-center items-center'>
-            <img src={Devinsight} class="w-2/6 h-2/6" />
+            <img src={Devinsight} className="w-2/6 h-2/6" />
       </div>
 
       

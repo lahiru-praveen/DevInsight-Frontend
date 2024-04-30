@@ -1,5 +1,6 @@
 import React from 'react'
 import {InviteTable} from '../../components/ManageStaff/InviteTable'
+import MyComponent from '../../components/ManageStaff/AccountList'
 
 function ManageStaff() {
   return (
@@ -8,9 +9,11 @@ function ManageStaff() {
   
       <InviteTable/>
       </div>
-    <div className='h-2/3'>
-        <h1>dawdwd</h1>
-    </div>
+    <div className=''>
+      <MyComponent/>
+      
+      </div>  
+    
     </div>
 
       )
