@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/vs.css';
-import { Tabs, TabList, TabPanels, Tab, TabPanel, Button } from '@chakra-ui/react';
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Button, CircularProgress, Flex } from '@chakra-ui/react';
 import FileList from "../../components/dashboard/FileList.jsx";
 import CodePreviewPageHeading from "../../components/dashboard/CodePreviewPageHeading.jsx";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -14,6 +14,7 @@ export default function CodePreview() {
     const [selectedFileName, setSelectedFileName] = useState('');
     const [selectedLine, setSelectedLine] = useState(null);
     const [reviewContent, setReviewContent] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
     const { state } = location;
@@ -47,12 +48,20 @@ export default function CodePreview() {
     }, [mode, selectedFileName, setSelectedFileContent]);
 
     useEffect(() => {
-        if (setSelectedFileContent) {
+        if (selectedFileContent) {
             hljs.highlightAll();
         }
-    }, [setSelectedFileContent]);
+    }, [selectedFileContent]);
+
+    useEffect(() => {
+        if (reviewContent !== '') {
+            navigate('/cr', { state: { reviewContent: reviewContent } });
+        }
+        console.log(reviewContent);
+    }, [reviewContent, navigate]);
 
     const handleSubmit = async () => {
+        setIsLoading(true); // Start loading
         const fetchData = async (description, language) => {
             try {
                 if (!selectedFileContent) {
@@ -63,20 +72,13 @@ export default function CodePreview() {
                 setReviewContent(response.data);
             } catch (error) {
                 console.error("Error fetching review:", error);
+            } finally {
+                setIsLoading(false); // Stop loading
             }
         };
         fetchData(description, language).then(r =>
             console.log(r)
         ); // Call fetchData with description and language
-
-        console.log(reviewContent);
-
-        if (reviewContent !== '') {
-            navigate('/cr', { state: { reviewContent : reviewContent } });
-        } else {
-            // Handle the case when description or language is missing
-            console.error("Description or language is missing");
-        }
     };
 
     function addLineNumbersToCode(code) {
@@ -130,12 +132,22 @@ export default function CodePreview() {
                                         <GoCodeReview className="mr-2"/>Review
                                     </Button>
                                 </div>
-                                {selectedFileContent ? (
-                                    <pre className="line-numbers">
-                                        {addLineNumbersToCode(selectedFileContent)}
-                                    </pre>
+                                {isLoading ? (
+                                    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 z-50">
+                                        <div className="bg-white p-5 rounded-lg">
+                                            <Flex alignItems="center" justifyContent="center">
+                                                <div><CircularProgress isIndeterminate color='blue.300'/></div>
+                                            </Flex>
+                                        </div>
+                                    </div>
                                 ) : (
-                                    <div>No file or code selected</div>
+                                    selectedFileContent ? (
+                                        <pre className="line-numbers">
+                                            {addLineNumbersToCode(selectedFileContent)}
+                                        </pre>
+                                    ) : (
+                                        <div>No file or code selected</div>
+                                    )
                                 )}
                             </TabPanel>
                             <TabPanel>

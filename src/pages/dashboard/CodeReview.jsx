@@ -1,4 +1,4 @@
-import { Button, Flex, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import {Button, Flex, Tab, TabList, TabPanel, TabPanels, Tabs, Text} from "@chakra-ui/react";
 import CodeReviewPageHeading from "../../components/dashboard/CodeReviewPageHeading.jsx";
 import { RxDividerVertical } from "react-icons/rx";
 import { IoMdDownload } from "react-icons/io";
@@ -18,26 +18,6 @@ export default function CodeReview() {
     const { state } = location;
     let { reviewContent } = state || {};
     console.log(reviewContent)
-    // console.log(description);
-    // console.log(language);
-
-    // useEffect(() => {
-    //     const fetchData = async (description, language) => {
-    //         try {
-    //             if (!selectedFileContent) {
-    //                 throw new Error("Selected file content is empty.");
-    //             }
-    //
-    //             const response = await axios.post("http://localhost:8000/get_code", { code: selectedFileContent, language:language , description:description });
-    //             setReviewContent(response.data);
-    //         } catch (error) {
-    //             console.error("Error fetching review:", error);
-    //         }
-    //     };
-    //     fetchData(description, language).then(r =>
-    //         console.log(r)
-    //     ); // Call fetchData with description and language
-    // }, []);
 
     const handleDownloadPdf = async () => {
         try {
@@ -141,9 +121,7 @@ export default function CodeReview() {
                                         {reviewContent ? (
                                             <pre>{reviewContent}</pre>
                                         ) : (
-                                            <Flex alignItems="center" justifyContent="center" className="mt-20">
-                                                <div><CircularProgress isIndeterminate color='blue.300'/></div>
-                                            </Flex>
+                                            <Text>There is a error </Text>
                                         )}
                                     </div>
                                 </div>
