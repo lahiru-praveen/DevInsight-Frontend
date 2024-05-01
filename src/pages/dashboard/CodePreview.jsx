@@ -13,6 +13,7 @@ export default function CodePreview() {
     const { selectedFileContent, setSelectedFileContent } = useCode();
     const [selectedFileName, setSelectedFileName] = useState('');
     const [selectedLine, setSelectedLine] = useState(null);
+    const [reviewContent, setReviewContent] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
     const { state } = location;
@@ -52,8 +53,26 @@ export default function CodePreview() {
     }, [setSelectedFileContent]);
 
     const handleSubmit = async () => {
-        if (description || language) {
-            navigate('/cr', { state: { description: description, language: language } });
+        const fetchData = async (description, language) => {
+            try {
+                if (!selectedFileContent) {
+                    console.error("Selected file content is empty.");
+                }
+
+                const response = await axios.post("http://localhost:8000/get_code", { code: selectedFileContent, language:language , description:description });
+                setReviewContent(response.data);
+            } catch (error) {
+                console.error("Error fetching review:", error);
+            }
+        };
+        fetchData(description, language).then(r =>
+            console.log(r)
+        ); // Call fetchData with description and language
+
+        console.log(reviewContent);
+
+        if (reviewContent !== '') {
+            navigate('/cr', { state: { reviewContent : reviewContent } });
         } else {
             // Handle the case when description or language is missing
             console.error("Description or language is missing");
