@@ -173,16 +173,94 @@ import { Select } from '@chakra-ui/react'
 import { Input, InputGroup, InputLeftElement, InputRightAddon} from '@chakra-ui/react';
 import { Search2Icon } from "@chakra-ui/icons";
 import { Button, ButtonGroup } from '@chakra-ui/react'
+import {
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    FormControl,
+    FormLabel,
+    useDisclosure
+  } from '@chakra-ui/react';
 import  pp  from '../../assets/pp.jpeg';
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+import emailjs from "@emailjs/browser"
 
 
 
 const MyComponent = () => {
     const [activeMembers, setActiveMembers] = useState([]);
+    const { isOpen: isOpen, onOpen: onOpen, onClose: onClose } = useDisclosure();
+    const [index, setIndex] = useState(null);
+    const [error, setError] = useState(null);
+    const [role, setRole] = useState("");
+    
+    
+    useEffect(() => emailjs.init("PS5ghhKYxM1wwF0sO"), []);
+    const handleAddInvite = async () => {
+        try {
+            // // Get the member whose role needs to be changed
+            const memberToUpdate = activeMembers[index];
+            
+            // // Make a PUT request to your backend API to update the role
+            // const response = await axios.put(`http://127.0.0.1:8001/active-members/${memberToUpdate.id}`, {
+            //     role: role // Assuming your API expects the role to be updated
+            // });
 
+            // Update the active members state with the updated role
+            setActiveMembers(prevMembers => {
+                const updatedMembers = [...prevMembers];
+                updatedMembers[index] = { ...memberToUpdate, role: role };
+                activeMembers[index] = updatedMembers[index];
+                return updatedMembers;
+            });
+
+            // Close the modal
+            onClose();
+        } catch (error) {
+            console.error('Error updating role:', error);
+            setError("Error resending invite. Please try again later.");
+            // Handle error if needed
+        }
+        try {
+            // Assuming there's an API endpoint for resending invites
+            
+            // Assuming the invite is updated with a new status or resent
+            // You may want to fetch the updated invite after resending
+            debugger
+            await emailjs.send("service_pst9db1", "template_ef1od5r", {
+
+              rolef: activeMembers[index].role,
+              
+              recipient: activeMembers[index].email
+            });
+            alert("Email successfully resent");
+          } catch (error) {
+            console.error("Error resending invite:", error);
+            setError("Error resending invite. Please try again later.");
+          }
+        
+    }  
+    // const handleSendEmail = async (index) => {
+    //     try {
+    //       // Assuming there's an API endpoint for resending invites
+          
+    //       // Assuming the invite is updated with a new status or resent
+    //       // You may want to fetch the updated invite after resending
+    //       await emailjs.send("service_pst9db1", "template_bq195h8", {
+    //         rolef: member[index].role,
+    //         recipient: member[index].email
+    //       });
+    //       alert("Email successfully resent");
+    //     } catch (error) {
+    //       console.error("Error resending invite:", error);
+    //       setError("Error resending invite. Please try again later.");
+    //     }
+    //   };
     useEffect(() => {
         const fetchActiveMembers = async () => {
           try {
@@ -196,11 +274,54 @@ const MyComponent = () => {
     
         fetchActiveMembers();
     }, []);
+    const onOpenModal = (index) => {
+        setIndex(index);
+        onOpen();
+      }
+
+      
+    
+    
+
 
     return (
+
+        
         <div className='px-20 py-5 '>
+            <Modal
+        // initialFocusRef={initialRef}
+        // finalFocusRef={finalRef}
+        isOpen={isOpen}
+        onClose={onClose}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Change Role</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <FormControl mt={4}>
+              <FormLabel>Role</FormLabel>
+              <Select
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                placeholder="Select role"
+              >
+                <option value="Quality assurance">Quality assurance</option>
+                <option value="Developer">Developer</option>
+              </Select>
+            </FormControl>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={handleAddInvite}>
+              Change
+            </Button>
+            <Button onClick={onClose}>Cancel</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
             <h1 className="py-5 text-xl leading-tight font-bold text-gray-500">
-                Staff
+                Active Members
             </h1>
             <div className='flex flex-row space-x-5 py-5'>
                 <div className='basis-1/4'>
@@ -237,8 +358,8 @@ const MyComponent = () => {
                                             {member.email}
                                         </p>
                                     </div>
-                                    <Button colorScheme='blue' size='xs'>
-                                        Edit Role
+                                    <Button onClick={() => onOpenModal(index)} colorScheme='blue' size='xs'>
+                                    {member.role}
                                     </Button>
                                 </div>
                             </li>
