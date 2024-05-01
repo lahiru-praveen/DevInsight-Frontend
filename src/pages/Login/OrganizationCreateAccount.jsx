@@ -51,6 +51,7 @@ export default function CreateOrg() {
                 rounded={'xl'}
                 p={6}
                 my={12}>
+
                 {/* Display an alert for account created */}
                 {showAccountCreatedAlert && (
                     <Alert status="success">
@@ -58,6 +59,7 @@ export default function CreateOrg() {
                         Account created successfully!
                     </Alert>
                 )}
+                
                 <center>
                     {' '}
                     <img src={logo} height={200} width={200} />
