@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import {Button, Tabs, TabList, TabPanels, Tab, TabPanel, Textarea, Text, Box,} from '@chakra-ui/react';
-import { AiOutlineFolderAdd, AiOutlineFileAdd, AiFillFileAdd } from "react-icons/ai";
 import { FaWindowClose } from "react-icons/fa";
 import LanguageSelectMenu from "../../components/dashboard/LanguageSelectMenu.jsx";
 import {useNavigate} from "react-router-dom";
@@ -8,6 +7,8 @@ import NavBar from "../../components/dashboard/NavBar.jsx";
 import axios from "axios";
 import {MdDriveFolderUpload} from "react-icons/md";
 import { FaFlagCheckered } from "react-icons/fa";
+import { IoCloudUpload } from "react-icons/io5";
+import {AiFillFileAdd} from "react-icons/ai";
 
 export default function DashboardMain() {
     const [values, setValues] = useState({
@@ -19,7 +20,7 @@ export default function DashboardMain() {
     const navigate = useNavigate();
     const [files, setFiles] = useState([]);
     const [submitEnabled, setSubmitEnabled] = useState(false);
-    const [selectedLanguage, setSelectedLanguage] = useState('');
+    const [selectedLanguage, setSelectedLanguage] = useState('not mentioned');
     const allowedExtensions = ['.txt', '.py','.java','.html','.php','.rb','.cs','.cpp','.css','.go','.rs','.swift','.js'];
 
     const handleLanguageChange = (language) => {
@@ -45,7 +46,7 @@ export default function DashboardMain() {
                     // File extension is allowed
                     droppedFiles.push(file);
                 } else {
-                    window.alert("File - "+ file.name + "\nInvalid file extension: "+ extension)
+                    window.alert("\u26A0 \t" + " UPLOAD ERROR\n\n" + "Sorry, this extension is not allowed.\n" + "File - " + file.name + "\n" + "Invalid file extension - " + extension);
                 }
             }
         }
@@ -79,9 +80,8 @@ export default function DashboardMain() {
             if(allowedExtensions.includes('.' + extension)){
                 return allowedExtensions.includes('.' + extension);
             } else {
-                window.alert("File - "+ file.name + "\nInvalid file extension - "+ extension)
+                window.alert("\u26A0 \t" + " UPLOAD ERROR\n\n" + "Sorry, this extension is not allowed.\n" + "File - " + file.name + "\n" + "Invalid file extension - " + extension);
             }
-
         });
 
         // Add filtered files to the files state
@@ -95,16 +95,14 @@ export default function DashboardMain() {
     };
 
     const handleClearFiles = () => {
-        const confirmed = window.confirm("Are you sure you want to clear all selected files?");
+        const confirmed = window.confirm("\u26A0 \t" + " CONTENT DELETION\n\n"+"Are you sure you want to clear all selected files?");
         if (confirmed) {
             setFiles([]);
+            // Clear the value of the file input field
+            document.getElementById('fileInput').value = '';
         }
     };
 
-    // Function to handle language change
-    // const handleLanguageChange = (language) => {
-    //     setSelectedLanguage(language);
-    // };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -112,36 +110,37 @@ export default function DashboardMain() {
 
         try {
             const endpoint = "http://localhost:8000/uploadfile/";
+
             // Handle file uploads
             if (files.length > 0) {
                 // Append files to FormData
                 files.forEach(file => {
                     formData.append('file_uploads', file);
                 });
+
                 const file_response = await fetch(endpoint, {
                     method: "POST",
                     body: formData // Pass formData to the fetch request
                 });
+
                 if (file_response.ok) {
                     setFiles([]);
                     setValues({
-                        value0: '',
+                        // value0: '',
                         value1: '',
                         value2: ''
                     });
                     setSubmitEnabled(false);
-
-                    navigate("/cp", {state : {code: "No Code", mode: 2}});
-
+                    navigate("/cp", {state : {code: "No Code", mode: 2 , description: values.value0, language: ""}});
                     console.log("File uploaded successfully!");
                 }
             }
 
             // Handle code submission
             if (values.value2.trim() !== '') {
-                    console.log("Code uploaded successfully!");
-                    navigate('/cp', { state: { code: values.value2, mode: 1 } });
-                    setSubmitEnabled(false);
+                console.log("Code uploaded successfully!");
+                navigate('/cp', {state: {code: values.value2, mode: 1, description: values.value1, language: selectedLanguage}});
+                setSubmitEnabled(false);
             }
 
         } catch (error) {
@@ -163,14 +162,14 @@ export default function DashboardMain() {
                     .then(res => {
                         console.log(res.data);
                         if (res.data === 1) {
-                            alert("Language matches");
+                            alert("\u2714 \t " + "Language matches");
                         } else {
-                            alert("Language does not match");
+                            alert("\u26A0 \t" + " INSERTED INFORMATION ERROR\n\n" +"Language does not match");
                         }
                     })
                     .catch(error => console.error(error));
             } else {
-                alert("Please select a language and enter code before checking.");
+                alert("\u26A0 \t" + " INSERTED INFORMATION ERROR\n\n" + "Please select a language and enter code before checking.");
             }
         } catch (error) {
             console.log("An error occurred:", error);
@@ -215,13 +214,14 @@ export default function DashboardMain() {
                                     <div className="flex flex-col">
                                         <Textarea bgColor={'#EBEBEB'} color={'#646464'} fontSize="18px" placeholder='Enter Key words about your code' value={values.value0} onChange={(event) => handleChange(event, 'value0')} style={{ height: calculateHeight(values.value0) }} />
                                         <Text className="font-bold mt-2" fontSize='18px'>
-                                            Upload the source file or Project folder
+                                            Upload The Source File or Project Files
                                         </Text>
                                         <div>
-                                            <Box onDrop={handleDrop} onDragOver={handleDragOver} mt={4} p={4} borderWidth="1px" borderRadius="md" bgColor={'#EBEBEB'} color={'#646464'} fontSize="18px" className="min-h-[30rem]" overflow='hidden'>
+                                            <Box onDrop={handleDrop} onDragOver={handleDragOver} borderStyle="dashed" mt={4} p={5} borderColor="gray.300" borderWidth="5px" borderRadius="md" bgColor={'#EBEBEB'} color={'#646464'} fontSize="18px" className="min-h-[30rem]" overflow='hidden' position="relative">
+                                                {/*<Box position="absolute" top="10px" left="10px" right="10px" bottom="10px" borderWidth="5px" borderStyle="dashed" borderRadius="md" borderColor="gray.300"></Box>*/}
                                                 <div>
                                                     <label htmlFor="fileInput">
-                                                        <AiFillFileAdd className="size-10 p-2 bg-white"/>
+                                                        Choose File<AiFillFileAdd className="size-10 p-2 bg-white"/>
                                                     </label>
                                                     <input id="fileInput" type="file" style={{ display: 'none' }} onChange={handleFileInputChange} multiple />
                                                     {files.length === 0 && (
@@ -247,11 +247,10 @@ export default function DashboardMain() {
                                                 ) : (
                                                     <div className="flex flex-col items-center justify-center h-[45vh]">
                                                         <div className="flex-row flex">
-                                                            <AiOutlineFolderAdd className="size-10" />
-                                                            <AiOutlineFileAdd className="size-10" />
+                                                            <IoCloudUpload className="size-20" />
                                                         </div>
                                                         <div>
-                                                            <Text className="font-bold">You can drag and drop files here to add them.</Text>
+                                                            <Text className="font-bold">Drop Files here</Text>
                                                         </div>
                                                     </div>
                                                 )}
@@ -268,7 +267,7 @@ export default function DashboardMain() {
                                         <LanguageSelectMenu onLanguageChange={handleLanguageChange}/>
                                         <div className="flex-grow relative">
                                             <div className="flex justify-end">
-                                                 <Button onClick={checkLanguage} border='2px' size="md" colorScheme='blue' className="w-44" type={"submit"}>
+                                                 <Button onClick={checkLanguage} border='2px' size="md" colorScheme='blue' className="w-44 mb-2" type={"submit"}>
                                                     <FaFlagCheckered className="mr-2" />Check
                                                 </Button>
                                             </div>
