@@ -200,7 +200,7 @@
 //     );
 // };
 
-import React, { useState, useEffect } from "react";
+import React, { useRef,useState, useEffect } from "react";
 import axios from "axios";
 import {
   Modal,
@@ -217,7 +217,8 @@ import {
 import { Select } from '@chakra-ui/react';
 import { Input, InputGroup, InputLeftElement, InputRightAddon} from '@chakra-ui/react';
 import { Search2Icon } from "@chakra-ui/icons";
-import { Button, ButtonGroup } from '@chakra-ui/react'
+import { Button, ButtonGroup } from '@chakra-ui/react';
+import emailjs from "@emailjs/browser"
 
 
 export const InviteTable = () => {
@@ -230,6 +231,9 @@ export const InviteTable = () => {
   const [index, setIndex] = useState(null);
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
+  const emailRef = useRef("");
+  const roleRef = useRef("");
+  const [loading, setLoading] = useState(false);
   
   
   useEffect(() => {
@@ -246,7 +250,25 @@ export const InviteTable = () => {
     fetchInviteTable();
   }, []);
 
-  const handleDelete = async () => {
+  useEffect(() => emailjs.init("PS5ghhKYxM1wwF0sO"), []);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const serviceId = "service_pst9db1";
+    const templateId = "template_bq195h8";
+    try {
+      debugger
+      await emailjs.send(serviceId, templateId, {
+        rolef: role,
+        recipient: email
+      });
+      alert("Email successfully sent");
+    } catch (error) {
+      console.error("Error sending email:", error);
+      alert("Error sending email. Please try again later.");
+    }
+  };
+  
+  const handleDelete = async () => {w
     try {
       // Assuming there's an API endpoint for deleting invites
       await axios.delete(`http://127.0.0.1:8001/invites/${invites[index].id}`);
@@ -265,6 +287,17 @@ export const InviteTable = () => {
   }
 
   const handleAddInvite = async () => {
+    // Set email for emailRef
+    // if (emailRef.current) {
+    //   emailRef.current.value = email;
+    //   console.log("Email value set:", emailRef.current.value);
+    // }
+    
+    // // Set role for nameRef
+    // if (roleRef.current) {
+    //   roleRef.current.value = role;
+    //   console.log("Role value set:", roleRef.current.value);
+    
     try {
       await axios.post("http://127.0.0.1:8001/add-invite", { email, role });
       onClose2();
@@ -281,9 +314,14 @@ export const InviteTable = () => {
   const handleResend = async (index) => {
     try {
       // Assuming there's an API endpoint for resending invites
-      await axios.post(`http://127.0.0.1:8001/invites/${invites[index].id}/resend`);
+      
       // Assuming the invite is updated with a new status or resent
       // You may want to fetch the updated invite after resending
+      await emailjs.send("service_pst9db1", "template_bq195h8", {
+        rolef: invites[index].role,
+        recipient: invites[index].email
+      });
+      alert("Email successfully resent");
     } catch (error) {
       console.error("Error resending invite:", error);
       setError("Error resending invite. Please try again later.");
@@ -354,6 +392,7 @@ export const InviteTable = () => {
             <Button colorScheme="blue" mr={3} onClick={handleAddInvite}>
               Send
             </Button>
+            <Button onClick={handleSubmit}>Send Email</Button>
             <Button onClick={onClose2}>Cancel</Button>
           </ModalFooter>
         </ModalContent>
@@ -386,14 +425,7 @@ export const InviteTable = () => {
       
       <div className="overflow-x-auto shadow-md sm:rounded-lg overflow-y-scroll h-64">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead>
-            <tr className="border-b dark:border-gray-700">
-              <th className="px-6 py-4">Email</th>
-              <th className="px-6 py-4">Role</th>
-              <th className="px-6 py-4">Device</th>
-              <th className="px-6 py-4">Actions</th> {/* Added Actions column */}
-            </tr>
-          </thead>
+          
           <tbody>
             {invites.map((invite, index) => (
               <tr
@@ -410,19 +442,20 @@ export const InviteTable = () => {
                 <td className="px-6 py-4">{invite.role}</td>
                 <td className="px-6 py-4">{invite.device}</td>
                 <td className="px-6 py-4">
-                  <button
+                <div className="flex justify-end space-x-2">
+                <button
                     onClick={() => onOpenModal(index)}
-                    // onClick={() => handleDelete(index)}
-                    className="mr-2 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                  >
+                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                >
                     Delete
-                  </button>
-                  <button
-                    onClick={() => handleResend(index)}
+                </button>
+                <button
+                    onClick={() => handleResend(index, invite.email, invite.role)}
                     className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                  >
+                >
                     Resend
-                  </button>
+                </button>
+                </div>
                 </td>
               </tr>
             ))}
