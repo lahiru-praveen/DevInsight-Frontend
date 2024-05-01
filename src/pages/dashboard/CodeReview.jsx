@@ -1,9 +1,9 @@
-import { Button, Flex, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import {Button, Flex, Tab, TabList, TabPanel, TabPanels, Tabs, Text} from "@chakra-ui/react";
 import CodeReviewPageHeading from "../../components/dashboard/CodeReviewPageHeading.jsx";
 import { RxDividerVertical } from "react-icons/rx";
 import { IoMdDownload } from "react-icons/io";
 import { BsFillQuestionSquareFill } from "react-icons/bs";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { CircularProgress } from '@chakra-ui/react'
 import { useCode } from '../../context/CodeContext.jsx';
@@ -11,32 +11,13 @@ import hljs from "highlight.js";
 import { useLocation } from "react-router-dom";
 
 export default function CodeReview() {
-    const [reviewContent, setReviewContent] = useState('');
+    // const [reviewContent, setReviewContent] = useState('');
     const { selectedFileContent } = useCode();
     const [selectedLine, setSelectedLine] = useState(null);
     const location = useLocation();
     const { state } = location;
-    let { description , language } = state || {};
-    console.log(description);
-    console.log(language);
-
-    useEffect(() => {
-        const fetchData = async (description, language) => {
-            try {
-                if (!selectedFileContent) {
-                    throw new Error("Selected file content is empty.");
-                }
-
-                const response = await axios.post("http://localhost:8000/get_code", { code: selectedFileContent, language:language , description:description });
-                setReviewContent(response.data);
-            } catch (error) {
-                console.error("Error fetching review:", error);
-            }
-        };
-        fetchData(description, language).then(r =>
-            console.log(r)
-        ); // Call fetchData with description and language
-    }, );
+    let { reviewContent } = state || {};
+    console.log(reviewContent)
 
     const handleDownloadPdf = async () => {
         try {
@@ -140,9 +121,7 @@ export default function CodeReview() {
                                         {reviewContent ? (
                                             <pre>{reviewContent}</pre>
                                         ) : (
-                                            <Flex alignItems="center" justifyContent="center" className="mt-20">
-                                                <div><CircularProgress isIndeterminate color='blue.300'/></div>
-                                            </Flex>
+                                            <Text>There is a error </Text>
                                         )}
                                     </div>
                                 </div>
