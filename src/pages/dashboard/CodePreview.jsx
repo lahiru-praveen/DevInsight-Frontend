@@ -1,118 +1,170 @@
-import { Tabs, TabList, TabPanels, Tab, TabPanel, Button } from '@chakra-ui/react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import hljs from 'highlight.js';
-import 'highlight.js/styles/atom-one-dark.css'; // Import the stylesheet for the syntax highlighting theme
+import 'highlight.js/styles/vs.css';
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Button, CircularProgress, Flex } from '@chakra-ui/react';
+import FileList from "../../components/dashboard/FileList.jsx";
+import CodePreviewPageHeading from "../../components/dashboard/CodePreviewPageHeading.jsx";
+import { useLocation, useNavigate } from "react-router-dom";
+import { GoCodeReview } from "react-icons/go";
+import { useCode } from '../../context/CodeContext.jsx';
 
 export default function CodePreview() {
-    // Initialize highlight.js
-    hljs.configure({ useBR: true }); // Configure highlight.js to recognize line breaks
+    const { selectedFileContent, setSelectedFileContent } = useCode();
+    const [selectedFileName, setSelectedFileName] = useState('');
+    const [selectedLine, setSelectedLine] = useState(null);
+    const [reviewContent, setReviewContent] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { state } = location;
+    let { code, mode, description, language } = state || {};
+    if (language === ""){
+        language = "Not given";
+    }
+    if (description === ""){
+        description = "Not given";
+    }
 
-    // Highlight the code snippet with automatic language detection
-    const codeSnippet = `import java.util.Scanner;
-        
-        public class Main {
-            public static void main(String[] args) {
-                Scanner scanner = new Scanner(System.in);
-                System.out.print("Enter the number of elements: ");
-                int n = scanner.nextInt();
-                
-                int[] arr = new int[n];
-                System.out.println("Enter the elements:");
-                for (int i = 0; i < n; i++) {
-                    arr[i] = scanner.nextInt();
-                }
-                
-                System.out.println("The elements entered are:");
-                for (int i = 0; i < n; i++) {
-                    System.out.print(arr[i] + " ");
-                }
-                System.out.println();
-                
-                int sum = 0;
-                for (int i = 0; i < n; i++) {
-                    sum += arr[i];
-                }
-                System.out.println("The sum of the elements is: " + sum);
-                
-                System.out.println("Printing a pattern:");
-                for (int i = 1; i <= n; i++) {
-                    for (int j = 1; j <= i; j++) {
-                        System.out.print(j + " ");
-                    }
-                    System.out.println();
-                }
-                
-                System.out.println("Calculating factorial:");
-                int factorial = 1;
-                for (int i = 1; i <= n; i++) {
-                    factorial *= i;
-                }
-                System.out.println("Factorial of " + n + " is: " + factorial);
-                
-                System.out.println("Checking for prime numbers:");
-                for (int i = 2; i <= n; i++) {
-                    boolean isPrime = true;
-                    for (int j = 2; j <= Math.sqrt(i); j++) {
-                        if (i % j == 0) {
-                            isPrime = false;
-                            break;
-                        }
-                    }
-                    if (isPrime) {
-                        System.out.print(i + " ");
-                    }
-                }
-                System.out.println();
-                
-                System.out.println("Printing Fibonacci series:");
-                int fib1 = 0, fib2 = 1;
-                for (int i = 0; i < n; i++) {
-                    System.out.print(fib1 + " ");
-                    int nextFib = fib1 + fib2;
-                    fib1 = fib2;
-                    fib2 = nextFib;
-                }
-                System.out.println();
+    useEffect(() => {
+        if (mode === 1 && code !== '') {
+            setSelectedFileContent(code);
+        }
+    }, [code, mode, setSelectedFileContent]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8000/files/${selectedFileName}`);
+                setSelectedFileContent(response.data);
+            } catch (error) {
+                console.error("Error fetching file content:", error);
             }
-        }`;
+        };
 
-    const highlightedCode = hljs.highlightAuto(codeSnippet).value;
+        if (selectedFileName !== '') {
+            fetchData();
+        }
+    }, [mode, selectedFileName, setSelectedFileContent]);
+
+    useEffect(() => {
+        if (selectedFileContent) {
+            hljs.highlightAll();
+        }
+    }, [selectedFileContent]);
+
+    useEffect(() => {
+        if (reviewContent !== '') {
+            navigate('/cr', { state: { reviewContent: reviewContent, selectedFileName: selectedFileName, mode: mode } });
+        }
+        console.log(reviewContent);
+    }, [reviewContent, navigate, selectedFileName, mode]);
+
+    const handleSubmit = async () => {
+        setIsLoading(true); // Start loading
+        console.log("Selected file name in CodePreview:", selectedFileName);
+        const fetchData = async (description, language) => {
+            try {
+                if (!selectedFileContent) {
+                    console.error("Selected file content is empty.");
+                }
+
+                const response = await axios.post("http://localhost:8000/get_code", { code: selectedFileContent, language:language , description:description });
+                setReviewContent(response.data);
+            } catch (error) {
+                console.error("Error fetching review:", error);
+            } finally {
+                setIsLoading(false); // Stop loading
+            }
+        };
+        fetchData(description, language).then(r =>
+            console.log(r)
+        ); // Call fetchData with description and language
+    };
+
+    function addLineNumbersToCode(code) {
+        const lines = code.split('\n');
+        const numberedCode = lines.map((line, index) => {
+            const isSelected = selectedLine === index;
+            const lineClass = isSelected ? 'bg-blue-100' : '';
+
+            return (
+                <div
+                    key={index}
+                    className={`flex ${lineClass}`}
+                    onClick={() => setSelectedLine(index)}
+                >
+                    <div className="w-6 text-left text-gray-500 pr-20 user-select-none">
+                        {index + 1}
+                    </div>
+                    <div dangerouslySetInnerHTML={{ __html: hljs.highlightAuto(line).value }} />
+                </div>
+            );
+        });
+
+        return (
+            <pre className="line-numbers">
+                {numberedCode}
+            </pre>
+        );
+    }
 
     return (
         <div className="flex flex-col h-screen">
-            <div className="bg-yellow-500">
-                <h1>Heading component</h1><br/>
+            <div>
+                <CodePreviewPageHeading/>
             </div>
 
-            <div className="flex flex-row h-auto">
-                <div className="w-1/6 bg-blue-600">
-                    <h1>Folder Navigation Bar component</h1>
+            <div className="flex flex-row flex-grow">
+                <div className="w-1/6 p-4 mt-3 ml-2 mr-2 bg-[#EBEBEB]">
+                    <FileList onSelectFile={(fileName) => setSelectedFileName(fileName)} selectedFileName='' mode={mode}/>
                 </div>
-
-                <div className="w-5/6 p-4 flex flex-col bg-[#EBEBEB] m-3 h-auto">
-                    <Tabs isFitted variant="enclosed">
-                        <TabList mb="1em">
-                            <Tab _selected={{ color: 'white', bg: 'blue.500' }}>Preview</Tab>
-                            <Tab isDisabled _selected={{ color: 'white', bg: 'blue.500' }}>Review</Tab>
+                <div className="w-5/6 p-4 mt-3 ml-2 mr-2 h-auto font-bold bg-[#EBEBEB] color-[#898989]">
+                    <Tabs position="relative" isFitted variant="enclosed">
+                        <TabList mb='1em'>
+                            <Tab>Preview</Tab>
+                            <Tab isDisabled>Review</Tab>
                         </TabList>
                         <TabPanels>
-                            <TabPanel>
-                                <div className="flex flex-row justify-end mb-3">
-                                    <Button border="2px" size="md" borderColor="blue.500" textColor="white"
-                                            className="w-[150px] !bg-blue-500">
-                                        Start Review
+                            <TabPanel className="flex flex-col">
+                                <div className="flex justify-end mb-2">
+                                    <Button colorScheme="blue" border='2px' size="lg" className="w-64"
+                                            onClick={handleSubmit} type={"submit"}>
+                                        <GoCodeReview className="mr-2"/>Review
                                     </Button>
                                 </div>
-                                <pre>
-                                    <code className="hljs" dangerouslySetInnerHTML={{__html: highlightedCode}}/>
-                                </pre>
+                                {isLoading ? (
+                                    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 z-50">
+                                        <div className="bg-white p-5 rounded-lg">
+                                            <Flex alignItems="center" justifyContent="center">
+                                                <div><CircularProgress isIndeterminate color='blue.300'/></div>
+                                            </Flex>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    selectedFileContent ? (
+                                        <pre className="line-numbers">
+                                            {addLineNumbersToCode(selectedFileContent)}
+                                        </pre>
+                                    ) : (
+                                        <div>No file or code selected</div>
+                                    )
+                                )}
                             </TabPanel>
                             <TabPanel>
-                                <p>two!</p>
+                                hello
                             </TabPanel>
                         </TabPanels>
                     </Tabs>
                 </div>
             </div>
+            <style>
+                {`
+                    .user-select-none {
+                        user-select: none;
+                    }
+                `}
+            </style>
         </div>
     );
 }

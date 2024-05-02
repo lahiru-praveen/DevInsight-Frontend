@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+
 import {
     Button,
     FormControl,
@@ -11,7 +14,7 @@ import {
     AlertIcon,
 } from '@chakra-ui/react';
 
-import logo from '../../assets/devsign.png';
+import logo from '../../assets/devsign.png'
 
 export default function SignIn() {
     const [email, setEmail] = useState('');
@@ -20,6 +23,7 @@ export default function SignIn() {
     const [showIncorrectPasswordAlert, setShowIncorrectPasswordAlert] = useState(false);
     const [showIncorrectUsernameAlert, setShowIncorrectUsernameAlert] = useState(false);
     const [showLoggingInAlert, setShowLoggingInAlert] = useState(false);
+    const [loginmessage,setLoginMessage] = useState('');
 
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
@@ -31,14 +35,32 @@ export default function SignIn() {
         setIsFilled(email !== '' && password !== '');
     };
 
-    const handleLogin = () => {
-        if (email === 'example@example.com' && password === 'password') {
-            // Perform login logic here
+    const handleLogin = async () => {
+        try {
             setShowLoggingInAlert(true);
-        } else {
-            setShowIncorrectPasswordAlert(true);
+            const response = await axios.post('http://localhost:8000/login', {
+                email,
+                password,
+            });
+            console.log(response.data);
+            setLoginMessage('Login successfully');
+            // Handle successful login (e.g., redirect user)    
+        } catch (error) {
+            setShowLoggingInAlert(false);
+            if (error.response && error.response.status === 401) {
+                setShowIncorrectPasswordAlert(true);
+                setLoginMessage('Incorrect password. Please try again.');
+            } else if (error.response && error.response.status === 404) {
+                setShowIncorrectPasswordAlert(true);
+                setLoginMessage('User not found. Please try again.');
+            } else {
+                setLoginMessage('An error occurred. Please try again later.');
+            }
+            console.error('Error logging in:', error);
         }
     };
+    
+    
 
     return (
         <>
@@ -54,19 +76,20 @@ export default function SignIn() {
                     rounded={'xl'}
                     p={6}
                     my={12}>
-                    {showIncorrectPasswordAlert && (
+                    {/* {showIncorrectPasswordAlert && (
                         <Alert status="error">
                             <AlertIcon />
                             Incorrect password. Please try again.
                         </Alert>
-                    )} 
+                    )}
 
                     {showIncorrectUsernameAlert && (
                         <Alert status="error">
                             <AlertIcon />
                             Incorrect Username or Email. Please try again.
                         </Alert>
-                    )}
+                    )} */}
+
                     {showLoggingInAlert && (
                         <Alert status="info">
                             <AlertIcon />
@@ -95,6 +118,7 @@ export default function SignIn() {
                             onChange={handlePasswordChange}
                         />
                     </FormControl>
+                    <Link to="/db">
                     <Stack spacing={6}>
                         <Button
                             bg={isFilled ? 'blue.500' : 'blue.200'}
@@ -103,14 +127,23 @@ export default function SignIn() {
                             LOGIN
                         </Button>
                     </Stack>
+
+                    <p>{loginmessage}</p>
+
+
+                    </Link>
                     <Text textAlign="center">
+                        <Link to="/su">
                         <Button variant="link" color="black">
                             Create a new account
                         </Button>{' '}
+                        </Link>
                         <br />{' '}
+                        <Link to="/fp">
                         <Button variant="link" as="span" color="black">
                             Forgot password
                         </Button>
+                        </Link>
                     </Text>
                 </Stack>
             </Flex>
