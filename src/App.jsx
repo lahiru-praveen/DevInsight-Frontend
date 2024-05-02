@@ -19,6 +19,7 @@ import Createorg2 from "./pages/CreateOrg/Createorg2.jsx";
 import ManageStaff from "./pages/ManageStaff/ManageStaff.jsx";
 import CodeReview from "./pages/dashboard/CodeReview.jsx";
 import ContactUs from "./pages/Profile/ContactUs.jsx";
+import CodeSubmissions from "./pages/dashboard/CodeSubmissions.jsx";
 
 
 export default function App() {
@@ -46,6 +47,7 @@ export default function App() {
                     <Route path="/ms" element={<ManageStaff/>}/>
                     <Route path="/cr" element={<CodeReview/>}/>
                     <Route path="/cu" element={<ContactUs/>}/>
+                    <Route path="/cs" element={<CodeSubmissions/>}/>
                 </Routes>
             </CodeProvider>
         </BrowserRouter>

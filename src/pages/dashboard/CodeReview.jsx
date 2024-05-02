@@ -9,6 +9,7 @@ import { CircularProgress } from '@chakra-ui/react'
 import { useCode } from '../../context/CodeContext.jsx';
 import hljs from "highlight.js";
 import { useLocation } from "react-router-dom";
+import FileList from "../../components/dashboard/FileList.jsx";
 
 export default function CodeReview() {
     // const [reviewContent, setReviewContent] = useState('');
@@ -16,8 +17,9 @@ export default function CodeReview() {
     const [selectedLine, setSelectedLine] = useState(null);
     const location = useLocation();
     const { state } = location;
-    let { reviewContent } = state || {};
+    let { reviewContent ,selectedFileName, mode} = state || {};
     console.log(reviewContent)
+    console.log("Selected file name in CodePreview:", selectedFileName);
 
     const handleDownloadPdf = async () => {
         try {
@@ -75,8 +77,9 @@ export default function CodeReview() {
 
             <div className="flex flex-row flex-grow">
                 <div className="w-1/6 p-4 mt-3 ml-2 mr-2 bg-[#EBEBEB]">
-                    Selected File List
+                    <FileList onSelectFile={() => {}} selectedFileName={selectedFileName} mode={mode}/>
                 </div>
+
                 <div className="w-5/6 p-4 mt-3 ml-2 mr-2 h-auto font-bold bg-[#EBEBEB] color-[#898989]">
                     <Tabs position="relative" isFitted variant="enclosed" defaultIndex={1}>
                         <TabList mb='1em'>
@@ -113,7 +116,8 @@ export default function CodeReview() {
                                             <BsFillQuestionSquareFill className="mr-1"/>Ask Help
                                         </Button>
                                         <RxDividerVertical className="mt-3"/>
-                                        <Button colorScheme="blue" border='2px' size="md" className="w-64" onClick={handleDownloadPdf}>
+                                        <Button colorScheme="blue" border='2px' size="md" className="w-64"
+                                                onClick={handleDownloadPdf}>
                                             <IoMdDownload className="mr-1"/> Download
                                         </Button>
                                     </div>

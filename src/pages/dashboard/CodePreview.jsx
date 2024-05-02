@@ -55,13 +55,14 @@ export default function CodePreview() {
 
     useEffect(() => {
         if (reviewContent !== '') {
-            navigate('/cr', { state: { reviewContent: reviewContent } });
+            navigate('/cr', { state: { reviewContent: reviewContent, selectedFileName: selectedFileName, mode: mode } });
         }
         console.log(reviewContent);
-    }, [reviewContent, navigate]);
+    }, [reviewContent, navigate, selectedFileName, mode]);
 
     const handleSubmit = async () => {
         setIsLoading(true); // Start loading
+        console.log("Selected file name in CodePreview:", selectedFileName);
         const fetchData = async (description, language) => {
             try {
                 if (!selectedFileContent) {
@@ -116,7 +117,7 @@ export default function CodePreview() {
 
             <div className="flex flex-row flex-grow">
                 <div className="w-1/6 p-4 mt-3 ml-2 mr-2 bg-[#EBEBEB]">
-                    <FileList onSelectFile={(fileName) => setSelectedFileName(fileName)}/>
+                    <FileList onSelectFile={(fileName) => setSelectedFileName(fileName)} selectedFileName='' mode={mode}/>
                 </div>
                 <div className="w-5/6 p-4 mt-3 ml-2 mr-2 h-auto font-bold bg-[#EBEBEB] color-[#898989]">
                     <Tabs position="relative" isFitted variant="enclosed">
