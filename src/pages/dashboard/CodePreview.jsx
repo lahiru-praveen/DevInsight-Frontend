@@ -18,13 +18,16 @@ export default function CodePreview() {
     const navigate = useNavigate();
     const location = useLocation();
     const { state } = location;
-    let { code, mode, description, language } = state || {};
+    let { code, mode, language, description } = state || {};
+    const mode_value = mode;
     if (language === ""){
         language = "Not given";
     }
     if (description === ""){
         description = "Not given";
     }
+    const language_value = language;
+    const description_value = description;
 
     useEffect(() => {
         if (mode === 1 && code !== '') {
@@ -43,7 +46,7 @@ export default function CodePreview() {
         };
 
         if (selectedFileName !== '') {
-            fetchData();
+            fetchData().then(r => console.log(r) );
         }
     }, [mode, selectedFileName, setSelectedFileContent]);
 
@@ -55,7 +58,7 @@ export default function CodePreview() {
 
     useEffect(() => {
         if (reviewContent !== '') {
-            navigate('/cr', { state: { reviewContent: reviewContent, selectedFileName: selectedFileName, mode: mode } });
+            navigate('/cr', { state: { reviewContent: reviewContent, selectedFileName: selectedFileName } });
         }
         console.log(reviewContent);
     }, [reviewContent, navigate, selectedFileName, mode]);
@@ -63,13 +66,13 @@ export default function CodePreview() {
     const handleSubmit = async () => {
         setIsLoading(true); // Start loading
         console.log("Selected file name in CodePreview:", selectedFileName);
-        const fetchData = async (description, language) => {
+        const fetchData = async () => {
             try {
+
                 if (!selectedFileContent) {
                     console.error("Selected file content is empty.");
                 }
-
-                const response = await axios.post("http://localhost:8000/get_code", { code: selectedFileContent, language:language , description:description });
+                const response = await axios.post("http://localhost:8000/get_code", { p_id:"1" , p_name:"Project Name", language:language_value , description:description_value , code: selectedFileContent , mode:mode_value });
                 setReviewContent(response.data);
             } catch (error) {
                 console.error("Error fetching review:", error);
