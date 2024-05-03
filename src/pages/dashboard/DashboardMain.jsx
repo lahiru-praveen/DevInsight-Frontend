@@ -9,6 +9,7 @@ import {MdDriveFolderUpload} from "react-icons/md";
 import { FaFlagCheckered } from "react-icons/fa";
 import { IoCloudUpload } from "react-icons/io5";
 import {AiFillFileAdd} from "react-icons/ai";
+import SubmissionNav from "../../components/dashboard/SubmissionNav.jsx";
 
 export default function DashboardMain() {
     const [values, setValues] = useState({
@@ -193,7 +194,7 @@ export default function DashboardMain() {
 
             <div className="flex flex-row ">
                 <div className="w-1/6 bg-[#EBEBEB] mt-4 ml-2 ">
-                    <h1>Previous Submission Select List</h1>
+                    <SubmissionNav/>
                 </div>
 
                 <form onSubmit={handleSubmit} className="w-5/6 p-4 flex flex-col">

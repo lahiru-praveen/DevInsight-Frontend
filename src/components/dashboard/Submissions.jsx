@@ -5,7 +5,7 @@ import {FaCode} from "react-icons/fa";
 import {CiFileOn} from "react-icons/ci";
 
 export default function Submissions({ submission }) {
-    const { p_id, submission_date, language, description, code, mode } = submission;
+    const { p_id, p_name, submission_date, language, description, code, mode } = submission;
     console.log(language);
     console.log(code);
     console.log(description);
@@ -22,6 +22,9 @@ export default function Submissions({ submission }) {
                 </CardHeader>
                 <CardHeader className="mr-4 w-[150px]">
                     <Text className="font-bold" fontSize="14px">{p_id}</Text>
+                </CardHeader>
+                <CardHeader className="mr-4 w-[150px]">
+                    <Text className="font-bold" fontSize="14px">{p_name}</Text>
                 </CardHeader>
                 <CardHeader className="mr-4 w-[300px]">
                     <Text className="font-bold" fontSize="14px">{submission_date}</Text>
@@ -43,6 +46,7 @@ export default function Submissions({ submission }) {
 Submissions.propTypes = {
     submission: PropTypes.shape({
         p_id: PropTypes.string.isRequired, // Update the prop type for p_id
+        p_name: PropTypes.string.isRequired,
         submission_date: PropTypes.string.isRequired,
         language: PropTypes.string.isRequired,
         description: PropTypes.string.isRequired,

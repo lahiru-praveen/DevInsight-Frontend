@@ -72,7 +72,7 @@ export default function CodePreview() {
                 if (!selectedFileContent) {
                     console.error("Selected file content is empty.");
                 }
-                const response = await axios.post("http://localhost:8000/get_code", { p_id:"1" , language:language_value , description:description_value , code: selectedFileContent , mode:mode_value });
+                const response = await axios.post("http://localhost:8000/get_code", { p_id:"1" , p_name:"Project Name", language:language_value , description:description_value , code: selectedFileContent , mode:mode_value });
                 setReviewContent(response.data);
             } catch (error) {
                 console.error("Error fetching review:", error);
