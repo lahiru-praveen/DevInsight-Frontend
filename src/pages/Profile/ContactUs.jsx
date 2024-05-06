@@ -17,10 +17,10 @@ const ContactUs = () => {
 
     // Send email
     emailjs.send('service_ze83lzg', 'template_0er8c5m', {
-      name: name,
-      email: email,
-      subject: subject,
-      message: message
+      c_name: name,
+      c_email: email,
+      c_subject: subject,
+      c_message: message
     }, 'pi_OZJS01t_taFQHw')
       .then((response) => {
         console.log('Email sent:', response);
@@ -91,7 +91,7 @@ const ContactUs = () => {
         </div>
           </div>
 
-          {isSuccess && (
+          {/* {isSuccess && (
         <Alert
           status='success'
           variant='subtle'
@@ -109,7 +109,7 @@ const ContactUs = () => {
             Thanks for submitting your application. Our team will get back to you soon.
           </AlertDescription>
         </Alert>
-      )}
+      )} */}
         </section>
       );
 };

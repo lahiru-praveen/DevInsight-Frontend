@@ -44,7 +44,14 @@ export default function SignIn() {
             });
             console.log(response.data);
             setLoginMessage('Login successfully');
-            // Handle successful login (e.g., redirect user)    
+            
+            // Redirect to landing page after successful form submission
+                    // if (redirect) {
+                    //     return <Redirect to="/DashboardMain" />;
+                    // }   
+
+
+                    
         } catch (error) {
             setShowLoggingInAlert(false);
             if (error.response && error.response.status === 401) {
@@ -76,6 +83,7 @@ export default function SignIn() {
                     rounded={'xl'}
                     p={6}
                     my={12}>
+
                     {/* {showIncorrectPasswordAlert && (
                         <Alert status="error">
                             <AlertIcon />
