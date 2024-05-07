@@ -16,7 +16,7 @@ export default function Submissions({ submission }) {
 
     return (
         <Card>
-            <Flex flexDirection="row">
+            <Flex flexDirection="row" className="bg-[#EBEBEB] mb-2 mt-1">
                 <CardHeader className="mr-4 w-[100px]">
                     {icon} {/* Render the icon */}
                 </CardHeader>
