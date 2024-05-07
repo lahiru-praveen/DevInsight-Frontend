@@ -188,7 +188,7 @@ export default function DashboardMain() {
 
     return (
         <div className="flex flex-col h-screen">
-            <div className=" bg-yellow-500">
+            <div>
                 <NavBar/>
             </div>
 
