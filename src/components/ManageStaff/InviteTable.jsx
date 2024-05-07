@@ -268,7 +268,7 @@ export const InviteTable = () => {
     }
   };
   
-  const handleDelete = async () => {w
+  const handleDelete = async () => {
     try {
       // Assuming there's an API endpoint for deleting invites
       await axios.delete(`http://127.0.0.1:8001/invites/${invites[index].id}`);
@@ -301,6 +301,7 @@ export const InviteTable = () => {
     try {
       await axios.post("http://127.0.0.1:8001/add-invite", { email, role });
       onClose2();
+      
       
     
     // Then fetch the updated invite data
@@ -339,17 +340,17 @@ export const InviteTable = () => {
   <Modal isOpen={isOpen1} onClose={onClose1}>
     <ModalOverlay />
     <ModalContent>
-      <ModalHeader>Modal Title</ModalHeader>
+      <ModalHeader>Delete Invitation</ModalHeader>
       <ModalCloseButton />
       <ModalBody>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis molestias facere eum eaque modi? Earum nesciunt, labore eius dignissimos, facere error assumenda perferendis molestias, magni voluptatum consectetur nam doloremque veniam?
+        Do you realy want to delete the Invitation?
       </ModalBody>
 
       <ModalFooter>
         <Button colorScheme='blue' mr={3} onClick={() => handleDelete()}>
-          Close
+          Yes
         </Button>
-        <Button variant='ghost'>Secondary Action</Button>
+        <Button variant='ghost' onClick={onClose1}>Close</Button>
       </ModalFooter>
     </ModalContent>
   </Modal>
