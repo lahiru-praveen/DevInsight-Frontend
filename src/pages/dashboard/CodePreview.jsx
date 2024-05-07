@@ -18,13 +18,16 @@ export default function CodePreview() {
     const navigate = useNavigate();
     const location = useLocation();
     const { state } = location;
-    let { code, mode, description, language } = state || {};
+    let { code, mode, language, description } = state || {};
+    const mode_value = mode;
     if (language === ""){
         language = "Not given";
     }
     if (description === ""){
         description = "Not given";
     }
+    const language_value = language;
+    const description_value = description;
 
     useEffect(() => {
         if (mode === 1 && code !== '') {
@@ -43,7 +46,7 @@ export default function CodePreview() {
         };
 
         if (selectedFileName !== '') {
-            fetchData();
+            fetchData().then(r => console.log(r) );
         }
     }, [mode, selectedFileName, setSelectedFileContent]);
 
@@ -55,20 +58,21 @@ export default function CodePreview() {
 
     useEffect(() => {
         if (reviewContent !== '') {
-            navigate('/cr', { state: { reviewContent: reviewContent } });
+            navigate('/cr', { state: { reviewContent: reviewContent, selectedFileName: selectedFileName } });
         }
         console.log(reviewContent);
-    }, [reviewContent, navigate]);
+    }, [reviewContent, navigate, selectedFileName, mode]);
 
     const handleSubmit = async () => {
         setIsLoading(true); // Start loading
-        const fetchData = async (description, language) => {
+        console.log("Selected file name in CodePreview:", selectedFileName);
+        const fetchData = async () => {
             try {
+
                 if (!selectedFileContent) {
                     console.error("Selected file content is empty.");
                 }
-
-                const response = await axios.post("http://localhost:8000/get_code", { code: selectedFileContent, language:language , description:description });
+                const response = await axios.post("http://localhost:8000/get_code", { p_id:"1" , p_name:"Project Name", language:language_value , description:description_value , code: selectedFileContent , mode:mode_value });
                 setReviewContent(response.data);
             } catch (error) {
                 console.error("Error fetching review:", error);
@@ -116,7 +120,7 @@ export default function CodePreview() {
 
             <div className="flex flex-row flex-grow">
                 <div className="w-1/6 p-4 mt-3 ml-2 mr-2 bg-[#EBEBEB]">
-                    <FileList onSelectFile={(fileName) => setSelectedFileName(fileName)}/>
+                    <FileList onSelectFile={(fileName) => setSelectedFileName(fileName)} selectedFileName='' mode={mode}/>
                 </div>
                 <div className="w-5/6 p-4 mt-3 ml-2 mr-2 h-auto font-bold bg-[#EBEBEB] color-[#898989]">
                     <Tabs position="relative" isFitted variant="enclosed">

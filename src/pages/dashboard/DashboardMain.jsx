@@ -9,6 +9,7 @@ import {MdDriveFolderUpload} from "react-icons/md";
 import { FaFlagCheckered } from "react-icons/fa";
 import { IoCloudUpload } from "react-icons/io5";
 import {AiFillFileAdd} from "react-icons/ai";
+import SubmissionNav from "../../components/dashboard/SubmissionNav.jsx";
 
 export default function DashboardMain() {
     const [values, setValues] = useState({
@@ -109,7 +110,7 @@ export default function DashboardMain() {
         const formData = new FormData(); // Initialize FormData here
 
         try {
-            const endpoint = "http://localhost:8000/uploadfile/";
+            const endpoint = "http://localhost:8000/upload-file/";
 
             // Handle file uploads
             if (files.length > 0) {
@@ -131,7 +132,7 @@ export default function DashboardMain() {
                         value2: ''
                     });
                     setSubmitEnabled(false);
-                    navigate("/cp", {state : {code: "No Code", mode: 2 , description: values.value0, language: ""}});
+                    navigate("/cp", {state : {code: "No Code", mode: 2 , language: "", description: values.value0}});
                     console.log("File uploaded successfully!");
                 }
             }
@@ -139,7 +140,7 @@ export default function DashboardMain() {
             // Handle code submission
             if (values.value2.trim() !== '') {
                 console.log("Code uploaded successfully!");
-                navigate('/cp', {state: {code: values.value2, mode: 1, description: values.value1, language: selectedLanguage}});
+                navigate('/cp', {state: {code: values.value2, mode: 1, language: selectedLanguage, description: values.value1}});
                 setSubmitEnabled(false);
             }
 
@@ -193,7 +194,7 @@ export default function DashboardMain() {
 
             <div className="flex flex-row ">
                 <div className="w-1/6 bg-[#EBEBEB] mt-4 ml-2 ">
-                    <h1>Previous Submission Select List</h1>
+                    <SubmissionNav/>
                 </div>
 
                 <form onSubmit={handleSubmit} className="w-5/6 p-4 flex flex-col">
