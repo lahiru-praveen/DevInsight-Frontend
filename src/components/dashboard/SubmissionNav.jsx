@@ -25,7 +25,7 @@ export default function SubmissionNav() {
     }, []);
 
     return (
-        <div className="flex flex-col h-screen bg-[#EBEBEB] mt-4 ml-2">
+        <div className="flex flex-col bg-[#EBEBEB] mt-4 ml-2">
             <div className="mt-4 ml-2 mr-2">
                 <h1 className="text-xl font-bold mb-4">Previous Submission List</h1>
                 <Flex alignItems="center" p={2} borderBottom="1px solid #ccc">

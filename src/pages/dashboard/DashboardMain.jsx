@@ -23,6 +23,7 @@ export default function DashboardMain() {
     const [submitEnabled, setSubmitEnabled] = useState(false);
     const [selectedLanguage, setSelectedLanguage] = useState('not mentioned');
     const allowedExtensions = ['.txt', '.py','.java','.html','.php','.rb','.cs','.cpp','.css','.go','.rs','.swift','.js'];
+    const WORD_LIMIT = 150;
 
     const handleLanguageChange = (language) => {
         setSelectedLanguage(language);
@@ -65,6 +66,27 @@ export default function DashboardMain() {
             ...values,
             [identifier]: event.target.value
         });
+    };
+
+    const handleTextAreaChange = (event, identifier) => {
+        // Check word limit
+        const text = event.target.value;
+        const words = text.split(/\s+/);
+        if (words.length <= WORD_LIMIT) {
+            setValues({
+                ...values,
+                [identifier]: text
+            });
+        } else {
+            // If word limit is exceeded, truncate the input
+            const truncatedText = words.slice(0, WORD_LIMIT).join(' ');
+            setValues({
+                ...values,
+                [identifier]: truncatedText
+            });
+            // Alert the user about the word limit
+            alert(`Maximum ${WORD_LIMIT} words allowed.`);
+        }
     };
 
     const calculateHeight = (text) => {
@@ -187,18 +209,18 @@ export default function DashboardMain() {
     }, [files, values.value2]);
 
     return (
-        <div className="flex flex-col h-screen">
+        <div className="flex flex-col h-screen ">
             <div>
                 <NavBar/>
             </div>
 
-            <div className="flex flex-row ">
-                <div className="w-1/6 bg-[#EBEBEB] mt-4 ml-2 ">
+            <div className="flex flex-row  flex-grow">
+                <div className="w-1/6 h-full bg-[#EBEBEB] ml-2 flex-grow">
                     <SubmissionNav/>
                 </div>
 
                 <form onSubmit={handleSubmit} className="w-5/6 p-4 flex flex-col">
-                    <div className="flex justify-end mb-4">
+                <div className="flex justify-end mb-4">
                         <Button isDisabled={!submitEnabled} border='2px' size="lg" colorScheme='blue' className="w-64" type={"submit"}>
                             <MdDriveFolderUpload className="mr-2" />Submit
                         </Button>
@@ -213,42 +235,62 @@ export default function DashboardMain() {
                             <TabPanels>
                                 <TabPanel>
                                     <div className="flex flex-col">
-                                        <Textarea bgColor={'#EBEBEB'} color={'#646464'} fontSize="18px" placeholder='Enter Key words about your code' value={values.value0} onChange={(event) => handleChange(event, 'value0')} style={{ height: calculateHeight(values.value0) }} />
+                                        <Textarea bgColor={'#EBEBEB'} color={'#646464'} fontSize="18px"
+                                                  placeholder='Enter Key words about your code' value={values.value0}
+                                                  onChange={(event) => handleTextAreaChange(event, 'value0')}
+                                                  style={{minHeight: `${6 * 20}px`,height: calculateHeight(values.value0)}}/>
+                                        <div className="flex justify-between mt-2">
+                                            <Text fontSize="14px"
+                                                  color={values.value0.split(/\s+/).length >= WORD_LIMIT ? 'red' : 'inherit'}>
+                                                {values.value0.split(/\s+/).length}/{WORD_LIMIT} words
+                                            </Text>
+                                            {values.value0.split(/\s+/).length >= WORD_LIMIT &&
+                                                <span className="text-red-500">Maximum words limit reached!</span>}
+                                        </div>
+
                                         <Text className="font-bold mt-2" fontSize='18px'>
                                             Upload The Source File or Project Files
                                         </Text>
-                                        <div>
-                                            <Box onDrop={handleDrop} onDragOver={handleDragOver} borderStyle="dashed" mt={4} p={5} borderColor="gray.300" borderWidth="5px" borderRadius="md" bgColor={'#EBEBEB'} color={'#646464'} fontSize="18px" className="min-h-[30rem]" overflow='hidden' position="relative">
-                                                {/*<Box position="absolute" top="10px" left="10px" right="10px" bottom="10px" borderWidth="5px" borderStyle="dashed" borderRadius="md" borderColor="gray.300"></Box>*/}
+                                        <div className= "flex-grow">
+                                            <Box onDrop={handleDrop} onDragOver={handleDragOver} borderStyle="dashed"
+                                                 mt={4} p={5} borderColor="gray.300" borderWidth="5px" borderRadius="md"
+                                                 bgColor={'#EBEBEB'} color={'#646464'} fontSize="18px"
+                                                 className="flex-grow"
+                                                 style={{ minHeight: "45vh" }} overflow='hidden' position="relative">
                                                 <div>
                                                     <label htmlFor="fileInput">
                                                         Choose File<AiFillFileAdd className="size-10 p-2 bg-white"/>
                                                     </label>
-                                                    <input id="fileInput" type="file" style={{ display: 'none' }} onChange={handleFileInputChange} multiple />
+                                                    <input id="fileInput" type="file" style={{display: 'none'}}
+                                                           onChange={handleFileInputChange} multiple/>
                                                     {files.length === 0 && (
-                                                        <div className="text-red-300 font-bold">No File Has Chosen:</div>
+                                                        <div className="text-red-300 font-bold">No File Has
+                                                            Chosen:</div>
                                                     )}
                                                 </div>
                                                 {files.length > 0 ? (
                                                     <div>
                                                         <div className="text-red-300 font-bold">Files Chosen:
-                                                            <Button size="sm" onClick={handleClearFiles} borderColor='blue.500' textColor='blue.500' className="border-2 ml-3" bgColor="'#EBEBEB'">
+                                                            <Button size="sm" onClick={handleClearFiles}
+                                                                    borderColor='blue.500' textColor='blue.500'
+                                                                    className="border-2 ml-3" bgColor="'#EBEBEB'">
                                                                 Cancel
                                                             </Button>
                                                         </div>
                                                         <ul>
                                                             {files.map((file, index) => (
                                                                 <li className="flex" key={index}>
-                                                                    <div className="pt-1"><FaWindowClose onClick={() => handleFileRemove(index)} /></div>
+                                                                    <div className="pt-1"><FaWindowClose
+                                                                        onClick={() => handleFileRemove(index)}/></div>
                                                                     <div className="pl-4 text-red-400">{file.name}</div>
                                                                 </li>
                                                             ))}
                                                         </ul>
                                                     </div>
                                                 ) : (
-                                                    <div className="flex flex-col items-center justify-center h-[45vh]">
+                                                    <div className="flex flex-col items-center justify-center">
                                                         <div className="flex-row flex">
-                                                            <IoCloudUpload className="size-20" />
+                                                            <IoCloudUpload className="size-20"/>
                                                         </div>
                                                         <div>
                                                             <Text className="font-bold">Drop Files here</Text>
@@ -261,18 +303,41 @@ export default function DashboardMain() {
                                 </TabPanel>
                                 <TabPanel>
                                     <div className="flex flex-col h-full">
-                                        <Textarea bgColor={'#EBEBEB'} color={'#646464'} height="auto" fontSize="18px" placeholder='Enter Key words about your code' value={values.value1} onChange={(event) => handleChange(event, 'value1')} style={{ height: calculateHeight(values.value1) }} />
+                                        <Textarea bgColor={'#EBEBEB'} color={'#646464'} height="auto" fontSize="18px"
+                                                  placeholder='Enter Key words about your code' value={values.value1}
+                                                  onChange={(event) => handleTextAreaChange(event, 'value1')}
+                                                  style={{
+                                                      minHeight: `${6 * 20}px`,
+                                                      height: calculateHeight(values.value1)}}/>
+                                        <div className="flex justify-between mt-2">
+                                            <Text fontSize="14px"
+                                                  color={values.value1.split(/\s+/).length >= WORD_LIMIT+1 ? 'red' : 'inherit'}>
+                                                {values.value1.split(/\s+/).length}/{WORD_LIMIT} words
+                                            </Text>
+                                            {values.value1.split(/\s+/).length+1 >= WORD_LIMIT &&
+                                                <span className="text-red-500">Maximum words limit reached!</span>}
+                                        </div>
+
                                         <Text fontSize='18px' className="font-bold mt-3 mb-3">
                                             Enter the Code
                                         </Text>
-                                        <LanguageSelectMenu onLanguageChange={handleLanguageChange}/>
+                                        <LanguageSelectMenu onLanguageChange={handleLanguageChange}
+                                                            selectedLanguage="Not given"/>
                                         <div className="flex-grow relative">
                                             <div className="flex justify-end">
-                                                 <Button onClick={checkLanguage} border='2px' size="md" colorScheme='blue' className="w-44 mb-2" type={"submit"}>
-                                                    <FaFlagCheckered className="mr-2" />Check
+                                                <Button onClick={checkLanguage} border='2px' size="md"
+                                                        colorScheme='blue' className="w-44 mb-2" type={"submit"}>
+                                                    <FaFlagCheckered className="mr-2"/>Check
                                                 </Button>
                                             </div>
-                                            <Textarea bgColor={'#EBEBEB'} color={'#646464'} fontSize="18px" placeholder='Paste code here' value={values.value2} name={values.value2} onChange={(event) => handleChange(event, 'value2')} style={{ height: calculateHeight(values.value2), minHeight: '27rem' }} />
+                                            <Textarea bgColor={'#EBEBEB'} color={'#646464'} fontSize="18px"
+                                                      placeholder='Paste code here' value={values.value2}
+                                                      name={values.value2}
+                                                      onChange={(event) => handleChange(event, 'value2')} style={{
+                                                height: calculateHeight(values.value2),
+                                                minHeight: '25rem'
+                                            }}/>
+
                                         </div>
                                     </div>
                                 </TabPanel>

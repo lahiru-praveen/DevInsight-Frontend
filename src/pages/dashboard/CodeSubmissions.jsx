@@ -24,7 +24,7 @@ export default function CodeSubmissions() {
     }, []);
 
     // Static headers
-    const headers = { p_id: "Project ID",p_name: "Submission Name", submission_date: "Submission Date", language: "Language" ,description: "Description", mode: 0 };
+    const headers = { p_id: "Project ID",p_name: "Submission/Project Name",f_name: "File Name", submission_date: "Submission Date", language: "Language" ,description: "Description", mode: 0 };
 
     return (
         <div className="flex flex-col h-screen">
