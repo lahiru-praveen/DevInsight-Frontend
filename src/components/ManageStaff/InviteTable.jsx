@@ -239,7 +239,7 @@ export const InviteTable = () => {
   useEffect(() => {
     const fetchInviteTable = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8001/invite-table");
+        const response = await axios.get("http://localhost:8000/invite-table");
         setInvites(response.data);
       } catch (error) {
         console.error("Error fetching invite table:", error);
@@ -271,7 +271,7 @@ export const InviteTable = () => {
   const handleDelete = async () => {
     try {
       // Assuming there's an API endpoint for deleting invites
-      await axios.delete(`http://127.0.0.1:8001/invites/${invites[index].id}`);
+      await axios.delete(`http://localhost:8000/invites/${invites[index].id}`);
       // Update invites state by removing the deleted invite
       setInvites(invites.filter(inv => inv.id != invites[index].id));
       onClose1();

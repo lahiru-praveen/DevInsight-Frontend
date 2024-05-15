@@ -11,7 +11,7 @@ export default function NavBar() {
         <>
             <div className="flex flex-row items-center justify-between bg-white text-black text-xl border-2 border-solid">
                 <div>
-                    <a href="/public">
+                    <a href="/db">
                         <img className="pl-4 h-10 w-aut0" src={logo} alt="Logo" />
                     </a>
                 </div>

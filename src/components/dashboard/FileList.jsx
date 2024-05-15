@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button } from "@chakra-ui/react";
+import { Button, Text } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
@@ -23,7 +23,7 @@ export default function FileList({ onSelectFile, selectedFileName, mode }) {
 
     return (
         <div>
-            <h1 className="text-xl font-bold mb-4">Uploaded File List</h1>
+            <Text className="text-xl font-bold mb-2">Uploaded File List</Text>
             <ul>
                 {files.map((file, index) => (
                     <li key={index}>

@@ -1,6 +1,8 @@
 import { Select } from "@chakra-ui/react";
 import PropTypes from "prop-types";
-export default function LanguageSelectMenu({ onLanguageChange }) {
+import {MdArrowDropDown} from "react-icons/md";
+
+export default function LanguageSelectMenu({ onLanguageChange, selectedLanguage }) {
 
     const handleChange = (event) => {
         const selectedLanguage = event.target.value;
@@ -9,20 +11,20 @@ export default function LanguageSelectMenu({ onLanguageChange }) {
 
     return (
         <div className="w-[250px]">
-            <Select placeholder='Select Language' onChange={handleChange} style={{marginBottom: '1rem'}}>
-                <option value="python">Python</option>
-                <option value="javascript">JavaScript</option>
-                <option value="java">Java</option>
-                <option value="html">HTML</option>
-                <option value="c">C</option>
-                <option value="csharp">C#</option>
-                <option value="cpp">C++</option>
-                <option value="php">PHP</option>
-                <option value="ruby">Ruby</option>
-                <option value="swift">Swift</option>
-                <option value="go">Go</option>
-                <option value="typescript">TypeScript</option>
-                <option value="other">Other</option>
+            <Select placeholder={selectedLanguage === 'Not given' ? ('Select Language') : (selectedLanguage)} onChange={handleChange} style={{marginBottom: '1rem'}} size='md' variant='filled' icon={<MdArrowDropDown />} >
+                <option value="Python">Python</option>
+                <option value="JavaScript">JavaScript</option>
+                <option value="Java">Java</option>
+                <option value="HTML">HTML</option>
+                <option value="C">C</option>
+                <option value="C#">C#</option>
+                <option value="C++">C++</option>
+                <option value="PHP">PHP</option>
+                <option value="Ruby">Ruby</option>
+                <option value="Swift">Swift</option>
+                <option value="Go">Go</option>
+                <option value="TypeScript">TypeScript</option>
+                <option value="Other">Other</option>
             </Select>
         </div>
     );
@@ -30,8 +32,6 @@ export default function LanguageSelectMenu({ onLanguageChange }) {
 
 // Define propTypes outside the component
 LanguageSelectMenu.propTypes = {
-    onLanguageChange: PropTypes.func.isRequired // Specify the type for onSelectFile
+    onLanguageChange: PropTypes.func.isRequired, // Specify the type for onSelectFile
+    selectedLanguage: PropTypes.string
 };
-
-
-

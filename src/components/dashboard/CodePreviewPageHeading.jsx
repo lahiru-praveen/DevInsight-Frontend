@@ -9,7 +9,7 @@ export default function CodePreviewPageHeading() {
     return (
         <div className='flex items-center h-[50px] '>
             <div className="flex items-center w-1/6  mr-2">
-                <img src={Logo} alt="Logo" className="w-[180px] h-[40px] m-2" />
+                <img src={Logo} alt="Logo" className="w-[180px] h-[40px] mt-4 ml-4  " />
             </div>
             <div className="flex items-center mt-2  ml-2 mr-2">
                 <IoHome className="mr-1 mt-1"/>

@@ -41,7 +41,7 @@ function InteractiveForm() {
         e.preventDefault();
         try {
             // Send POST request to the backend endpoint
-            const response = await axios.post('http://127.0.0.1:8001/create-company', formData);
+            const response = await axios.post('http://127.0.0.1:8000/create-company', formData);
             console.log(response.data); // Log the response data
             // Handle success, e.g., show a success message or redirect
         } catch (error) {
