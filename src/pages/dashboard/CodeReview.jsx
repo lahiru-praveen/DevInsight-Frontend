@@ -23,11 +23,17 @@ export default function CodeReview() {
 
     const handleDownloadPdf = async () => {
         try {
-            const response = await axios.post("http://localhost:8000/generate-pdf", {
-                review_content: reviewContent
-            }, {
-                responseType: 'blob', // to receive binary data
-            });
+            console.log(reviewContent);
+            const response = await axios.post(
+                "http://localhost:8000/generate-pdf",
+                { review_content: reviewContent },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    responseType: "blob",
+                }
+            );
 
             // Create a temporary anchor element to trigger the download
             const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -37,6 +43,7 @@ export default function CodeReview() {
             document.body.appendChild(link);
             link.click();
             link.parentNode.removeChild(link);
+
         } catch (error) {
             console.error("Error downloading PDF:", error);
         }

@@ -170,9 +170,9 @@
 /////working
 
 import { Select } from '@chakra-ui/react'
-import { Input, InputGroup, InputLeftElement, InputRightAddon} from '@chakra-ui/react';
+import { Input, InputGroup, InputLeftElement} from '@chakra-ui/react';
 import { Search2Icon } from "@chakra-ui/icons";
-import { Button, ButtonGroup } from '@chakra-ui/react'
+import { Button} from '@chakra-ui/react'
 import {
     Modal,
     ModalOverlay,
@@ -186,7 +186,7 @@ import {
     useDisclosure
   } from '@chakra-ui/react';
 import  pp  from '../../assets/pp.jpeg';
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import emailjs from "@emailjs/browser"
 
@@ -207,7 +207,7 @@ const MyComponent = () => {
             const memberToUpdate = activeMembers[index];
             
             // // Make a PUT request to your backend API to update the role
-            // const response = await axios.put(`http://127.0.0.1:8001/active-members/${memberToUpdate.id}`, {
+            // const response = await axios.put(`http://localhost:8000/active-members/${memberToUpdate.id}`, {
             //     role: role // Assuming your API expects the role to be updated
             // });
 
@@ -264,7 +264,7 @@ const MyComponent = () => {
     useEffect(() => {
         const fetchActiveMembers = async () => {
           try {
-            const response = await axios.get("http://127.0.0.1:8001/active-members");
+            const response = await axios.get("http://localhost:8000/active-members");
             console.log("Response data:", response.data);
             setActiveMembers(response.data);
           } catch (error) {
