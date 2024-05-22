@@ -195,7 +195,7 @@ export default function CodePreview() {
                                     </div>
                                 ) : (
                                     selectedFileContent ? (
-                                        <pre className="line-numbers">
+                                        <pre>
                                             {addLineNumbersToCode(selectedFileContent)}
                                         </pre>
                                     ) : (
