@@ -188,85 +188,60 @@ import {
 import  pp  from '../../assets/pp.jpeg';
 import { useState, useEffect } from "react";
 import axios from "axios";
-import emailjs from "@emailjs/browser"
-
-
+import emailjs from "@emailjs/browser";
 
 const MyComponent = () => {
     const [activeMembers, setActiveMembers] = useState([]);
-    const { isOpen: isOpen, onOpen: onOpen, onClose: onClose } = useDisclosure();
+    const [filteredMembers, setFilteredMembers] = useState([]);
+    const { isOpen, onOpen, onClose } = useDisclosure();
     const [index, setIndex] = useState(null);
     const [error, setError] = useState(null);
     const [role, setRole] = useState("");
+    const [query, setQuery] = useState("");
     
-    
-    useEffect(() => emailjs.init("PS5ghhKYxM1wwF0sO"), []);
+    useEffect(() => {
+        emailjs.init("PS5ghhKYxM1wwF0sO");
+    }, []);
+
     const handleAddInvite = async () => {
         try {
-            // // Get the member whose role needs to be changed
             const memberToUpdate = activeMembers[index];
-            
-            // // Make a PUT request to your backend API to update the role
-            // const response = await axios.put(`http://localhost:8000/active-members/${memberToUpdate.id}`, {
-            //     role: role // Assuming your API expects the role to be updated
-            // });
 
-            // Update the active members state with the updated role
             setActiveMembers(prevMembers => {
                 const updatedMembers = [...prevMembers];
                 updatedMembers[index] = { ...memberToUpdate, role: role };
-                activeMembers[index] = updatedMembers[index];
                 return updatedMembers;
             });
 
-            // Close the modal
+            setFilteredMembers(prevMembers => {
+                const updatedMembers = [...prevMembers];
+                updatedMembers[index] = { ...memberToUpdate, role: role };
+                return updatedMembers;
+            });
+
             onClose();
         } catch (error) {
             console.error('Error updating role:', error);
             setError("Error resending invite. Please try again later.");
-            // Handle error if needed
         }
         try {
-            // Assuming there's an API endpoint for resending invites
-            
-            // Assuming the invite is updated with a new status or resent
-            // You may want to fetch the updated invite after resending
-            debugger
             await emailjs.send("service_pst9db1", "template_ef1od5r", {
-
               rolef: activeMembers[index].role,
-              
               recipient: activeMembers[index].email
             });
             alert("Email successfully resent");
-          } catch (error) {
+        } catch (error) {
             console.error("Error resending invite:", error);
             setError("Error resending invite. Please try again later.");
-          }
-        
-    }  
-    // const handleSendEmail = async (index) => {
-    //     try {
-    //       // Assuming there's an API endpoint for resending invites
-          
-    //       // Assuming the invite is updated with a new status or resent
-    //       // You may want to fetch the updated invite after resending
-    //       await emailjs.send("service_pst9db1", "template_bq195h8", {
-    //         rolef: member[index].role,
-    //         recipient: member[index].email
-    //       });
-    //       alert("Email successfully resent");
-    //     } catch (error) {
-    //       console.error("Error resending invite:", error);
-    //       setError("Error resending invite. Please try again later.");
-    //     }
-    //   };
+        }
+    };
+
     useEffect(() => {
         const fetchActiveMembers = async () => {
           try {
-            const response = await axios.get("http://localhost:8000/active-members");
-            console.log("Response data:", response.data);
+            const response = await axios.get("http://127.0.0.1:8001/active-members");
             setActiveMembers(response.data);
+            setFilteredMembers(response.data);
           } catch (error) {
             console.error('Error fetching active members:', error);
           }
@@ -274,52 +249,53 @@ const MyComponent = () => {
     
         fetchActiveMembers();
     }, []);
+
+    useEffect(() => {
+        const keys = ["name", "email", "role"];
+        const search = (data) => {
+          return data.filter((item) =>
+            keys.some((key) => item[key].toLowerCase().includes(query))
+          );
+        };
+        setFilteredMembers(search(activeMembers));
+    }, [query, activeMembers]);
+
     const onOpenModal = (index) => {
         setIndex(index);
         onOpen();
-      }
-
-      
+    };
     
-    
-
-
     return (
-
-        
         <div className='px-20 py-5 '>
             <Modal
-        // initialFocusRef={initialRef}
-        // finalFocusRef={finalRef}
-        isOpen={isOpen}
-        onClose={onClose}
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Change Role</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody pb={6}>
-            <FormControl mt={4}>
-              <FormLabel>Role</FormLabel>
-              <Select
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                placeholder="Select role"
-              >
-                <option value="Quality assurance">Quality assurance</option>
-                <option value="Developer">Developer</option>
-              </Select>
-            </FormControl>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleAddInvite}>
-              Change
-            </Button>
-            <Button onClick={onClose}>Cancel</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+                isOpen={isOpen}
+                onClose={onClose}
+            >
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Change Role</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody pb={6}>
+                        <FormControl mt={4}>
+                            <FormLabel>Role</FormLabel>
+                            <Select
+                                value={role}
+                                onChange={(e) => setRole(e.target.value)}
+                                placeholder="Select role"
+                            >
+                                <option value="Quality assurance">Quality assurance</option>
+                                <option value="Developer">Developer</option>
+                            </Select>
+                        </FormControl>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme="blue" mr={3} onClick={handleAddInvite}>
+                            Change
+                        </Button>
+                        <Button onClick={onClose}>Cancel</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
             <h1 className="py-5 text-xl leading-tight font-bold text-gray-500">
                 Active Members
             </h1>
@@ -334,7 +310,7 @@ const MyComponent = () => {
                 <div className='basis-2/4'>
                     <InputGroup>
                         <InputLeftElement children={<Search2Icon color="gray.600"/>} />
-                        <Input placeholder="Search..." />
+                        <Input placeholder="Search..." onChange={(e) => setQuery(e.target.value.toLowerCase())} />
                     </InputGroup>
                 </div>
                 <div className='basis-1/4'>
@@ -344,7 +320,7 @@ const MyComponent = () => {
             <div className="w-full overflow-y-scroll bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
                 <div className="flow-root w">
                     <ul role="list" className="divide-y divide-gray-200 dark:divide-gray-700">
-                        {activeMembers.map((member, index) => (
+                        {filteredMembers.map((member, index) => (
                             <li key={index} className="py-3 sm:py-4">
                                 <div className="flex items-center">
                                     <div className="flex-shrink-0">
@@ -359,7 +335,7 @@ const MyComponent = () => {
                                         </p>
                                     </div>
                                     <Button onClick={() => onOpenModal(index)} colorScheme='blue' size='xs'>
-                                    {member.role}
+                                        {member.role}
                                     </Button>
                                 </div>
                             </li>

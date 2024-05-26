@@ -200,7 +200,7 @@
 //     );
 // };
 
-import React, { useRef,useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import axios from "axios";
 import {
   Modal,
@@ -215,17 +215,16 @@ import {
   useDisclosure
 } from '@chakra-ui/react';
 import { Select } from '@chakra-ui/react';
-import { Input, InputGroup, InputLeftElement, InputRightAddon} from '@chakra-ui/react';
+import { Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
 import { Search2Icon } from "@chakra-ui/icons";
-import { Button, ButtonGroup } from '@chakra-ui/react';
+import { Button } from '@chakra-ui/react';
 import emailjs from "@emailjs/browser"
 
-
 export const InviteTable = () => {
-  const { isOpen: isOpen1, onOpen: onOpen1, onClose: onClose1 } = useDisclosure(); // Rename variables for the first modal
-  const { isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2 } = useDisclosure(); 
-  const initialRef = React.useRef(null)
-  const finalRef = React.useRef(null)
+  const { isOpen: isOpen1, onOpen: onOpen1, onClose: onClose1 } = useDisclosure();
+  const { isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2 } = useDisclosure();
+  const initialRef = useRef(null);
+  const finalRef = useRef(null);
   const [invites, setInvites] = useState([]);
   const [error, setError] = useState(null);
   const [index, setIndex] = useState(null);
@@ -233,13 +232,12 @@ export const InviteTable = () => {
   const [role, setRole] = useState("");
   const emailRef = useRef("");
   const roleRef = useRef("");
-  const [loading, setLoading] = useState(false);
-  
+  const [query, setQuery] = useState("");
   
   useEffect(() => {
     const fetchInviteTable = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/invite-table");
+        const response = await axios.get("http://127.0.0.1:8001/invite-table");
         setInvites(response.data);
       } catch (error) {
         console.error("Error fetching invite table:", error);
@@ -251,12 +249,12 @@ export const InviteTable = () => {
   }, []);
 
   useEffect(() => emailjs.init("PS5ghhKYxM1wwF0sO"), []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const serviceId = "service_pst9db1";
     const templateId = "template_bq195h8";
     try {
-      debugger
       await emailjs.send(serviceId, templateId, {
         rolef: role,
         recipient: email
@@ -270,10 +268,8 @@ export const InviteTable = () => {
   
   const handleDelete = async () => {
     try {
-      // Assuming there's an API endpoint for deleting invites
-      await axios.delete(`http://localhost:8000/invites/${invites[index].id}`);
-      // Update invites state by removing the deleted invite
-      setInvites(invites.filter(inv => inv.id != invites[index].id));
+      await axios.delete(`http://127.0.0.1:8001/invites/${invites[index].id}`);
+      setInvites(invites.filter(inv => inv.id !== invites[index].id));
       onClose1();
     } catch (error) {
       console.error("Error deleting invite:", error);
@@ -287,37 +283,16 @@ export const InviteTable = () => {
   }
 
   const handleAddInvite = async () => {
-    // Set email for emailRef
-    // if (emailRef.current) {
-    //   emailRef.current.value = email;
-    //   console.log("Email value set:", emailRef.current.value);
-    // }
-    
-    // // Set role for nameRef
-    // if (roleRef.current) {
-    //   roleRef.current.value = role;
-    //   console.log("Role value set:", roleRef.current.value);
-    
     try {
       await axios.post("http://127.0.0.1:8001/add-invite", { email, role });
       onClose2();
-      
-      
-    
-    // Then fetch the updated invite data
-      
-      // Reload invite table or fetch new data
     } catch (error) {
       console.error("Error adding invite:", error);
-      // Handle error
-    }};
+    }
+  };
 
   const handleResend = async (index) => {
     try {
-      // Assuming there's an API endpoint for resending invites
-      
-      // Assuming the invite is updated with a new status or resent
-      // You may want to fetch the updated invite after resending
       await emailjs.send("service_pst9db1", "template_bq195h8", {
         rolef: invites[index].role,
         recipient: invites[index].email
@@ -329,38 +304,34 @@ export const InviteTable = () => {
     }
   };
 
-  
-    
-
+  const filteredInvites = invites.filter(invite => {
+    return (
+      invite.email.toLowerCase().includes(query.toLowerCase()) ||
+      invite.role.toLowerCase().includes(query.toLowerCase()) ||
+      invite.device.toLowerCase().includes(query.toLowerCase())
+    );
+  });
 
   return (
     <div className="px-20 py-20">
-      
-  
-  <Modal isOpen={isOpen1} onClose={onClose1}>
-    <ModalOverlay />
-    <ModalContent>
-      <ModalHeader>Delete Invitation</ModalHeader>
-      <ModalCloseButton />
-      <ModalBody>
-        Do you realy want to delete the Invitation?
-      </ModalBody>
+      <Modal isOpen={isOpen1} onClose={onClose1}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Delete Invitation</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            Do you really want to delete the Invitation?
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme='blue' mr={3} onClick={() => handleDelete()}>
+              Yes
+            </Button>
+            <Button variant='ghost' onClick={onClose1}>Close</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
 
-      <ModalFooter>
-        <Button colorScheme='blue' mr={3} onClick={() => handleDelete()}>
-          Yes
-        </Button>
-        <Button variant='ghost' onClick={onClose1}>Close</Button>
-      </ModalFooter>
-    </ModalContent>
-  </Modal>
-
-  <Modal
-        // initialFocusRef={initialRef}
-        // finalFocusRef={finalRef}
-        isOpen={isOpen2}
-        onClose={onClose2}
-      >
+      <Modal isOpen={isOpen2} onClose={onClose2}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Send Invite</ModalHeader>
@@ -405,30 +376,28 @@ export const InviteTable = () => {
         </h1>
       </div>
       <div className='flex flex-row space-x-5 py-5'>
-            
-            <div className='basis-2/4'>
-            <InputGroup>
+        <div className='basis-2/4'>
+          <InputGroup>
             <InputLeftElement children={<Search2Icon color="gray.600"/>} />
             <Input
-                placeholder="Search..."
-                />
-          
-            </InputGroup>
-            </div>
-            <div className='basis-1/4'>
-            <Button className='w-full' colorScheme='blue' variant='outline' >Search</Button>
-            </div>
-            <div className='basis-1/4'>
-            <Button onClick = {onOpen2} className='w-full' colorScheme='blue'>Send Invte</Button>
-            </div>
-           </div> 
+              placeholder="Search..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </InputGroup>
+        </div>
+        <div className='basis-1/4'>
+          <Button className='w-full' colorScheme='blue' variant='outline'>Search</Button>
+        </div>
+        <div className='basis-1/4'>
+          <Button onClick={onOpen2} className='w-full' colorScheme='blue'>Send Invite</Button>
+        </div>
+      </div> 
 
-      
       <div className="overflow-x-auto shadow-md sm:rounded-lg overflow-y-scroll h-64">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          
           <tbody>
-            {invites.map((invite, index) => (
+            {filteredInvites.map((invite, index) => (
               <tr
                 key={index}
                 className={
@@ -443,20 +412,20 @@ export const InviteTable = () => {
                 <td className="px-6 py-4">{invite.role}</td>
                 <td className="px-6 py-4">{invite.device}</td>
                 <td className="px-6 py-4">
-                <div className="flex justify-end space-x-2">
-                <button
-                    onClick={() => onOpenModal(index)}
-                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                >
-                    Delete
-                </button>
-                <button
-                    onClick={() => handleResend(index, invite.email, invite.role)}
-                    className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                    Resend
-                </button>
-                </div>
+                  <div className="flex justify-end space-x-2">
+                    <button
+                      onClick={() => onOpenModal(index)}
+                      className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                    <button
+                      onClick={() => handleResend(index)}
+                      className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                      Resend
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
