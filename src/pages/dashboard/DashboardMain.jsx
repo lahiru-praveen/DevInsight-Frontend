@@ -259,7 +259,7 @@ export default function DashboardMain() {
                                                  style={{ minHeight: "45vh" }} overflow='hidden' position="relative">
                                                 <div>
                                                     <label htmlFor="fileInput">
-                                                        Choose File<AiFillFileAdd className="size-10 p-2 bg-white"/>
+                                                        Browse for files<AiFillFileAdd className="size-10 p-2 bg-white"/>
                                                     </label>
                                                     <input id="fileInput" type="file" style={{display: 'none'}}
                                                            onChange={handleFileInputChange} multiple/>

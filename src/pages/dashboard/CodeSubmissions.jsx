@@ -24,7 +24,15 @@ export default function CodeSubmissions() {
     }, []);
 
     // Static headers
-    const headers = { p_id: "Project ID",p_name: "Submission/Project Name",f_name: "File Name", submission_date: "Submission Date", language: "Language" ,description: "Description", mode: 0 };
+    const headers = { p_id: "Project ID",
+        p_name: "Submission/Project Name",
+        f_name: "File Name",
+        submission_date: "Submission Date",
+        language: "Language" ,
+        description: "Description",
+        mode: 0,
+        code: 1,
+    };
 
     return (
         <div className="flex flex-col h-screen">
@@ -36,10 +44,10 @@ export default function CodeSubmissions() {
                     Submission
                 </Text>
                 {/* Render static headers */}
-                <Submissions submission={headers}/>
+                <Submissions submission={headers} drop={1}/>
                 {/* Map over submissions and render Submissions component */}
                 {submissions.map(submission => (
-                    <Submissions key={submission.p_id} submission={submission} />
+                    <Submissions key={submission.p_id} submission={submission} drop={0} />
                 ))}
             </div>
         </div>
