@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import {
@@ -24,6 +24,7 @@ export default function SignIn() {
     const [showIncorrectUsernameAlert, setShowIncorrectUsernameAlert] = useState(false);
     const [showLoggingInAlert, setShowLoggingInAlert] = useState(false);
     const [loginmessage,setLoginMessage] = useState('');
+    const navigate = useNavigate();
 
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
@@ -44,6 +45,9 @@ export default function SignIn() {
             });
             console.log(response.data);
             setLoginMessage('Login successfully');
+
+             // If email is not already registered, redirect to sign-in page
+             navigate("/db");
             
             // Redirect to landing page after successful form submission
                     // if (redirect) {
@@ -126,7 +130,7 @@ export default function SignIn() {
                             onChange={handlePasswordChange}
                         />
                     </FormControl>
-                    <Link to="/db">
+                    {/* <Link to="/db"> */}
                     <Stack spacing={6}>
                         <Button
                             bg={isFilled ? 'blue.500' : 'blue.200'}
@@ -136,10 +140,12 @@ export default function SignIn() {
                         </Button>
                     </Stack>
 
-                    <p>{loginmessage}</p>
+                  
+
+                    <p style={{ color: 'red' }}>{loginmessage}</p>
 
 
-                    </Link>
+                    {/* </Link> */}
                     <Text textAlign="center">
                         <Link to="/su">
                         <Button variant="link" color="black">
