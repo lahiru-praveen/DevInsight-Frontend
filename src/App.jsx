@@ -17,8 +17,8 @@ import EditProfile from "./pages/Profile/EditProfile.jsx";
 import Createorg2 from "./pages/CreateOrg/Createorg2.jsx";
 import ManageStaff from "./pages/ManageStaff/ManageStaff.jsx";
 import CodeReview from "./pages/dashboard/CodeReview.jsx";
-
-
+import AskHelp from "./pages/HelpDesk/AskHelp.jsx";
+import UserResponsePreview from "./pages/HelpDesk/UserResponsePreview.jsx";
 export default function App() {
     return (
     <>
@@ -42,6 +42,8 @@ export default function App() {
                 <Route path="/co2" element={<Createorg2/>}/>
                 <Route path="/ms" element={<ManageStaff/>}/>
                 <Route path="/cr" element={<CodeReview/>}/>
+                <Route path="/ah" element={<AskHelp/>}/>
+                <Route path="/urp" element={<UserResponsePreview/>}/>
             </Routes>
         </BrowserRouter>
     </>
