@@ -195,9 +195,6 @@ const handleSubmit = async () => {
     }
 };
 
-
-
-
 // Redirect to landing page after successful form submission
 if (redirect) {
     return <Redirect to="/SignInDemo" />;

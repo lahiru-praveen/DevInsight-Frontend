@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import emailjs from 'emailjs-com';
+import emailjs from "emailjs-com"
 import {
     Button,
     Heading,
     Alert,
-   
-} from '@chakra-ui/react';
+    AlertIcon,
+    AlertTitle,
+    AlertDescription
+   } from '@chakra-ui/react';
 const ContactUs = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
-
+  const [isSuccess, setIsSuccess] = useState(true);
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -41,7 +43,7 @@ const ContactUs = () => {
                 Thanks for submitting your application. Our team will get back to you soon.
               </AlertDescription>
         </Alert>
-        setIsSuccess(true);
+        // setIsSuccess(true);
 
         // Reset form fields after sending the email
         setName('');

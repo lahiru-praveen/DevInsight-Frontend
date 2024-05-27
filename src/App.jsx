@@ -16,9 +16,11 @@ import CreateOrg from "./pages/Login/OrganizationCreateAccount.jsx";
 import FindYourAccount from "./pages/Login/FindYourAccount.jsx";
 import EditProfile from "./pages/Profile/EditProfile.jsx";
 import Createorg2 from "./pages/CreateOrg/Createorg2.jsx";
+import Createorg3 from "./pages/CreateOrg/Createorg3.jsx";
 import ManageStaff from "./pages/ManageStaff/ManageStaff.jsx";
 import CodeReview from "./pages/dashboard/CodeReview.jsx";
 import ContactUs from "./pages/Profile/ContactUs.jsx";
+import CodeSubmissions from "./pages/dashboard/CodeSubmissions.jsx";
 
 
 export default function App() {
@@ -43,9 +45,11 @@ export default function App() {
                     <Route path="/ep" element={<EditProfile/>}/>
                     <Route path="/co1" element={<Createorg1/>}/>
                     <Route path="/co2" element={<Createorg2/>}/>
+                    <Route path="/co3" element={<Createorg3/>}/>
                     <Route path="/ms" element={<ManageStaff/>}/>
                     <Route path="/cr" element={<CodeReview/>}/>
                     <Route path="/cu" element={<ContactUs/>}/>
+                    <Route path="/cs" element={<CodeSubmissions/>}/>
                 </Routes>
             </CodeProvider>
         </BrowserRouter>

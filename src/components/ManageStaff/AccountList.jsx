@@ -170,25 +170,78 @@
 /////working
 
 import { Select } from '@chakra-ui/react'
-import { Input, InputGroup, InputLeftElement, InputRightAddon} from '@chakra-ui/react';
+import { Input, InputGroup, InputLeftElement} from '@chakra-ui/react';
 import { Search2Icon } from "@chakra-ui/icons";
-import { Button, ButtonGroup } from '@chakra-ui/react'
+import { Button} from '@chakra-ui/react'
+import {
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    FormControl,
+    FormLabel,
+    useDisclosure
+  } from '@chakra-ui/react';
 import  pp  from '../../assets/pp.jpeg';
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-
-
-
+import emailjs from "@emailjs/browser";
 
 const MyComponent = () => {
     const [activeMembers, setActiveMembers] = useState([]);
+    const [filteredMembers, setFilteredMembers] = useState([]);
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [index, setIndex] = useState(null);
+    const [error, setError] = useState(null);
+    const [role, setRole] = useState("");
+    const [query, setQuery] = useState("");
+    
+    useEffect(() => {
+        emailjs.init("PS5ghhKYxM1wwF0sO");
+    }, []);
+
+    const handleAddInvite = async () => {
+        try {
+            const memberToUpdate = activeMembers[index];
+
+            setActiveMembers(prevMembers => {
+                const updatedMembers = [...prevMembers];
+                updatedMembers[index] = { ...memberToUpdate, role: role };
+                return updatedMembers;
+            });
+
+            setFilteredMembers(prevMembers => {
+                const updatedMembers = [...prevMembers];
+                updatedMembers[index] = { ...memberToUpdate, role: role };
+                return updatedMembers;
+            });
+
+            onClose();
+        } catch (error) {
+            console.error('Error updating role:', error);
+            setError("Error resending invite. Please try again later.");
+        }
+        try {
+            await emailjs.send("service_pst9db1", "template_ef1od5r", {
+              rolef: activeMembers[index].role,
+              recipient: activeMembers[index].email
+            });
+            alert("Email successfully resent");
+        } catch (error) {
+            console.error("Error resending invite:", error);
+            setError("Error resending invite. Please try again later.");
+        }
+    };
 
     useEffect(() => {
         const fetchActiveMembers = async () => {
           try {
             const response = await axios.get("http://127.0.0.1:8001/active-members");
-            console.log("Response data:", response.data);
             setActiveMembers(response.data);
+            setFilteredMembers(response.data);
           } catch (error) {
             console.error('Error fetching active members:', error);
           }
@@ -197,10 +250,54 @@ const MyComponent = () => {
         fetchActiveMembers();
     }, []);
 
+    useEffect(() => {
+        const keys = ["name", "email", "role"];
+        const search = (data) => {
+          return data.filter((item) =>
+            keys.some((key) => item[key].toLowerCase().includes(query))
+          );
+        };
+        setFilteredMembers(search(activeMembers));
+    }, [query, activeMembers]);
+
+    const onOpenModal = (index) => {
+        setIndex(index);
+        onOpen();
+    };
+    
     return (
         <div className='px-20 py-5 '>
+            <Modal
+                isOpen={isOpen}
+                onClose={onClose}
+            >
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Change Role</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody pb={6}>
+                        <FormControl mt={4}>
+                            <FormLabel>Role</FormLabel>
+                            <Select
+                                value={role}
+                                onChange={(e) => setRole(e.target.value)}
+                                placeholder="Select role"
+                            >
+                                <option value="Quality assurance">Quality assurance</option>
+                                <option value="Developer">Developer</option>
+                            </Select>
+                        </FormControl>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme="blue" mr={3} onClick={handleAddInvite}>
+                            Change
+                        </Button>
+                        <Button onClick={onClose}>Cancel</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
             <h1 className="py-5 text-xl leading-tight font-bold text-gray-500">
-                Staff
+                Active Members
             </h1>
             <div className='flex flex-row space-x-5 py-5'>
                 <div className='basis-1/4'>
@@ -213,7 +310,7 @@ const MyComponent = () => {
                 <div className='basis-2/4'>
                     <InputGroup>
                         <InputLeftElement children={<Search2Icon color="gray.600"/>} />
-                        <Input placeholder="Search..." />
+                        <Input placeholder="Search..." onChange={(e) => setQuery(e.target.value.toLowerCase())} />
                     </InputGroup>
                 </div>
                 <div className='basis-1/4'>
@@ -223,7 +320,7 @@ const MyComponent = () => {
             <div className="w-full overflow-y-scroll bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
                 <div className="flow-root w">
                     <ul role="list" className="divide-y divide-gray-200 dark:divide-gray-700">
-                        {activeMembers.map((member, index) => (
+                        {filteredMembers.map((member, index) => (
                             <li key={index} className="py-3 sm:py-4">
                                 <div className="flex items-center">
                                     <div className="flex-shrink-0">
@@ -237,8 +334,8 @@ const MyComponent = () => {
                                             {member.email}
                                         </p>
                                     </div>
-                                    <Button colorScheme='blue' size='xs'>
-                                        Edit Role
+                                    <Button onClick={() => onOpenModal(index)} colorScheme='blue' size='xs'>
+                                        {member.role}
                                     </Button>
                                 </div>
                             </li>

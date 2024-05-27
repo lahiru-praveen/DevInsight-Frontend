@@ -1,13 +1,16 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
     <div className="w-full bg-[#E7ECFF] py-24 flex flex-col lg:px-[100px] ">
       <div className="flex justify-between h-1/3 w-full ">
         <p>@Devinsight2024</p>
+        <Link to ="/co3">
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-[250px]">
           Get for Your Oganization
         </button>
+        </Link>
       </div>
 
       <div className="flex w-full h-1/3 p-5">
