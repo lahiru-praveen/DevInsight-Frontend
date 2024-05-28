@@ -170,9 +170,9 @@
 /////working
 
 import { Select } from '@chakra-ui/react'
-import { Input, InputGroup, InputLeftElement} from '@chakra-ui/react';
+import { Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
 import { Search2Icon } from "@chakra-ui/icons";
-import { Button} from '@chakra-ui/react'
+import { Button } from '@chakra-ui/react'
 import {
     Modal,
     ModalOverlay,
@@ -184,8 +184,8 @@ import {
     FormControl,
     FormLabel,
     useDisclosure
-  } from '@chakra-ui/react';
-import  pp  from '../../assets/pp.jpeg';
+} from '@chakra-ui/react';
+import pp from '../../assets/pp.jpeg';
 import { useState, useEffect } from "react";
 import axios from "axios";
 import emailjs from "@emailjs/browser";
@@ -198,6 +198,7 @@ const MyComponent = () => {
     const [error, setError] = useState(null);
     const [role, setRole] = useState("");
     const [query, setQuery] = useState("");
+    const [selectedRole, setSelectedRole] = useState("All"); // Default to 'All'
     
     useEffect(() => {
         emailjs.init("PS5ghhKYxM1wwF0sO");
@@ -226,8 +227,8 @@ const MyComponent = () => {
         }
         try {
             await emailjs.send("service_pst9db1", "template_ef1od5r", {
-              rolef: activeMembers[index].role,
-              recipient: activeMembers[index].email
+                rolef: activeMembers[index].role,
+                recipient: activeMembers[index].email
             });
             alert("Email successfully resent");
         } catch (error) {
@@ -238,33 +239,48 @@ const MyComponent = () => {
 
     useEffect(() => {
         const fetchActiveMembers = async () => {
-          try {
-            const response = await axios.get("http://127.0.0.1:8001/active-members");
-            setActiveMembers(response.data);
-            setFilteredMembers(response.data);
-          } catch (error) {
-            console.error('Error fetching active members:', error);
-          }
+            try {
+                const response = await axios.get("http://127.0.0.1:8001/active-members");
+                setActiveMembers(response.data);
+                setFilteredMembers(response.data);
+            } catch (error) {
+                console.error('Error fetching active members:', error);
+            }
         };
-    
+
         fetchActiveMembers();
     }, []);
 
     useEffect(() => {
-        const keys = ["name", "email", "role"];
-        const search = (data) => {
-          return data.filter((item) =>
-            keys.some((key) => item[key].toLowerCase().includes(query))
-          );
+        const filterMembers = () => {
+            const keys = ["name", "email", "role"];
+            let filteredData = activeMembers;
+
+            if (query) {
+                filteredData = filteredData.filter((item) =>
+                    keys.some((key) => item[key].toLowerCase().includes(query.toLowerCase()))
+                );
+            }
+
+            if (selectedRole && selectedRole !== "All") {
+                filteredData = filteredData.filter((item) => item.role === selectedRole);
+            }
+
+            setFilteredMembers(filteredData);
         };
-        setFilteredMembers(search(activeMembers));
-    }, [query, activeMembers]);
+
+        filterMembers();
+    }, [query, selectedRole, activeMembers]);
 
     const onOpenModal = (index) => {
         setIndex(index);
         onOpen();
     };
-    
+
+    const handleRoleFilterChange = (e) => {
+        setSelectedRole(e.target.value);
+    };
+
     return (
         <div className='px-20 py-5 '>
             <Modal
@@ -301,15 +317,15 @@ const MyComponent = () => {
             </h1>
             <div className='flex flex-row space-x-5 py-5'>
                 <div className='basis-1/4'>
-                    <Select placeholder='Select option'>
-                        <option value='option1'>Option 1</option>
-                        <option value='option2'>Option 2</option>
-                        <option value='option3'>Option 3</option>
+                    <Select placeholder='Select option' onChange={handleRoleFilterChange}>
+                        <option value='All'>All</option>
+                        <option value='Quality assurance'>Quality assurance</option>
+                        <option value='Developer'>Developer</option>
                     </Select>
                 </div>
                 <div className='basis-2/4'>
                     <InputGroup>
-                        <InputLeftElement children={<Search2Icon color="gray.600"/>} />
+                        <InputLeftElement children={<Search2Icon color="gray.600" />} />
                         <Input placeholder="Search..." onChange={(e) => setQuery(e.target.value.toLowerCase())} />
                     </InputGroup>
                 </div>
