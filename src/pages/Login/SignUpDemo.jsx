@@ -83,7 +83,7 @@ export default function SignUp() {
                     reEnterPassword !== ''
             );
 
-            // Check if the email contains the "@" sign
+            
             // Check if the email contains the "@" sign
             // if (!emailValue.includes('@')) {
             //     setMessage('Email should include @ sign');
@@ -135,36 +135,6 @@ export default function SignUp() {
 const [redirect, setRedirect] = useState(false);
 
 
-
- // Function to handle form submission
-// const handleSubmit = async () => {
-//     console.log("Submitting form...");
-//     if (isFilled && password === reEnterPassword) {
-//         try {
-//             // Check if the email is already registered
-//             const response = await axios.post('http://localhost:8000/signup', {
-//                 firstName,
-//                 lastName,
-//                 username,
-//                 email,
-//                 password,
-//             });
-//             console.log("Form submitted successfully:", response.data);
-//             // If email is not already registered, redirect to sign-in page
-//             setRedirect(true);
-
-//         } catch (error) {
-//             console.error('Error signing up:', error);
-//             if (error.response.status === 400 && error.response.data.detail === "User already exists") {
-//                 setMessage("Email is already registered");
-//             } else {
-//                 setMessage("An error occurred while signing up");
-//             }
-//         }
-//     } else {
-//         setPasswordError('Passwords do not match');
-//     }
-// };
 
 const handleSubmit = async () => {
     console.log("Submitting form...");
