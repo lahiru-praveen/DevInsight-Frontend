@@ -82,6 +82,7 @@ export default function Submissions({ submission, drop }) {
                 onClose={() => setModalOpen(false)}
                 p_name={p_name}
                 code={code}
+                des ={description}
             />
         </>
     );
