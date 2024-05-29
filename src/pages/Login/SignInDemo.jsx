@@ -49,10 +49,7 @@ export default function SignIn() {
              // If email is not already registered, redirect to sign-in page
              navigate("/db");
             
-            // Redirect to landing page after successful form submission
-                    // if (redirect) {
-                    //     return <Redirect to="/DashboardMain" />;
-                    // }   
+            
 
 
                     
@@ -130,7 +127,7 @@ export default function SignIn() {
                             onChange={handlePasswordChange}
                         />
                     </FormControl>
-                    {/* <Link to="/db"> */}
+                   
                     <Stack spacing={6}>
                         <Button
                             bg={isFilled ? 'blue.500' : 'blue.200'}
