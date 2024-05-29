@@ -38,11 +38,11 @@ const SubmissionModal = ({ isOpen, onClose, p_name, code , des }) => {
                                 <TabPanels>
                                     <TabPanel>
                                         <div className="font-bold bg-[#EBEBEB] color-[#898989] p-10 m-2">
-                                            <Text className="text-xl font-bold mr-2">Description</Text>
+                                            <Text className="text-xl font-bold mr-2">Description - </Text>
                                             <Box bg='white' p={4} color='black' className="mt-2 mb-8">
                                                 <Text>{des}</Text>
                                             </Box>
-                                            <Text className="text-xl font-bold mr-2">Code</Text>
+                                            <Text className="text-xl font-bold mr-2">Code - </Text>
                                             <Box bg='white'  p={4} className="mt-2 mb-8">
                                                 <pre>
                                                     {code}
