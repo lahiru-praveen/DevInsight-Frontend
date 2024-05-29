@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button } from "@chakra-ui/react";
+import { Button, Text } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
@@ -23,7 +23,7 @@ export default function FileList({ onSelectFile, selectedFileName, mode }) {
 
     return (
         <div>
-            <h1 className="text-xl font-bold mb-4">Uploaded File List</h1>
+            <Text className="text-xl font-bold mb-2">Uploaded File List</Text>
             <ul>
                 {files.map((file, index) => (
                     <li key={index}>
@@ -34,7 +34,7 @@ export default function FileList({ onSelectFile, selectedFileName, mode }) {
                                 </span>
                             ) : (
                                 <Link to="#"
-                                      className={`ml-1 mr-1 hover:bg-blue-100 focus:bg-blue-200 w-max pl-4 pr-4 pt-1 pb-1 focus:outline-none active:bg-blue-200 focus:text-black rounded-full bg-gray-300 text-white }`}
+                                      className={`ml-1 mr-1 hover:bg-blue-100 hover:text-black focus:bg-blue-200 w-max pl-4 pr-4 pt-1 pb-1 focus:outline-none active:bg-blue-200 focus:text-black rounded-full bg-gray-300 text-white }`}
                                       onClick={(e) => {
                                           e.preventDefault();
                                           if (selectedFileName !== file.name) {
@@ -57,6 +57,6 @@ export default function FileList({ onSelectFile, selectedFileName, mode }) {
 FileList.propTypes = {
     onSelectFile: PropTypes.func.isRequired,
     selectedFileName: PropTypes.string.isRequired,
-    mode: PropTypes.string.isRequired
+    mode: PropTypes.number.isRequired
 
 };
