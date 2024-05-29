@@ -12,17 +12,19 @@ import {
     Tab,
     TabPanels,
     TabPanel,
-    Flex
+    Flex, Text, Box
 } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
 
-const SubmissionModal = ({ isOpen, onClose, p_name, code }) => {
+const SubmissionModal = ({ isOpen, onClose, p_name, code , des }) => {
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} size={'fit'}>
             <ModalOverlay />
             <ModalContent>
-                <ModalHeader>{p_name}</ModalHeader>
+                <ModalHeader>
+                    <Text className="text-xl font-bold mr-2">{p_name}</Text>
+                </ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
                     <Flex alignItems="center" justifyContent="center">
@@ -36,9 +38,16 @@ const SubmissionModal = ({ isOpen, onClose, p_name, code }) => {
                                 <TabPanels>
                                     <TabPanel>
                                         <div className="font-bold bg-[#EBEBEB] color-[#898989] p-10 m-2">
-                                            <pre>
-                                                {code}
-                                            </pre>
+                                            <Text className="text-xl font-bold mr-2">Description - </Text>
+                                            <Box bg='white' p={4} color='black' className="mt-2 mb-8">
+                                                <Text>{des}</Text>
+                                            </Box>
+                                            <Text className="text-xl font-bold mr-2">Code - </Text>
+                                            <Box bg='white'  p={4} className="mt-2 mb-8">
+                                                <pre>
+                                                    {code}
+                                                </pre>
+                                            </Box>
                                         </div>
                                     </TabPanel>
                                     <TabPanel>
@@ -78,6 +87,7 @@ SubmissionModal.propTypes = {
     onClose: PropTypes.func.isRequired,
     p_name: PropTypes.string.isRequired,
     code: PropTypes.string.isRequired,
+    des: PropTypes.string.isRequired,
 };
 
 export default SubmissionModal;
