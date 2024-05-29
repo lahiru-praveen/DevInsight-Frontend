@@ -152,10 +152,10 @@ export default function CodePreview() {
                         </div>
 
                         <Input
-                            value={prName} // Change setPrName to prName
-                            onChange={handlePrNameChange} // Change handlePrNameChange to setPrName
+                            value={prName}
+                            onChange={handlePrNameChange}
                             focusBorderColor='blue.400'
-                            placeholder='Enter the Project / Submission Name'
+                            placeholder='Enter a name for Project / Submission'
                             variant='filled'
                             className="mb-4"
                         /></div>
