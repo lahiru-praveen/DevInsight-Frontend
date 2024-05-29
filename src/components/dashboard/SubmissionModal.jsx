@@ -12,9 +12,10 @@ import {
     Tab,
     TabPanels,
     TabPanel,
-    Flex, Text, Box
+    Text, Box
 } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
+
 
 const SubmissionModal = ({ isOpen, onClose, p_name, code , des }) => {
 
@@ -27,29 +28,31 @@ const SubmissionModal = ({ isOpen, onClose, p_name, code , des }) => {
                 </ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
-                    <Flex alignItems="center" justifyContent="center">
-                        <div>
-                            <Tabs variant='soft-rounded' colorScheme='blue'>
+                    <div>
+                        <Tabs variant='soft-rounded' colorScheme='blue'>
+                            <div>
                                 <TabList>
                                     <Tab>Code</Tab>
                                     <Tab>Review</Tab>
                                     <Tab>Help Requests</Tab>
                                 </TabList>
-                                <TabPanels>
+                            </div>
+                            <TabPanels>
+                                <div>
                                     <TabPanel>
                                         <div className="font-bold bg-[#EBEBEB] color-[#898989] p-10 m-2">
-                                            <Text className="text-xl font-bold mr-2">Description</Text>
+                                            <Text className="text-xl font-bold mr-2">Description - </Text>
                                             <Box bg='white' p={4} color='black' className="mt-2 mb-8">
                                                 <Text>{des}</Text>
                                             </Box>
-                                            <Text className="text-xl font-bold mr-2">Code</Text>
+                                            <Text className="text-xl font-bold mr-2">Code - </Text>
                                             <Box bg='white'  p={4} className="mt-2 mb-8">
-                                                <pre>
-                                                    {code}
-                                                </pre>
+                                                <pre>{code}</pre>
                                             </Box>
                                         </div>
                                     </TabPanel>
+                                </div>
+                                <div>
                                     <TabPanel>
                                         <div className="font-bold bg-[#EBEBEB] color-[#898989] p-10 m-2">
                                             <pre>
@@ -57,6 +60,8 @@ const SubmissionModal = ({ isOpen, onClose, p_name, code , des }) => {
                                             </pre>
                                         </div>
                                     </TabPanel>
+                                </div>
+                                <div>
                                     <TabPanel>
                                         <div className="font-bold bg-[#EBEBEB] color-[#898989] p-10 m-2">
                                             <pre>
@@ -64,10 +69,10 @@ const SubmissionModal = ({ isOpen, onClose, p_name, code , des }) => {
                                             </pre>
                                         </div>
                                     </TabPanel>
-                                </TabPanels>
-                            </Tabs>
-                        </div>
-                    </Flex>
+                                </div>
+                            </TabPanels>
+                        </Tabs>
+                    </div>
                 </ModalBody>
                 <ModalFooter>
                     <Button colorScheme="red" className="mr-4">

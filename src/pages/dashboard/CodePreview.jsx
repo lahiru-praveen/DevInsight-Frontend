@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/vs.css';
-import {Tabs, TabList, TabPanels, Tab, TabPanel, Button, CircularProgress, Flex, Input, Text} from '@chakra-ui/react';
+import {Tabs, TabList, TabPanels, Tab, TabPanel, Button, CircularProgress, Flex, Input, Text, Modal, ModalOverlay, ModalContent, ModalBody, ModalHeader} from '@chakra-ui/react';
 import FileList from "../../components/dashboard/FileList.jsx";
 import CodePreviewPageHeading from "../../components/dashboard/CodePreviewPageHeading.jsx";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -17,7 +17,8 @@ export default function CodePreview() {
     const [selectedFileName, setSelectedFileName] = useState('');
     const [selectedLine, setSelectedLine] = useState(null);
     const [reviewContent, setReviewContent] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
+    const [suggestionContent, setSuggestionContent] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
     const { state } = location;
@@ -68,11 +69,11 @@ export default function CodePreview() {
     }, [selectedFileContent]);
 
     useEffect(() => {
-        if (reviewContent !== '') {
-            navigate('/cr', { state: { reviewContent: reviewContent, selectedFileName: selectedFileName } });
+        if (reviewContent !== '' && suggestionContent !== '') {
+            navigate('/cr', { state: { reviewContent: reviewContent, selectedFileName: selectedFileName , suggestionContent:suggestionContent} });
         }
         console.log(reviewContent);
-    }, [reviewContent, navigate, selectedFileName, mode]);
+    }, [reviewContent, navigate, selectedFileName, mode, suggestionContent]);
 
     useEffect(() => {
         if (prName !== '' && selectedFileContent) {
@@ -85,26 +86,28 @@ export default function CodePreview() {
 
 
     const handleSubmit = async () => {
-        setIsLoading(true); // Start loading
+        setIsModalOpen(true); // Open the modal
         console.log("Selected file name in CodePreview:", selectedFileName);
         const fetchData = async () => {
             try {
-
                 if (!selectedFileContent) {
                     console.error("Selected file content is empty.");
                 }
-                const response = await axios.post("http://localhost:8000/get_code", { p_id:"1" , p_name:prName, f_name:selectedFileName, language:Language , description:description_value , code: selectedFileContent , mode:mode_value });
-                setReviewContent(response.data);
+                const response1 = await axios.post("http://localhost:8000/get_review", { p_id:"1" , p_name:prName, f_name:selectedFileName, language:Language , description:description_value , code: selectedFileContent , mode:mode_value });
+                setReviewContent(response1.data);
+                const response2 = await axios.post("http://localhost:8000/get_suggestions", { code: selectedFileContent , review: reviewContent });
+                setSuggestionContent(response2.data);
             } catch (error) {
                 console.error("Error fetching review:", error);
             } finally {
-                setIsLoading(false); // Stop loading
+                setIsModalOpen(false); // Close the modal
             }
         };
         fetchData(description, language).then(r =>
             console.log(r)
         ); // Call fetchData with description and language
     };
+
 
     function addLineNumbersToCode(code) {
         const lines = code.split('\n');
@@ -185,23 +188,30 @@ export default function CodePreview() {
                                         <GoCodeReview className="mr-2"/>Review
                                     </Button>
                                 </div>
-                                {isLoading ? (
-                                    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 z-50">
-                                        <div className="bg-white p-5 rounded-lg">
-                                            <Flex alignItems="center" justifyContent="center">
-                                                <div><CircularProgress isIndeterminate color='blue.300'/></div>
-                                            </Flex>
-                                        </div>
-                                    </div>
+                                {selectedFileContent ? (
+                                    <pre>
+                                        {addLineNumbersToCode(selectedFileContent)}
+                                    </pre>
                                 ) : (
-                                    selectedFileContent ? (
-                                        <pre>
-                                            {addLineNumbersToCode(selectedFileContent)}
-                                        </pre>
-                                    ) : (
-                                        <div>No file or code selected</div>
-                                    )
+                                    <div>No file or code selected</div>
                                 )}
+
+                                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} isCentered>
+                                    <ModalOverlay />
+                                    <ModalContent>
+                                        <ModalHeader>Loading ...</ModalHeader>
+                                        <ModalBody>
+                                            <Flex alignItems="center" justifyContent="center">
+                                                <CircularProgress isIndeterminate color='blue.300' />
+                                            </Flex>
+                                            <Flex alignItems="center" justifyContent="center">
+                                                <Text>Please Wait ...</Text>
+                                                <Text>It will take some time to generate the review</Text>
+                                            </Flex>
+                                        </ModalBody>
+                                    </ModalContent>
+                                </Modal>
+
                             </TabPanel>
                             <TabPanel>
                                 hello

@@ -1,4 +1,4 @@
-import {Button, Flex, Tab, TabList, TabPanel, TabPanels, Tabs, Text} from "@chakra-ui/react";
+import {Box, Button, Flex, Tab, TabList, TabPanel, TabPanels, Tabs, Text} from "@chakra-ui/react";
 import CodeReviewPageHeading from "../../components/dashboard/CodeReviewPageHeading.jsx";
 import { RxDividerVertical } from "react-icons/rx";
 import { IoMdDownload } from "react-icons/io";
@@ -12,14 +12,14 @@ import { useLocation } from "react-router-dom";
 import FileList from "../../components/dashboard/FileList.jsx";
 
 export default function CodeReview() {
-    // const [reviewContent, setReviewContent] = useState('');
     const { selectedFileContent } = useCode();
     const [selectedLine, setSelectedLine] = useState(null);
     const location = useLocation();
     const { state } = location;
-    let { reviewContent ,selectedFileName, mode} = state || {};
+    let { reviewContent ,selectedFileName, mode, suggestionContent} = state || {};
     console.log(reviewContent)
     console.log("Selected file name in CodePreview:", selectedFileName);
+    console.log(suggestionContent)
 
     const handleDownloadPdf = async () => {
         try {
@@ -103,15 +103,18 @@ export default function CodeReview() {
                                         </Button>
                                     </div>
                                     <div>
-                                        {selectedFileContent ? (
-                                            <pre className="line-numbers">
+                                        <Text className="text-xl font-bold mr-2">Code - </Text>
+                                        <Box bg='white'  p={4} className="mt-2 mb-8">
+                                            {selectedFileContent ? (
+                                                <pre className="line-numbers">
                                                 {addLineNumbersToCode(selectedFileContent)}
                                             </pre>
-                                        ) : (
-                                            <Flex alignItems="center" justifyContent="center" className="mt-20">
-                                                <div><CircularProgress isIndeterminate color='blue.300'/></div>
-                                            </Flex>
-                                        )}
+                                            ) : (
+                                                <Flex alignItems="center" justifyContent="center" className="mt-20">
+                                                    <div><CircularProgress isIndeterminate color='blue.300'/></div>
+                                                </Flex>
+                                            )}
+                                        </Box>
                                     </div>
                                 </div>
                             </TabPanel>
@@ -129,11 +132,32 @@ export default function CodeReview() {
                                         </Button>
                                     </div>
                                     <div>
-                                        {reviewContent ? (
-                                            <pre>{reviewContent}</pre>
-                                        ) : (
-                                            <Text>There is a error </Text>
-                                        )}
+                                        <Text className="text-xl font-bold mr-2">Review - </Text>
+                                        <Box bg='white'  p={4} className="mt-2 mb-8">
+                                            {reviewContent ? (
+                                                <pre>{reviewContent}</pre>
+                                            ) : (
+                                                <Text>There is a error </Text>
+                                            )}
+                                        </Box>
+
+                                        <Text className="text-xl font-bold mr-2">Suggestions - </Text>
+                                        <Box bg='white'  p={4} className="mt-2 mb-8">
+                                            {reviewContent ? (
+                                                <pre>{suggestionContent}</pre>
+                                            ) : (
+                                                <Text>There is a error </Text>
+                                            )}
+                                        </Box>
+
+                                        <Text className="text-xl font-bold mr-2">Refer Links - </Text>
+                                        <Box bg='white'  p={4} className="mt-2 mb-8">
+                                            {reviewContent ? (
+                                                <pre>{reviewContent}</pre>
+                                            ) : (
+                                                <Text>There is a error </Text>
+                                            )}
+                                        </Box>
                                     </div>
                                 </div>
                             </TabPanel>
