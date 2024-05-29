@@ -12,9 +12,10 @@ import {
     Tab,
     TabPanels,
     TabPanel,
-    Flex, Text, Box
+    Text, Box
 } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
+
 
 const SubmissionModal = ({ isOpen, onClose, p_name, code , des }) => {
 
@@ -69,9 +70,9 @@ const SubmissionModal = ({ isOpen, onClose, p_name, code , des }) => {
                                         </div>
                                     </TabPanel>
                                 </div>
-                                </TabPanels>
-                            </Tabs>
-                        </div>
+                            </TabPanels>
+                        </Tabs>
+                    </div>
                 </ModalBody>
                 <ModalFooter>
                     <Button colorScheme="red" className="mr-4">
