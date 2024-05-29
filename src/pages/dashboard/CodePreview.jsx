@@ -2,76 +2,205 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/vs.css';
-import {Tabs, TabList, TabPanels, Tab, TabPanel, Button, TabIndicator} from '@chakra-ui/react';
+import {Tabs, TabList, TabPanels, Tab, TabPanel, Button, CircularProgress, Flex, Input, Text} from '@chakra-ui/react';
 import FileList from "../../components/dashboard/FileList.jsx";
 import CodePreviewPageHeading from "../../components/dashboard/CodePreviewPageHeading.jsx";
-import {useLocation} from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { GoCodeReview } from "react-icons/go";
+import { useCode } from '../../context/CodeContext.jsx';
+import LanguageSelectMenu from "../../components/dashboard/LanguageSelectMenu.jsx";
+import {IoHelpCircle} from "react-icons/io5";
 
 export default function CodePreview() {
-    const [selectedFileContent, setSelectedFileContent] = useState('');
+    const { selectedFileContent, setSelectedFileContent } = useCode();
+    const [submitEnabled, setSubmitEnabled] = useState(false);
     const [selectedFileName, setSelectedFileName] = useState('');
-    const { state } = useLocation();
-    let { code, mode } = state || {}; // Destructure state with default value to avoid errors if state is undefined
+    const [selectedLine, setSelectedLine] = useState(null);
+    const [reviewContent, setReviewContent] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { state } = location;
+    let { code, mode, language, description } = state || {};
+    const mode_value = mode;
+    if (language === ""){
+        language = "Not given";
+    }
+    if (description === ""){
+        description = "Not given";
+    }
+
+    const [Language, setLanguage] = useState(language);
+    const description_value = description;
+
+    const handleLanguageChange = (language) => {
+        setLanguage(language);
+    };
+
+    const [prName, setPrName] = useState('')
+    const handlePrNameChange = (event) => setPrName(event.target.value)
 
     useEffect(() => {
         if (mode === 1 && code !== '') {
             setSelectedFileContent(code);
         }
-    }, [code, mode]);
+    }, [code, mode, setSelectedFileContent]);
 
     useEffect(() => {
-        if (selectedFileName !== '') { //Mode === 2 then there is an error
-            const fetchData = async () => {
-                try {
-                    const response = await axios.get(`http://localhost:8000/files/${selectedFileName}`);
-                    setSelectedFileContent(response.data);
-                } catch (error) {
-                    console.error("Error fetching file content:", error);
-                    // Handle error more gracefully, such as showing an error message to the user
-                }
-            };
-            fetchData().then(r => console.log(r));
-        }
-    }, [mode, selectedFileName]);
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8000/files/${selectedFileName}`);
+                setSelectedFileContent(response.data);
+            } catch (error) {
+                console.error("Error fetching file content:", error);
+            }
+        };
 
+        if (selectedFileName !== '') {
+            fetchData().then(r => console.log(r) );
+        }
+    }, [mode, selectedFileName, setSelectedFileContent]);
 
     useEffect(() => {
         if (selectedFileContent) {
-            hljs.highlightAll(); // Highlight.js initialization
+            hljs.highlightAll();
         }
     }, [selectedFileContent]);
+
+    useEffect(() => {
+        if (reviewContent !== '') {
+            navigate('/cr', { state: { reviewContent: reviewContent, selectedFileName: selectedFileName } });
+        }
+        console.log(reviewContent);
+    }, [reviewContent, navigate, selectedFileName, mode]);
+
+    useEffect(() => {
+        if (prName !== '' && selectedFileContent) {
+            setSubmitEnabled(true);
+        } else {
+            setSubmitEnabled(false);
+        }
+    }, [prName,selectedFileContent]);
+
+
+
+    const handleSubmit = async () => {
+        setIsLoading(true); // Start loading
+        console.log("Selected file name in CodePreview:", selectedFileName);
+        const fetchData = async () => {
+            try {
+
+                if (!selectedFileContent) {
+                    console.error("Selected file content is empty.");
+                }
+                const response = await axios.post("http://localhost:8000/get_code", { p_id:"1" , p_name:prName, f_name:selectedFileName, language:Language , description:description_value , code: selectedFileContent , mode:mode_value });
+                setReviewContent(response.data);
+            } catch (error) {
+                console.error("Error fetching review:", error);
+            } finally {
+                setIsLoading(false); // Stop loading
+            }
+        };
+        fetchData(description, language).then(r =>
+            console.log(r)
+        ); // Call fetchData with description and language
+    };
+
+    function addLineNumbersToCode(code) {
+        const lines = code.split('\n');
+        const numberedCode = lines.map((line, index) => {
+            const isSelected = selectedLine === index;
+            const lineClass = isSelected ? 'bg-blue-100' : '';
+
+            return (
+                <div
+                    key={index}
+                    className={`flex ${lineClass}`}
+                    onClick={() => setSelectedLine(index)}
+                >
+                    <div className="w-6 text-left text-gray-500 pr-20 user-select-none">
+                        {index + 1}
+                    </div>
+                    <div dangerouslySetInnerHTML={{ __html: hljs.highlightAuto(line).value }} />
+                </div>
+            );
+        });
+
+        return (
+            <pre className="line-numbers">
+                {numberedCode}
+            </pre>
+        );
+    }
 
     return (
         <div className="flex flex-col h-screen">
             <div>
-                <CodePreviewPageHeading />
+                <CodePreviewPageHeading/>
             </div>
 
             <div className="flex flex-row flex-grow">
-                <div className="w-1/6 p-4 mt-3 ml-2 mr-2 bg-[#EBEBEB]">
-                    <FileList onSelectFile={(fileName) => setSelectedFileName(fileName)} />
+                <div className="w-1/6 p-4 mt-3 ml-2 mr-2 bg-[#EBEBEB] flex flex-col">
+                    <div>
+                        <Text className="text-xl font-bold mr-2">Language</Text>
+                        <LanguageSelectMenu onLanguageChange={handleLanguageChange} selectedLanguage={language}/>
+                    </div>
+                    <div>
+                        <div className="flex items-center">
+                            <Text className="text-xl font-bold mr-2">Project Name</Text>
+                            <Text color="red.400" className="text-xl">*</Text>
+                        </div>
+
+                        <Input
+                            value={prName} // Change setPrName to prName
+                            onChange={handlePrNameChange} // Change handlePrNameChange to setPrName
+                            focusBorderColor='blue.400'
+                            placeholder='Enter the Project / Submission Name'
+                            variant='filled'
+                            className="mb-4"
+                        /></div>
+
+                    <div>
+                        <FileList onSelectFile={(fileName) => setSelectedFileName(fileName)} selectedFileName='' mode={mode}/>
+                        <div className="flex items-center">
+                            <IoHelpCircle className="mr-2 size-7 colur" />
+                            <Text className="font-bold mr-2 text-red-400">Please select a file to initiate the review process</Text>
+                            <Text color="red.400" className="text-xl">*</Text>
+                        </div>
+                    </div>
+
+
                 </div>
                 <div className="w-5/6 p-4 mt-3 ml-2 mr-2 h-auto font-bold bg-[#EBEBEB] color-[#898989]">
-                    <Tabs  position="relative" isFitted variant="enclosed" >
-                        <TabList mb='1em'>
+                    <Tabs position="relative" isFitted variant="enclosed">
+                    <TabList mb='1em'>
                             <Tab>Preview</Tab>
                             <Tab isDisabled>Review</Tab>
                         </TabList>
-                        <TabIndicator mt="-1.5px" height="2px" bg="blue.500" borderRadius="1px"/>
                         <TabPanels>
                             <TabPanel className="flex flex-col">
                                 <div className="flex justify-end mb-2">
-                                    <Button colorScheme="blue" border='2px' size="lg" className="w-64" type={"submit"}>
+                                    <Button colorScheme="blue" border='2px' size="lg" className="w-64"
+                                            onClick={handleSubmit} type={"submit"} isDisabled={!submitEnabled}>
                                         <GoCodeReview className="mr-2"/>Review
                                     </Button>
                                 </div>
-                                {selectedFileContent ? (
-                                    <pre>
-                                        <code className="hljs" dangerouslySetInnerHTML={{ __html: hljs.highlightAuto(selectedFileContent).value }} />
-                                    </pre>
+                                {isLoading ? (
+                                    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 z-50">
+                                        <div className="bg-white p-5 rounded-lg">
+                                            <Flex alignItems="center" justifyContent="center">
+                                                <div><CircularProgress isIndeterminate color='blue.300'/></div>
+                                            </Flex>
+                                        </div>
+                                    </div>
                                 ) : (
-                                    <div>No file or code selected</div>
+                                    selectedFileContent ? (
+                                        <pre>
+                                            {addLineNumbersToCode(selectedFileContent)}
+                                        </pre>
+                                    ) : (
+                                        <div>No file or code selected</div>
+                                    )
                                 )}
                             </TabPanel>
                             <TabPanel>
@@ -81,6 +210,13 @@ export default function CodePreview() {
                     </Tabs>
                 </div>
             </div>
+            <style>
+                {`
+                    .user-select-none {
+                        user-select: none;
+                    }
+                `}
+            </style>
         </div>
     );
 }

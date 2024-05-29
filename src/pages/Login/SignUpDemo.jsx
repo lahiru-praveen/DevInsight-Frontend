@@ -1,4 +1,8 @@
-import { useState } from 'react';
+
+import { useState, Redirect } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+
 import {
     Button,
     FormControl,
@@ -23,6 +27,7 @@ export default function SignUp() {
     const [reEnterPassword, setReEnterPassword] = useState('');
     const [isFilled, setIsFilled] = useState(false);
     const [passwordError, setPasswordError] = useState('');
+    const [message,setMessage] = useState('');
 
     // Function to handle changes in the first name input
     const handleFirstNameChange = (event) => {
@@ -63,18 +68,28 @@ export default function SignUp() {
         );
     };
 
+  
     // Function to handle changes in the email input
-    const handleEmailChange = (event) => {
-        setEmail(event.target.value);
-        setIsFilled(
-            firstName !== '' &&
-                lastName !== '' &&
-                username !== '' &&
-                email !== '' &&
-                password !== '' &&
-                reEnterPassword !== ''
-        );
+     const handleEmailChange = (event) => {
+            const emailValue = event.target.value;
+            setEmail(emailValue);
+            setIsFilled(
+                firstName !== '' &&
+                    lastName !== '' &&
+                    username !== '' &&
+                    emailValue !== '' &&
+                    password !== '' &&
+                    reEnterPassword !== ''
+            );
+
+            // Check if the email contains the "@" sign
+            if (!emailValue.includes('@')) {
+                setMessage('Email should include @ sign');
+            } else {
+                setMessage('');
+            }
     };
+
 
     // Function to handle changes in the password input
     const handlePasswordChange = (event) => {
@@ -114,17 +129,44 @@ export default function SignUp() {
         }
     };
 
-    // Function to handle form submission
-    const handleSubmit = () => {
-        // Check if the form is filled and passwords match before submission
-        if (isFilled && password === reEnterPassword) {
-            // Perform your form submission logic here
-            // For demonstration purposes, we'll just show an alert
-            alert('Form submitted successfully!');
-        } else {
-            setPasswordError('Passwords do not match');
+  
+  // State variable for redirection
+const [redirect, setRedirect] = useState(false);
+
+// Function to handle form submission
+// Function to handle form submission
+const handleSubmit = async () => {
+    if (isFilled && password === reEnterPassword) {
+        try {
+            // Check if the email is already registered
+            const response = await axios.post('http://localhost:8000/signup', {
+                firstName,
+                lastName,
+                username,
+                email,
+                password,
+            });
+            // If email is not already registered, redirect to sign-in page
+            setRedirect(true);
+        } catch (error) {
+            console.error('Error signing up:', error);
+            if (error.response.status === 400 && error.response.data.detail === "User already exists") {
+                setMessage("Email is already registered");
+            } else {
+                setMessage("An error occurred while signing up");
+            }
         }
-    };
+    } else {
+        setPasswordError('Passwords do not match');
+    }   
+};
+
+
+// Redirect to Landing page after successful form submission
+if (redirect) {
+    return <Redirect to="/SignInDemo" />;
+}
+
 
     return (
         <Flex minH={'100vh'} align={'center'} justify={'center'}>
@@ -210,15 +252,19 @@ export default function SignUp() {
                 </FormControl>
 
                 {/* Submit button */}
+                <Link to="/si">
                 <Stack spacing={6}>
-                    <Button
-                        bg={isFilled && password === reEnterPassword ? 'blue.400' : 'blue.200'}
-                        color={'white'}
-                        onClick={handleSubmit}
-                    >
-                        NEXT
-                    </Button>
-                </Stack>
+                   
+                   <Button
+                       bg={isFilled && password === reEnterPassword ? 'blue.400' : 'blue.200'}
+                       color={'white'}
+                       onClick={handleSubmit}>
+                       Sign Up
+                   </Button>
+               </Stack>
+               </Link>
+               <p>{message}</p>
+               
             </Stack>
         </Flex>
     );

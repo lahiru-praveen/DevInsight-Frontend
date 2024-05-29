@@ -1,44 +1,39 @@
-import React from 'react'
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
-import { Button, ButtonGroup } from '@chakra-ui/react'
-import  Devinsight  from '../../assets/Devinsight.png';
+import { Tabs, TabList, Tab } from '@chakra-ui/react';
+import { Button } from '@chakra-ui/react';
+import Devinsight from '../../assets/Devinsight.png';
+import { Link } from 'react-router-dom';
 
 export const Navbar = () => {
   return (
-<div className='flex justify-between py-10 px-10'>
-            
-  <div className='flex justify-start '>
-      <img src={Devinsight} className="w-40 h-10" />
-  </div>
+    <div className='flex flex-col md:flex-row items-center justify-between py-4 px-4 md:px-10 fixed top-0 w-full z-50 bg-white shadow-md'>
+      <div className='flex items-center mb-4 md:mb-0'>
+        <img src={Devinsight} className="w-24 h-auto md:w-32 md:h-auto" alt="Pic" />
+      </div>
 
-  <div className='flex justify-center'>
-  
-  <Tabs variant='soft-rounded' colorScheme='blue'>
-  <TabList className="flex space-x-4">
-    <Tab>Tab 1</Tab>
-    <Tab>Tab 2</Tab>
-  </TabList>
-  <TabPanels>
-    <TabPanel>
-      <p>one!</p>
-    </TabPanel>
-    <TabPanel>
-      <p>two!</p>
-    </TabPanel>
-  </TabPanels>
-  </Tabs>
-  </div>
-  <div  className='flex justify-end space-x-4'>
-  <Button colorScheme='blue' variant='solid'>
-    Sign In
-  </Button>
-  <Button colorScheme='blue' variant='outline'>
-    Log In
-  </Button>
-  </div>
+      <div className='flex justify-center w-full md:w-auto'>
+        <Tabs variant='soft-rounded' colorScheme='blue'>
+          <TabList className="flex flex-wrap justify-center md:justify-start space-x-4 md:space-x-8">
+            <Tab>Home</Tab>
+            <Tab>About Us</Tab>
+            <Link to="/cu">
+            <Tab>Contact Us</Tab>
+            </Link>
+          </TabList>
+        </Tabs>
+      </div>
 
-</div>
-
-  )
-
-}
+      <div className='flex items-center space-x-4'>
+        <Link to ="/su">
+        <Button colorScheme='blue' variant='solid' size="sm">
+          Sign Up
+        </Button>
+        </Link>
+        <Link to ="si">
+        <Button colorScheme='blue' variant='outline' size="sm">
+          Log In
+        </Button>
+        </Link>
+      </div>
+    </div>
+  );
+};
