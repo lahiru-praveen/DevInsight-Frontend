@@ -18,6 +18,7 @@ export default function CodePreview() {
     const [selectedLine, setSelectedLine] = useState(null);
     const [reviewContent, setReviewContent] = useState('');
     const [suggestionContent, setSuggestionContent] = useState('');
+    const [referLinksContent, setReferLinksContent] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
@@ -69,11 +70,11 @@ export default function CodePreview() {
     }, [selectedFileContent]);
 
     useEffect(() => {
-        if (reviewContent !== '' && suggestionContent !== '') {
-            navigate('/cr', { state: { reviewContent: reviewContent, selectedFileName: selectedFileName , suggestionContent:suggestionContent} });
+        if (reviewContent !== '' && suggestionContent !== '' && referLinksContent !== '') {
+            navigate('/cr', { state: { reviewContent: reviewContent, selectedFileName: selectedFileName, suggestionContent: suggestionContent, referLinksContent: referLinksContent } });
         }
-        console.log(reviewContent);
-    }, [reviewContent, navigate, selectedFileName, mode, suggestionContent]);
+    }, [reviewContent, navigate, selectedFileName, suggestionContent, referLinksContent]);
+
 
     useEffect(() => {
         if (prName !== '' && selectedFileContent) {
@@ -88,25 +89,32 @@ export default function CodePreview() {
     const handleSubmit = async () => {
         setIsModalOpen(true); // Open the modal
         console.log("Selected file name in CodePreview:", selectedFileName);
-        const fetchData = async () => {
-            try {
-                if (!selectedFileContent) {
-                    console.error("Selected file content is empty.");
-                }
-                const response1 = await axios.post("http://localhost:8000/get_review", { p_id:"1" , p_name:prName, f_name:selectedFileName, language:Language , description:description_value , code: selectedFileContent , mode:mode_value });
-                setReviewContent(response1.data);
-                const response2 = await axios.post("http://localhost:8000/get_suggestions", { code: selectedFileContent , review: reviewContent });
-                setSuggestionContent(response2.data);
-            } catch (error) {
-                console.error("Error fetching review:", error);
-            } finally {
-                setIsModalOpen(false); // Close the modal
+        try {
+            if (!selectedFileContent) {
+                console.error("Selected file content is empty.");
+                return;
             }
-        };
-        fetchData(description, language).then(r =>
-            console.log(r)
-        ); // Call fetchData with description and language
+            const response1 = await axios.post("http://localhost:8000/get_review", {
+                p_id: "1",
+                p_name: prName,
+                f_name: selectedFileName,
+                language: Language,
+                description: description_value,
+                code: selectedFileContent,
+                mode: mode_value
+            });
+            const { review, suggestions, refer_link } = response1.data;
+            setReviewContent(review);
+            setSuggestionContent(suggestions);
+            setReferLinksContent(refer_link);
+        } catch (error) {
+            console.error("Error fetching review:", error);
+        } finally {
+            setIsModalOpen(false); // Close the modal
+        }
     };
+
+
 
 
     function addLineNumbersToCode(code) {

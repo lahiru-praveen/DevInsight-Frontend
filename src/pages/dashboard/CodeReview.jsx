@@ -16,7 +16,7 @@ export default function CodeReview() {
     const [selectedLine, setSelectedLine] = useState(null);
     const location = useLocation();
     const { state } = location;
-    let { reviewContent ,selectedFileName, mode, suggestionContent} = state || {};
+    let { reviewContent ,selectedFileName, mode, suggestionContent, referLinksContent} = state || {};
     console.log(reviewContent)
     console.log("Selected file name in CodePreview:", selectedFileName);
     console.log(suggestionContent)
@@ -153,7 +153,7 @@ export default function CodeReview() {
                                         <Text className="text-xl font-bold mr-2">Refer Links - </Text>
                                         <Box bg='white'  p={4} className="mt-2 mb-8">
                                             {reviewContent ? (
-                                                <pre>{reviewContent}</pre>
+                                                <pre>{referLinksContent}</pre>
                                             ) : (
                                                 <Text>There is a error </Text>
                                             )}
