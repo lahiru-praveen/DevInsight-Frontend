@@ -6,29 +6,34 @@ import { useEffect, useState } from "react";
 
 export default function CodeSubmissions() {
     const [submissions, setSubmissions] = useState([]);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const result = await axios.get('http://localhost:8000/pre-sub');
-                if (result.status) {
+                console.log("Fetch Result: ", result); // Log the entire response
+                if (result.status === 200 && result.data) {
                     setSubmissions(result.data);
                 } else {
                     console.error("Failed to fetch data:", result.message);
+                    setError("Failed to fetch data");
                 }
             } catch (error) {
                 console.error("Error fetching files:", error);
+                setError("Error fetching data");
             }
         };
-        fetchData().then(r => console.log(r));
+        fetchData();
     }, []);
 
     // Static headers
-    const headers = { p_id: "Project ID",
+    const headers = {
+        p_id: "Project ID",
         p_name: "Submission/Project Name",
         f_name: "File Name",
         submission_date: "Submission Date",
-        language: "Language" ,
+        language: "Language",
         description: "Description",
         mode: 0,
         code: 1,
@@ -44,7 +49,8 @@ export default function CodeSubmissions() {
                     Submission
                 </Text>
                 {/* Render static headers */}
-                <Submissions submission={headers} drop={1}/>
+                <Submissions submission={headers} drop={1} />
+                {error && <Text color="red">{error}</Text>}
                 {/* Map over submissions and render Submissions component */}
                 {submissions.map(submission => (
                     <Submissions key={submission.p_id} submission={submission} drop={0} />
