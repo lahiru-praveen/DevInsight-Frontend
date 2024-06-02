@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/vs.css';
-import {Tabs, TabList, TabPanels, Tab, TabPanel, Button, CircularProgress, Flex, Input, Text, Modal, ModalOverlay, ModalContent, ModalBody, ModalHeader} from '@chakra-ui/react';
+import {Tabs, TabList, TabPanels, Tab, TabPanel, Button, CircularProgress, Input, Text, Modal, ModalOverlay, ModalContent, ModalBody, ModalHeader} from '@chakra-ui/react';
 import FileList from "../../components/dashboard/FileList.jsx";
 import CodePreviewPageHeading from "../../components/dashboard/CodePreviewPageHeading.jsx";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -94,8 +94,8 @@ export default function CodePreview() {
                 console.error("Selected file content is empty.");
                 return;
             }
-            const response1 = await axios.post("http://localhost:8000/get_review", {
-                p_id: "1",
+            const response1 = await axios.post("http://localhost:8000/get-review",{
+                p_id: 0,
                 p_name: prName,
                 f_name: selectedFileName,
                 language: Language,
@@ -103,10 +103,24 @@ export default function CodePreview() {
                 code: selectedFileContent,
                 mode: mode_value
             });
+
+            const new_p_id = await axios.get("http://localhost:8000/get-latest-p-id")
+            console.log(new_p_id.data);
+
             const { review, suggestions, refer_link } = response1.data;
             setReviewContent(review);
             setSuggestionContent(suggestions);
             setReferLinksContent(refer_link);
+
+            const response2 = await axios.post("http://localhost:8000/add-review",{
+                p_id: new_p_id.data,
+                code: selectedFileContent,
+                review: review,
+                suggestions: suggestions,
+                reference_links: refer_link
+            });
+            console.log(response2);
+
         } catch (error) {
             console.error("Error fetching review:", error);
         } finally {
@@ -151,7 +165,7 @@ export default function CodePreview() {
             </div>
 
             <div className="flex flex-row flex-grow">
-                <div className="w-1/6 p-4 mt-3 ml-2 mr-2 bg-[#EBEBEB] flex flex-col">
+                <div className="w-full md:w-1/6 p-4 mt-3 ml-2 mr-2 bg-[#EBEBEB] flex flex-col">
                     <div>
                         <Text className="text-xl font-bold mr-2">Language</Text>
                         <LanguageSelectMenu onLanguageChange={handleLanguageChange} selectedLanguage={language}/>
@@ -172,19 +186,21 @@ export default function CodePreview() {
                         /></div>
 
                     <div>
-                        <FileList onSelectFile={(fileName) => setSelectedFileName(fileName)} selectedFileName='' mode={mode}/>
+                        <FileList onSelectFile={(fileName) => setSelectedFileName(fileName)} selectedFileName=''
+                                  mode={mode}/>
                         <div className="flex items-center">
-                            <IoHelpCircle className="mr-2 size-7 colur" />
-                            <Text className="font-bold mr-2 text-red-400">Please select a file to initiate the review process</Text>
+                            <IoHelpCircle className="mr-2 size-7 colur"/>
+                            <Text className="font-bold mr-2 text-red-400">Please select a file to initiate the review
+                                process</Text>
                             <Text color="red.400" className="text-xl">*</Text>
                         </div>
                     </div>
 
 
                 </div>
-                <div className="w-5/6 p-4 mt-3 ml-2 mr-2 h-auto font-bold bg-[#EBEBEB] color-[#898989]">
+                <div className="w-full md:w-5/6 p-4 mt-3 ml-2 mr-2 h-auto font-bold bg-[#EBEBEB] color-[#898989]">
                     <Tabs position="relative" isFitted variant="enclosed">
-                    <TabList mb='1em'>
+                        <TabList mb='1em'>
                             <Tab>Preview</Tab>
                             <Tab isDisabled>Review</Tab>
                         </TabList>
@@ -205,17 +221,15 @@ export default function CodePreview() {
                                 )}
 
                                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} isCentered>
-                                    <ModalOverlay />
+                                    <ModalOverlay/>
                                     <ModalContent>
-                                        <ModalHeader>Loading ...</ModalHeader>
+                                        <ModalHeader>LOADING ...</ModalHeader>
                                         <ModalBody>
-                                            <Flex alignItems="center" justifyContent="center">
-                                                <CircularProgress isIndeterminate color='blue.300' />
-                                            </Flex>
-                                            <Flex alignItems="center" justifyContent="center">
-                                                <Text>Please Wait ...</Text>
-                                                <Text>It will take some time to generate the review</Text>
-                                            </Flex>
+                                            <div className="flex flex-col items-center justify-center">
+                                                <div className="mr-2"><CircularProgress isIndeterminate color='blue.300'/></div>
+                                                <div className="mr-2"><Text>The review generation process may take some time.</Text></div>
+                                                <div className="mr-2"><Text>Please Wait ...</Text></div>
+                                            </div>
                                         </ModalBody>
                                     </ModalContent>
                                 </Modal>
