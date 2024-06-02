@@ -1,7 +1,7 @@
-
-import { useState, Redirect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React,{ useState, Redirect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+
 
 import {
     Button,
@@ -28,7 +28,25 @@ export default function SignUp() {
     const [isFilled, setIsFilled] = useState(false);
     const [passwordError, setPasswordError] = useState('');
     const [message,setMessage] = useState('');
+    const [token, setToken] = useState('');
     const navigate = useNavigate();
+    const [emailError, setEmailError] = useState('');
+
+    // const SignUpDemo = ({ setToken }) => {
+    //     const [formData, setFormData] = useState({
+    //       firstName: '',
+    //       lastName: '',
+    //       username: '',
+    //       email: '',
+    //       password: '',
+    
+    //     });
+        // const [error, setError] = useState(null);
+      
+        // const handleChange = (e) => {
+        //   const { name, value } = e.target;
+        //   setFormData({ ...formData, [name]: value });
+        // };
 
     // Function to handle changes in the first name input
     const handleFirstNameChange = (event) => {
@@ -81,7 +99,17 @@ export default function SignUp() {
                     emailValue !== '' &&
                     password !== '' &&
                     reEnterPassword !== ''
-            );
+            )
+            validateEmail();
+
+            const validateEmail = () => {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    setEmailError('Please enter a valid email address.');
+                } else {
+                    setEmailError('');
+                }
+            };
 
             
             // Check if the email contains the "@" sign
@@ -111,6 +139,10 @@ export default function SignUp() {
         }
     };
 
+ 
+
+   
+
     // Function to handle changes in the re-enter password input
     const handleReEnterPasswordChange = (event) => {
         setReEnterPassword(event.target.value);
@@ -132,28 +164,67 @@ export default function SignUp() {
 
   
   // State variable for redirection
-const [redirect, setRedirect] = useState(false);
+const [redirect] = useState(false);
 
 
 
-const handleSubmit = async () => {
+// const handleSubmit = async () => {
+//     console.log("Submitting form...");
+//     if (isFilled && password === reEnterPassword) {
+//         try {
+//             // Check if the email is already registered
+//             const response = await axios.post('http://localhost:8000/signup', {
+//                 firstName,
+//                 lastName,
+//                 username,
+//                 email,
+//                 password,
+//             });
+//             console.log("Form submitted successfully:", response.data);
+//             // If email is not already registered, redirect to sign-in page
+//             navigate("/si");
+
+//         } catch (error) {
+//             console.error('Error signing up:', error);
+//             if (error.response && error.response.status === 400 && error.response.data.detail === "User already exists") {
+//                 setMessage("Email is already registered");
+//             } else {
+//                 setMessage("An error occurred while signing up");
+//             }
+//         }
+//     } else {
+//         setPasswordError('Fill all the details');
+//     }
+// };
+
+const handleSubmit = async (e) => {
+    e.preventDefault();
     console.log("Submitting form...");
+
     if (isFilled && password === reEnterPassword) {
         try {
-            // Check if the email is already registered
             const response = await axios.post('http://localhost:8000/signup', {
                 firstName,
                 lastName,
                 username,
                 email,
                 password,
+                role: "Developer"
             });
+
             console.log("Form submitted successfully:", response.data);
-            // If email is not already registered, redirect to sign-in page
+
+            // Assuming the response contains the access token
+            const { access_token } = response.data;
+            setToken(access_token); // Store token in state or local storage
+            sessionStorage.setItem("token", access_token);
+
+            // Redirect to sign-in page
             navigate("/si");
 
         } catch (error) {
             console.error('Error signing up:', error);
+
             if (error.response && error.response.status === 400 && error.response.data.detail === "User already exists") {
                 setMessage("Email is already registered");
             } else {
@@ -164,6 +235,18 @@ const handleSubmit = async () => {
         setPasswordError('Fill all the details');
     }
 };
+
+
+  
+    // const handleSubmit = async (e) => {
+    //   e.preventDefault();
+    //   try {
+    //     const data = await signup(formData);
+    //     setToken(data.access_token); // Store token in state or local storage
+    //   } catch (error) {
+    //     setError(error.detail);
+    //   }
+    // };
 
 // Redirect to landing page after successful form submission
 if (redirect) {
@@ -177,6 +260,7 @@ if (redirect) {
                 spacing={6}
                 w={'full'}
                 maxW={'md'}
+
                 bg={useColorModeValue('white', 'gray.700')}
                 rounded={'xl'}
                 p={6}
@@ -268,5 +352,5 @@ if (redirect) {
                
             </Stack>
         </Flex>
-    );
+    );
 }

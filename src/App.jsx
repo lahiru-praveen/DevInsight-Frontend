@@ -1,6 +1,14 @@
 //import './App.css'
+
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import { CodeProvider } from './context/CodeContext.jsx';
+import React from 'react';
+import { AuthProvider } from '././pages/Profile/authContext.jsx';
+ 
+
+
+
+
 import DashboardMain from "./pages/dashboard/DashboardMain.jsx";
 import CodePreview from "./pages/dashboard/CodePreview.jsx";
 import SignInDemo from "./pages/Login/SignInDemo.jsx";
@@ -21,6 +29,7 @@ import ManageStaff from "./pages/ManageStaff/ManageStaff.jsx";
 import CodeReview from "./pages/dashboard/CodeReview.jsx";
 import ContactUs from "./pages/Profile/ContactUs.jsx";
 import CodeSubmissions from "./pages/dashboard/CodeSubmissions.jsx";
+import ForgetPasswordAndReset from "./pages/Login/ForgetPasswordAndReset.jsx";
 
 
 export default function App() {
@@ -28,6 +37,7 @@ export default function App() {
     <>
         <BrowserRouter>
             <CodeProvider>
+            <AuthProvider>
                 <Routes>
                     <Route path="/" element={<Landing/>}/>
                     <Route path="/db" element={<DashboardMain/>}/>
@@ -42,7 +52,7 @@ export default function App() {
                     <Route path="/fp" element={<ForgetPassword/>}/>
                     <Route path="/oa" element={<CreateOrg/>}/>
                     <Route path="/fa" element={<FindYourAccount/>}/>
-                    <Route path="/ep" element={<EditProfile/>}/>
+                    <Route path="/ep" element={<EditProfile userId="123"/>}/>
                     <Route path="/co1" element={<Createorg1/>}/>
                     <Route path="/co2" element={<Createorg2/>}/>
                     <Route path="/co3" element={<Createorg3/>}/>
@@ -50,9 +60,14 @@ export default function App() {
                     <Route path="/cr" element={<CodeReview/>}/>
                     <Route path="/cu" element={<ContactUs/>}/>
                     <Route path="/cs" element={<CodeSubmissions/>}/>
+                    <Route path="/fpr" element={<ForgetPasswordAndReset/>}/>
+                    
                 </Routes>
+                </AuthProvider>
             </CodeProvider>
         </BrowserRouter>
+
+
     </>
   )
 }
