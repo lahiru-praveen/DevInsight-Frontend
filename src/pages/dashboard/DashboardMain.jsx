@@ -161,7 +161,8 @@ export default function DashboardMain() {
 
             // Handle code submission
             if (values.value2.trim() !== '') {
-                console.log("Code uploaded successfully!");
+                const response_code_upload = await axios.post("http://localhost:8000/upload-code");
+                console.log("Code uploaded successfully!",response_code_upload);
                 navigate('/cp', {state: {code: values.value2, mode: 1, language: selectedLanguage, description: values.value1}});
                 setSubmitEnabled(false);
             }
