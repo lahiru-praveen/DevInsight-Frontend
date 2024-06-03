@@ -13,8 +13,8 @@ import {IoHelpCircle} from "react-icons/io5";
 
 export default function CodePreview() {
     const { selectedFileContent, setSelectedFileContent } = useCode();
-    const [submitEnabled, setSubmitEnabled] = useState(false);
     const [selectedFileName, setSelectedFileName] = useState('');
+    const [submitEnabled, setSubmitEnabled] = useState(false);
     const [selectedLine, setSelectedLine] = useState(null);
     const [reviewContent, setReviewContent] = useState('');
     const [suggestionContent, setSuggestionContent] = useState('');
@@ -63,6 +63,7 @@ export default function CodePreview() {
         }
     }, [mode, selectedFileName, setSelectedFileContent]);
 
+
     useEffect(() => {
         if (selectedFileContent) {
             hljs.highlightAll();
@@ -71,9 +72,9 @@ export default function CodePreview() {
 
     useEffect(() => {
         if (reviewContent !== '' && suggestionContent !== '' && referLinksContent !== '') {
-            navigate('/cr', { state: { reviewContent: reviewContent, selectedFileName: selectedFileName, suggestionContent: suggestionContent, referLinksContent: referLinksContent } });
+            navigate('/cr', { state: { reviewContent: reviewContent, selectedFileName: selectedFileName, suggestionContent: suggestionContent, referLinksContent: referLinksContent, projectName: prName, language: Language, description: description_value } });
         }
-    }, [reviewContent, navigate, selectedFileName, suggestionContent, referLinksContent]);
+    }, [referLinksContent]);
 
 
     useEffect(() => {
