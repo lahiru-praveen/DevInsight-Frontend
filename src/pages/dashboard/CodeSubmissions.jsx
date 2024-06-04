@@ -1,4 +1,4 @@
-import NavBar from "../../components/dashboard/NavBar.jsx";
+import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
 import { Text } from "@chakra-ui/react";
 import Submissions from "../../components/dashboard/Submissions.jsx";
 import axios from "axios";
@@ -42,7 +42,7 @@ export default function CodeSubmissions() {
     return (
         <div className="flex flex-col h-screen">
             <div>
-                <NavBar />
+                <NavBarUser />
             </div>
             <div className="flex flex-col mt-5 ml-10 mb-5 mr-10">
                 <Text className="font-bold" fontSize='30px'>

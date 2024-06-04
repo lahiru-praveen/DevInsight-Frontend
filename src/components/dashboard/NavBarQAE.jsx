@@ -4,7 +4,7 @@ import { Menu, MenuButton, MenuList, MenuItem, MenuDivider } from '@chakra-ui/re
 import { Link, useLocation } from "react-router-dom";
 import {RxDividerVertical} from "react-icons/rx";
 
-export default function NavBar() {
+export default function NavBarQAE() {
     const location = useLocation();
 
     return (
@@ -20,12 +20,20 @@ export default function NavBar() {
                         <Button colorScheme={location.pathname === '/db' ? 'blue' : 'gray'}>Dashboard</Button>
                     </Link>
                     <RxDividerVertical className="ml-1 mr-1"/>
+                    <Link to="/qhr">
+                        <Button colorScheme={location.pathname === '/qhr' ? 'blue' : 'gray'}>Requests</Button>
+                    </Link>
+                    <RxDividerVertical className="ml-1 mr-1"/>
                     <Link to="/cs">
                         <Button colorScheme={location.pathname === '/cs' ? 'blue' : 'gray'}>Submissions</Button>
                     </Link>
                     <RxDividerVertical className="ml-1 mr-1"/>
+                    <Link to="/uhr">
+                        <Button colorScheme={location.pathname === '/uhr' ? 'blue' : 'gray'}>Help Requests</Button>
+                    </Link>
+                    <RxDividerVertical className="ml-1 mr-1"/>
                     <Link to="/cu">
-                        <Button colorScheme={location.pathname === '/cu' ? 'blue' : 'gray'}>Help Desk</Button>
+                        <Button colorScheme={location.pathname === '/cu' ? 'blue' : 'gray'}>Help</Button>
                     </Link>
                 </div>
                 <div className="flex flex-row">

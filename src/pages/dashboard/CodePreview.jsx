@@ -16,6 +16,7 @@ export default function CodePreview() {
     const [selectedFileName, setSelectedFileName] = useState('');
     const [submitEnabled, setSubmitEnabled] = useState(false);
     const [selectedLine, setSelectedLine] = useState(null);
+    const [projectID, setProjectID] = useState('');
     const [reviewContent, setReviewContent] = useState('');
     const [suggestionContent, setSuggestionContent] = useState('');
     const [referLinksContent, setReferLinksContent] = useState('');
@@ -72,7 +73,7 @@ export default function CodePreview() {
 
     useEffect(() => {
         if (reviewContent !== '' && suggestionContent !== '' && referLinksContent !== '') {
-            navigate('/cr', { state: { reviewContent: reviewContent, selectedFileName: selectedFileName, suggestionContent: suggestionContent, referLinksContent: referLinksContent, projectName: prName, language: Language, description: description_value } });
+            navigate('/cr', { state: { reviewContent: reviewContent, selectedFileName: selectedFileName, suggestionContent: suggestionContent, referLinksContent: referLinksContent, projectName: prName, language: Language, description: description_value, pID: projectID } });
         }
     }, [referLinksContent]);
 
@@ -106,7 +107,7 @@ export default function CodePreview() {
             });
 
             const new_p_id = await axios.get("http://localhost:8000/get-latest-p-id")
-            console.log(new_p_id.data);
+            setProjectID(new_p_id.data);
 
             const { review, suggestions, refer_link } = response1.data;
             setReviewContent(review);

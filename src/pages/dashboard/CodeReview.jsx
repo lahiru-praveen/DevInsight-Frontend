@@ -1,38 +1,29 @@
-import { Box, Button, Flex, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Tab, TabList, TabPanel, TabPanels, Tabs, Text, CircularProgress } from "@chakra-ui/react";
 import CodeReviewPageHeading from "../../components/dashboard/CodeReviewPageHeading.jsx";
 import { RxDividerVertical } from "react-icons/rx";
 import { IoMdDownload } from "react-icons/io";
 import { BsFillQuestionSquareFill } from "react-icons/bs";
 import { useState } from "react";
 import axios from "axios";
-import { CircularProgress } from '@chakra-ui/react';
 import { useCode } from '../../context/CodeContext.jsx';
 import hljs from "highlight.js";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import FileList from "../../components/dashboard/FileList.jsx";
 
 export default function CodeReview() {
     const { selectedFileContent } = useCode();
     const [selectedLine, setSelectedLine] = useState(null);
     const location = useLocation();
+    const navigate = useNavigate();
     const { state } = location;
-    let { reviewContent, selectedFileName, mode, suggestionContent, referLinksContent, projectName, language, description } = state || {};
+    let { reviewContent, selectedFileName, mode, suggestionContent, referLinksContent, projectName, language, description, projectId } = state || {};
     console.log(reviewContent);
     console.log("Selected file name in CodePreview:", selectedFileName);
     console.log(suggestionContent);
 
     const handleDownloadPdf = async () => {
         try {
-            const response = await axios.post("http://localhost:8000/generate-pdf", {
-                reviewContent,
-                suggestionContent,
-                referLinksContent,
-                selectedFileName,
-                projectName,
-                language,
-                description,
-                selectedFileContent
-            }, {
+            const response = await axios.post("http://localhost:8000/generate-pdf", {reviewContent, suggestionContent, referLinksContent, selectedFileName, projectName, language, description, selectedFileContent}, {
                 responseType: 'blob' // important to handle binary data
             });
             const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -46,7 +37,13 @@ export default function CodeReview() {
         }
     };
 
-
+    const handleAskHelp = async () => {
+        try {
+            navigate('/ah', {state: {projectID: projectId, projectName: projectName, fileName: selectedFileName, language: language, description: description, mode: mode, code: selectedFileContent, review: reviewContent, suggestions: suggestionContent, referLinks: referLinksContent}});
+        } catch (error) {
+            console.error("Error navigating to Ask Help:", error);
+        }
+    };
 
     function addLineNumbersToCode(code) {
         const lines = code.split('\n');
@@ -97,7 +94,7 @@ export default function CodeReview() {
                                 <div className="flex flex-col">
                                     <div className="flex justify-end mb-2">
                                         <Button colorScheme="blue" border='2px' size="md" className="w-64"
-                                                type={"submit"}>
+                                                onClick={handleAskHelp}>
                                             <BsFillQuestionSquareFill className="mr-1" />Ask Help
                                         </Button>
                                     </div>
@@ -121,7 +118,7 @@ export default function CodeReview() {
                                 <div className="flex flex-col ">
                                     <div className="flex justify-end mb-2">
                                         <Button colorScheme="blue" border='2px' size="md" className="w-64"
-                                                type={"submit"}>
+                                                onClick={handleAskHelp}>
                                             <BsFillQuestionSquareFill className="mr-1" />Ask Help
                                         </Button>
                                         <RxDividerVertical className="mt-3" />
