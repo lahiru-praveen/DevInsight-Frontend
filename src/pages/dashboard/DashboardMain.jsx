@@ -3,7 +3,7 @@ import {Button, Tabs, TabList, TabPanels, Tab, TabPanel, Textarea, Text, Box,} f
 import { FaWindowClose } from "react-icons/fa";
 import LanguageSelectMenu from "../../components/dashboard/LanguageSelectMenu.jsx";
 import {useNavigate} from "react-router-dom";
-import NavBar from "../../components/dashboard/NavBar.jsx";
+import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
 import axios from "axios";
 import {MdDriveFolderUpload} from "react-icons/md";
 import { FaFlagCheckered } from "react-icons/fa";
@@ -212,7 +212,7 @@ export default function DashboardMain() {
     return (
         <div className="flex flex-col h-screen ">
             <div>
-                <NavBar/>
+                <NavBarUser/>
             </div>
 
             <div className="flex flex-row  flex-grow">
