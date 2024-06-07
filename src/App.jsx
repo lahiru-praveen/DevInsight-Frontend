@@ -21,6 +21,9 @@ import ManageStaff from "./pages/ManageStaff/ManageStaff.jsx";
 import CodeReview from "./pages/dashboard/CodeReview.jsx";
 import ContactUs from "./pages/Profile/ContactUs.jsx";
 import CodeSubmissions from "./pages/dashboard/CodeSubmissions.jsx";
+import ManagerProfile from "./pages/MangerProfile/ManagerProfile.jsx";
+import Chatbot from "./pages/Chatbot/chatbot.jsx";
+import AccSuccess from "./pages/CreateOrg/AccSuccess.jsx";
 
 
 export default function App() {
@@ -50,6 +53,11 @@ export default function App() {
                     <Route path="/cr" element={<CodeReview/>}/>
                     <Route path="/cu" element={<ContactUs/>}/>
                     <Route path="/cs" element={<CodeSubmissions/>}/>
+
+                    <Route path="/mp" element={<ManagerProfile/>}/>
+                    <Route path="/cb" element={<Chatbot/>}/>
+                    <Route path="/as" element={<AccSuccess/>}/>
+
                 </Routes>
             </CodeProvider>
         </BrowserRouter>
