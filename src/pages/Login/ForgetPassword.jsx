@@ -87,11 +87,13 @@ export default function ForgetPassword() {
     const [isCodeFilled, setIsCodeFilled] = useState(false);
     const [email, setEmail] = useState('');
     const [code, setCode] = useState('');
+    const [otp, setOtp] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    
 
     const handleSendEmail = async () => {
         try {
-            const response = await fetch('/api/send-email', {
+            const response = await fetch('http://localhost:8000/api/send-email', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -100,9 +102,12 @@ export default function ForgetPassword() {
             });
 
             if (response.ok) {
+                const data = await response.json();
                 alert('Email sent successfully!');
+                setOtp(data.otp);
             } else {
-                setErrorMessage('Email sending failed. Please try again.');
+                const errorData = await response.json();
+                setErrorMessage(`Email sending failed: ${errorData.detail}`);
             }
         } catch (error) {
             console.error('Error:', error);
@@ -111,13 +116,14 @@ export default function ForgetPassword() {
     };
 
     const handleVerify = async () => {
+        if (code.join('') === otp) {
         try {
-            const response = await fetch('/api/reset-password', {
+            const response = await fetch('http://localhost:8000/api/reset-password', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, code }),
+                body: JSON.stringify({ email, code: code.join('') }),
                 
             });
 
@@ -125,11 +131,15 @@ export default function ForgetPassword() {
                 alert('Password reset successfully!');
                 //history.push('/fpr');
             } else {
-                setErrorMessage('Password reset failed. Please try again.');
+                const errorData = await response.json();
+                setErrorMessage(`Password reset failed: ${errorData.detail}`);
             }
         } catch (error) {
             console.error('Error:', error);
             setErrorMessage('An error occurred. Please try again.');
+        }
+        } else {
+            setErrorMessage('Invalid OTP. Please try again.');
         }
     };
 
@@ -181,7 +191,7 @@ export default function ForgetPassword() {
                                 <PinInputField key={index} value={code[index] || ''} onChange={(e) => {
                                     const newCode = [...code];
                                     newCode[index] = e.target.value;
-                                    setCode(newCode);
+                                    setCode(newCode.join(''));
                                     setIsCodeFilled(newCode.every((c) => c));
                                 }}/>
                             ))}

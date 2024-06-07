@@ -21,7 +21,6 @@ import UserHelpRequests from "./pages/HelpDesk/UserHelpRequests.jsx";
 import OrganRegister from "./pages/Login/OrganizationCreateAccount.jsx";
 import ForgetPassword from "./pages/Login/ForgetPassword.jsx";
 import CreateOrg from "./pages/Login/OrganizationCreateAccount.jsx";
-import FindYourAccount from "./pages/Login/FindYourAccount.jsx";
 import EditProfile from "./pages/Profile/EditProfile.jsx";
 import Createorg2 from "./pages/CreateOrg/Createorg2.jsx";
 import Createorg3 from "./pages/CreateOrg/Createorg3.jsx";
@@ -30,6 +29,7 @@ import CodeReview from "./pages/dashboard/CodeReview.jsx";
 import ContactUs from "./pages/Profile/ContactUs.jsx";
 import CodeSubmissions from "./pages/dashboard/CodeSubmissions.jsx";
 import ForgetPasswordAndReset from "./pages/Login/ForgetPasswordAndReset.jsx";
+import VerifyEmail from "./pages/Login/VerifyEmail.jsx";
 
 
 export default function App() {
@@ -51,7 +51,7 @@ export default function App() {
                     <Route path="/og" element={<OrganRegister/>}/>
                     <Route path="/fp" element={<ForgetPassword/>}/>
                     <Route path="/oa" element={<CreateOrg/>}/>
-                    <Route path="/fa" element={<FindYourAccount/>}/>
+                    <Route path="/verify-email" element={<VerifyEmail/>}/>
                     <Route path="/ep" element={<EditProfile userId="123"/>}/>
                     <Route path="/co1" element={<Createorg1/>}/>
                     <Route path="/co2" element={<Createorg2/>}/>
