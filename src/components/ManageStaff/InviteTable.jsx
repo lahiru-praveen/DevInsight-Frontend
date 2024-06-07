@@ -212,13 +212,14 @@ import {
   ModalCloseButton,
   FormControl,
   FormLabel,
-  useDisclosure
+  useDisclosure,
+  FormErrorMessage
 } from '@chakra-ui/react';
 import { Select } from '@chakra-ui/react';
 import { Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
 import { Search2Icon } from "@chakra-ui/icons";
 import { Button } from '@chakra-ui/react';
-import emailjs from "@emailjs/browser"
+import emailjs from "@emailjs/browser";
 
 export const InviteTable = () => {
   const { isOpen: isOpen1, onOpen: onOpen1, onClose: onClose1 } = useDisclosure();
@@ -227,24 +228,27 @@ export const InviteTable = () => {
   const finalRef = useRef(null);
   const [invites, setInvites] = useState([]);
   const [error, setError] = useState(null);
+  const [emailError, setEmailError] = useState(""); // State for email error message
+  const [roleError, setRoleError] = useState(""); // State for role error message
   const [index, setIndex] = useState(null);
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
   const emailRef = useRef("");
   const roleRef = useRef("");
   const [query, setQuery] = useState("");
-  
+
   useEffect(() => {
     const fetchInviteTable = async () => {
       try {
         const response = await axios.get("http://127.0.0.1:8001/invite-table");
+        console.log(response.data); // Add this line to debug the response
         setInvites(response.data);
       } catch (error) {
         console.error("Error fetching invite table:", error);
         setError("Error fetching invite table. Please try again later.");
       }
     };
-    
+
     fetchInviteTable();
   }, []);
 
@@ -265,7 +269,7 @@ export const InviteTable = () => {
       alert("Error sending email. Please try again later.");
     }
   };
-  
+
   const handleDelete = async () => {
     try {
       await axios.delete(`http://127.0.0.1:8001/invites/${invites[index].id}`);
@@ -280,11 +284,27 @@ export const InviteTable = () => {
   const onOpenModal = (index) => {
     setIndex(index);
     onOpen1();
-  }
+  };
 
   const handleAddInvite = async () => {
+    // Check if email already exists in invites
+    const emailExists = invites.some(invite => invite.email === email);
+    if (emailExists) {
+      setEmailError("This email is already invited.");
+      return;
+    }
+
+    // Check if role is selected
+    if (!role) {
+      setRoleError("Role is required.");
+      return;
+    }
+
+    const currentDate = new Date().toISOString();
     try {
-      await axios.post("http://127.0.0.1:8001/add-invite", { email, role });
+      const response = await axios.post("http://127.0.0.1:8001/add-invite", { email, role, date: currentDate });
+      const newInvite = { id: response.data.id, email, role, date: currentDate }; // Adjust based on your backend response
+      setInvites([...invites, newInvite]);
       onClose2();
     } catch (error) {
       console.error("Error adding invite:", error);
@@ -308,7 +328,7 @@ export const InviteTable = () => {
     return (
       invite.email.toLowerCase().includes(query.toLowerCase()) ||
       invite.role.toLowerCase().includes(query.toLowerCase()) ||
-      invite.device.toLowerCase().includes(query.toLowerCase())
+      (invite.device && invite.device.toLowerCase().includes(query.toLowerCase())) // Adjusted to check if invite.device exists
     );
   });
 
@@ -337,26 +357,34 @@ export const InviteTable = () => {
           <ModalHeader>Send Invite</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
-            <FormControl>
+            <FormControl isInvalid={emailError}>
               <FormLabel>Email</FormLabel>
               <Input
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setEmailError(""); // Clear error when typing
+                }}
                 type="email"
                 placeholder="Enter email"
               />
+              {emailError && <FormErrorMessage>{emailError}</FormErrorMessage>}
             </FormControl>
 
-            <FormControl mt={4}>
+            <FormControl mt={4} isInvalid={roleError}>
               <FormLabel>Role</FormLabel>
               <Select
                 value={role}
-                onChange={(e) => setRole(e.target.value)}
+                onChange={(e) => {
+                  setRole(e.target.value);
+                  setRoleError(""); // Clear error when selecting a role
+                }}
                 placeholder="Select role"
               >
                 <option value="admin">Admin</option>
                 <option value="user">User</option>
               </Select>
+              {roleError && <FormErrorMessage>{roleError}</FormErrorMessage>}
             </FormControl>
           </ModalBody>
 
@@ -369,7 +397,7 @@ export const InviteTable = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-      
+
       <div>
         <h1 className="py-5 text-xl leading-tight font-bold text-gray-500">
           Invites
@@ -396,6 +424,14 @@ export const InviteTable = () => {
 
       <div className="overflow-x-auto shadow-md sm:rounded-lg overflow-y-scroll h-64">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <thead>
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+            </tr>
+          </thead>
           <tbody>
             {filteredInvites.map((invite, index) => (
               <tr
@@ -410,7 +446,7 @@ export const InviteTable = () => {
                   {invite.email}
                 </td>
                 <td className="px-6 py-4">{invite.role}</td>
-                <td className="px-6 py-4">{invite.device}</td>
+                <td className="px-6 py-4">{invite.date ? new Date(invite.date).toLocaleString() : 'N/A'}</td>
                 <td className="px-6 py-4">
                   <div className="flex justify-end space-x-2">
                     <button
@@ -432,9 +468,6 @@ export const InviteTable = () => {
           </tbody>
         </table>
       </div>
-      {error && (
-        <div className="mt-4 text-red-500 dark:text-red-400">{error}</div>
-      )}
     </div>
   );
 };
