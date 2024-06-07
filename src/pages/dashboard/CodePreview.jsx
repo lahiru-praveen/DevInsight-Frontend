@@ -2,14 +2,32 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/vs.css';
-import {Tabs, TabList, TabPanels, Tab, TabPanel, Button, CircularProgress, Input, Text, Modal, ModalOverlay, ModalContent, ModalBody, ModalHeader} from '@chakra-ui/react';
+import {
+    Tabs,
+    TabList,
+    TabPanels,
+    Tab,
+    TabPanel,
+    Button,
+    CircularProgress,
+    Input,
+    Text,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalBody,
+    ModalHeader,
+    Breadcrumb, BreadcrumbItem, BreadcrumbLink
+} from '@chakra-ui/react';
 import FileList from "../../components/dashboard/FileList.jsx";
-import CodePreviewPageHeading from "../../components/dashboard/CodePreviewPageHeading.jsx";
-import { useLocation, useNavigate } from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import { GoCodeReview } from "react-icons/go";
 import { useCode } from '../../context/CodeContext.jsx';
 import LanguageSelectMenu from "../../components/dashboard/LanguageSelectMenu.jsx";
-import {IoHelpCircle} from "react-icons/io5";
+import {IoHelpCircle, IoHome} from "react-icons/io5";
+import {IoIosArrowForward} from "react-icons/io";
+import {ChevronRightIcon} from "@chakra-ui/icons";
+import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
 
 export default function CodePreview() {
     const { selectedFileContent, setSelectedFileContent } = useCode();
@@ -163,11 +181,24 @@ export default function CodePreview() {
     return (
         <div className="flex flex-col h-screen">
             <div>
-                <CodePreviewPageHeading/>
+                <NavBarUser button1={false} button2={true} button3={true} button4={true}/>
             </div>
 
             <div className="flex flex-row flex-grow">
                 <div className="w-full md:w-1/6 p-4 mt-3 ml-2 mr-2 bg-[#EBEBEB] flex flex-col">
+                    <div className="flex items-center mt-2 ml-2 mr-2 mb-4">
+                        <IoHome className="mr-1 mt-1"/>
+                        <IoIosArrowForward className="mr-1 mt-1"/>
+                        <Breadcrumb spacing='4px' separator={<ChevronRightIcon color='gray.500'/>}>
+                            <BreadcrumbItem>
+                                <BreadcrumbLink as={Link} to="/db">DashBoard</BreadcrumbLink>
+                            </BreadcrumbItem>
+
+                            <BreadcrumbItem isCurrentPage>
+                                <BreadcrumbLink>Code Preview</BreadcrumbLink>
+                            </BreadcrumbItem>
+                        </Breadcrumb>
+                    </div>
                     <div>
                         <Text className="text-xl font-bold mr-2">Language</Text>
                         <LanguageSelectMenu onLanguageChange={handleLanguageChange} selectedLanguage={language}/>
@@ -222,7 +253,7 @@ export default function CodePreview() {
                                     <div>No file or code selected</div>
                                 )}
 
-                                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} isCentered>
+                                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} isCentered closeOnOverlayClick={false}>
                                     <ModalOverlay/>
                                     <ModalContent>
                                         <ModalHeader>LOADING ...</ModalHeader>

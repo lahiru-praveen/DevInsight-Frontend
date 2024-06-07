@@ -1,11 +1,15 @@
+// CodeSubmission.jsx
 import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
-import { Text } from "@chakra-ui/react";
+import { Text, Input, Select } from "@chakra-ui/react";
 import Submissions from "../../components/dashboard/Submissions.jsx";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
 export default function CodeSubmissions() {
     const [submissions, setSubmissions] = useState([]);
+    const [filteredSubmissions, setFilteredSubmissions] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [sortOrder, setSortOrder] = useState("asc");
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -15,6 +19,7 @@ export default function CodeSubmissions() {
                 console.log("Fetch Result: ", result); // Log the entire response
                 if (result.status === 200 && result.data) {
                     setSubmissions(result.data);
+                    setFilteredSubmissions(result.data);
                 } else {
                     console.error("Failed to fetch data:", result.message);
                     setError("Failed to fetch data");
@@ -26,6 +31,32 @@ export default function CodeSubmissions() {
         };
         fetchData();
     }, []);
+
+    useEffect(() => {
+        filterAndSortSubmissions();
+    }, [searchQuery, sortOrder, submissions]);
+
+    const filterAndSortSubmissions = () => {
+        let filtered = submissions.filter(submission =>
+            submission.p_name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+
+        filtered.sort((a, b) => {
+            const dateA = new Date(a.submission_date);
+            const dateB = new Date(b.submission_date);
+            return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+        });
+
+        setFilteredSubmissions(filtered);
+    };
+
+    const handleSearchChange = (event) => {
+        setSearchQuery(event.target.value);
+    };
+
+    const handleSortOrderChange = (event) => {
+        setSortOrder(event.target.value);
+    };
 
     // Static headers
     const headers = {
@@ -42,17 +73,29 @@ export default function CodeSubmissions() {
     return (
         <div className="flex flex-col h-screen">
             <div>
-                <NavBarUser />
+                <NavBarUser button1={false} button2={false} button3={false} button4={false} />
             </div>
             <div className="flex flex-col mt-5 ml-10 mb-5 mr-10">
-                <Text className="font-bold" fontSize='30px'>
+                <Text className="font-bold mb-4" fontSize='30px'>
                     Submission
                 </Text>
+                <div className="flex mb-8">
+                    <Input
+                        placeholder="Search by project name"
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        mr={4}
+                    />
+                    <Select value={sortOrder} onChange={handleSortOrderChange} width="150px">
+                        <option value="asc">Sort by Date (Previous)</option>
+                        <option value="desc">Sort by Date (Latest)</option>
+                    </Select>
+                </div>
                 {/* Render static headers */}
                 <Submissions submission={headers} drop={1} />
                 {error && <Text color="red">{error}</Text>}
-                {/* Map over submissions and render Submissions component */}
-                {submissions.map(submission => (
+                {/* Map over filtered and sorted submissions and render Submissions component */}
+                {filteredSubmissions.map(submission => (
                     <Submissions key={submission.p_id} submission={submission} drop={0} />
                 ))}
             </div>

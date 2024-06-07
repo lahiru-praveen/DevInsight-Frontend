@@ -355,7 +355,7 @@
 //
 // export default UserHelpRequests;
 import { useState, useEffect } from 'react';
-import NavBar from "../../components/QAE/NavBar.jsx";
+import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
 
 function UserHelpRequests() {
     const [sortedItems, setSortedItems] = useState([]);
@@ -417,7 +417,7 @@ function UserHelpRequests() {
 
     return (
         <div className="font-roboto">
-            <NavBar/>
+            <NavBarUser/>
             <div className="text-5xl font-bold mr-10 pl-10 pt-10"><p>Help Desk</p></div>
             <div className=" text-right text-2xl pt-5 pr-10">
                 <select onChange={(e) => handleSort(e.target.value)}>
