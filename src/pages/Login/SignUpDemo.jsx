@@ -1,6 +1,6 @@
 
 import { useState, Redirect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import {
@@ -28,6 +28,7 @@ export default function SignUp() {
     const [isFilled, setIsFilled] = useState(false);
     const [passwordError, setPasswordError] = useState('');
     const [message,setMessage] = useState('');
+    const navigate = useNavigate();
 
     // Function to handle changes in the first name input
     const handleFirstNameChange = (event) => {
@@ -82,12 +83,12 @@ export default function SignUp() {
                     reEnterPassword !== ''
             );
 
+            
             // Check if the email contains the "@" sign
-            if (!emailValue.includes('@')) {
-                setMessage('Email should include @ sign');
-            } else {
-                setMessage('');
-            }
+            // if (!emailValue.includes('@')) {
+            //     setMessage('Email should include @ sign');
+            // } else {
+            //     setMessage('');
     };
 
 
@@ -133,9 +134,10 @@ export default function SignUp() {
   // State variable for redirection
 const [redirect, setRedirect] = useState(false);
 
-// Function to handle form submission
-// Function to handle form submission
+
+
 const handleSubmit = async () => {
+    console.log("Submitting form...");
     if (isFilled && password === reEnterPassword) {
         try {
             // Check if the email is already registered
@@ -146,23 +148,24 @@ const handleSubmit = async () => {
                 email,
                 password,
             });
+            console.log("Form submitted successfully:", response.data);
             // If email is not already registered, redirect to sign-in page
-            setRedirect(true);
+            navigate("/si");
+
         } catch (error) {
             console.error('Error signing up:', error);
-            if (error.response.status === 400 && error.response.data.detail === "User already exists") {
+            if (error.response && error.response.status === 400 && error.response.data.detail === "User already exists") {
                 setMessage("Email is already registered");
             } else {
                 setMessage("An error occurred while signing up");
             }
         }
     } else {
-        setPasswordError('Passwords do not match');
-    }   
+        setPasswordError('Fill all the details');
+    }
 };
 
-
-// Redirect to Landing page after successful form submission
+// Redirect to landing page after successful form submission
 if (redirect) {
     return <Redirect to="/SignInDemo" />;
 }
@@ -252,7 +255,6 @@ if (redirect) {
                 </FormControl>
 
                 {/* Submit button */}
-                <Link to="/si">
                 <Stack spacing={6}>
                    
                    <Button
@@ -262,7 +264,6 @@ if (redirect) {
                        Sign Up
                    </Button>
                </Stack>
-               </Link>
                <p>{message}</p>
                
             </Stack>

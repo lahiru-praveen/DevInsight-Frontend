@@ -61,6 +61,8 @@ export default function SubmissionNav() {
                     onClose={() => setSelectedSubmission(null)} // Close modal when onClose is triggered
                     p_name={selectedSubmission.p_name}
                     code={selectedSubmission.code}
+                    des={selectedSubmission.description}
+                    entity_id={selectedSubmission.p_id}
                 />
             )}
         </div>

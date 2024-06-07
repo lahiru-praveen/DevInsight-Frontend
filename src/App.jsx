@@ -21,9 +21,14 @@ import ManageStaff from "./pages/ManageStaff/ManageStaff.jsx";
 import CodeReview from "./pages/dashboard/CodeReview.jsx";
 import ContactUs from "./pages/Profile/ContactUs.jsx";
 import CodeSubmissions from "./pages/dashboard/CodeSubmissions.jsx";
+
+import AskHelp from "./pages/HelpDesk/AskHelp.jsx";
+import UserResponsePreview from "./pages/HelpDesk/UserResponsePreview.jsx";
+
 import ManagerProfile from "./pages/MangerProfile/ManagerProfile.jsx";
 import Chatbot from "./pages/Chatbot/chatbot.jsx";
 import AccSuccess from "./pages/CreateOrg/AccSuccess.jsx";
+
 
 
 export default function App() {
@@ -53,6 +58,10 @@ export default function App() {
                     <Route path="/cr" element={<CodeReview/>}/>
                     <Route path="/cu" element={<ContactUs/>}/>
                     <Route path="/cs" element={<CodeSubmissions/>}/>
+
+                    <Route path="/ah" element={<AskHelp/>}/>
+                    <Route path="/urp" element={<UserResponsePreview/>}/>
+
 
                     <Route path="/mp" element={<ManagerProfile/>}/>
                     <Route path="/cb" element={<Chatbot/>}/>

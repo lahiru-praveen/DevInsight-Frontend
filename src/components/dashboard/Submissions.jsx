@@ -1,24 +1,9 @@
 import { useState } from 'react';
-import {
-    Card,
-    Text,
-    Flex,
-    CardHeader,
-} from '@chakra-ui/react';
+import {Card, Text, Flex, CardHeader,} from '@chakra-ui/react';
 import { BsFileEarmarkMedicalFill } from 'react-icons/bs';
 import PropTypes from 'prop-types';
 import { FaCode, FaFileCode } from 'react-icons/fa';
-import {
-    FcApproval,
-    FcAssistant,
-    FcCancel,
-    FcDisapprove,
-    FcExpand,
-    FcFile,
-    FcHighPriority,
-    FcInspection,
-    FcSms
-} from 'react-icons/fc';
+import {FcApproval, FcAssistant, FcCancel, FcDisapprove, FcExpand, FcFile, FcHighPriority, FcInspection, FcSms} from 'react-icons/fc';
 import { VscBlank } from 'react-icons/vsc';
 import { MdRateReview } from 'react-icons/md';
 import { IoPeople } from 'react-icons/io5';
@@ -26,8 +11,9 @@ import SubmissionModal from './SubmissionModal.jsx';
 
 export default function Submissions({ submission, drop }) {
     const [isModalOpen, setModalOpen] = useState(false);
-    const { p_id, p_name, f_name, submission_date, language, description, code, mode } = submission;
-
+    const { _id, p_id, p_name, f_name, submission_date, language, description, code, mode } = submission;
+    const id = _id && _id['$oid'] ? _id['$oid'] : null;
+    console.log(id);
     const typeIcon = mode === 1 ? <FaCode size="25px" /> : (mode === 2 ? <FcFile size="25px" /> : <BsFileEarmarkMedicalFill size="25px" />);
     const file_name = f_name === '' ? <FcSms size="25px" /> : (f_name);
     const dropType = drop === 0 ? <FcExpand size="25px" onClick={() => setModalOpen(true)} style={{ cursor: 'pointer' }} /> : <VscBlank size="25px" />;
@@ -82,7 +68,10 @@ export default function Submissions({ submission, drop }) {
                 onClose={() => setModalOpen(false)}
                 p_name={p_name}
                 code={code}
+                des={description}
+                entity_id={p_id}
             />
+
         </>
     );
 }
@@ -90,13 +79,16 @@ export default function Submissions({ submission, drop }) {
 // Add prop type validation
 Submissions.propTypes = {
     submission: PropTypes.shape({
-        p_id: PropTypes.string.isRequired, // Update the prop type for p_id
+        _id: PropTypes.shape({
+            $oid: PropTypes.string.isRequired
+        }).isRequired,
+        p_id: PropTypes.number.isRequired,
         p_name: PropTypes.string.isRequired,
         f_name: PropTypes.string.isRequired,
         submission_date: PropTypes.string.isRequired,
         language: PropTypes.string.isRequired,
         description: PropTypes.string.isRequired,
-        mode: PropTypes.number.isRequired, // Add prop type for mode
+        mode: PropTypes.number.isRequired,
         code: PropTypes.string.isRequired,
     }).isRequired,
     drop: PropTypes.number.isRequired
