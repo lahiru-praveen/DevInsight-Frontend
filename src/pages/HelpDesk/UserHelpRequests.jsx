@@ -809,11 +809,25 @@
 //
 // export default UserHelpRequests;
 import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
+import { Tooltip } from '@chakra-ui/react'
+import {SearchIcon} from "@chakra-ui/icons";
 
 function UserHelpRequests(){
     return(
         <div>
             <NavBarUser/>
+            <div className="mt-10 ml-8 text-3xl">
+                <Tooltip isDisabled>
+                    <SearchIcon />
+                </Tooltip>
+                <input
+                    className="shadow appearance-none border rounded w-50 h-10 ml-5 py-2 px-3 text-gray-700 leading-tight
+                                        focus:outline-none focus:shadow-outline"
+                    id="request"
+                    type="text"
+                    placeholder="Search the requests"
+                />
+            </div>
         </div>
     )
 }

@@ -196,20 +196,139 @@
 // }
 //
 // export default AskHelp;
+// import {useState} from "react";
+// import { useLocation } from 'react-router-dom';
+// import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
+// import { Tabs, TabList, TabPanels, Tab, TabPanel} from "@chakra-ui/react";
+//
+// function AskHelp() {
+//     const location = useLocation();
+//     const { code, review} = location.state || {};
+//
+//     const [typedText, setTypedText] = useState('');
+//     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+//
+//     // Function to handle text box change
+//     const handleTextBoxChange = (event) => {
+//         setTypedText(event.target.value);
+//     };
+//
+//     // Function to handle form submit
+//     const handleSubmit = async (event) => {
+//         event.preventDefault();
+//         // Show confirmation modal
+//         setShowConfirmationModal(true);
+//     };
+//
+//
+//     return (
+//         <div>
+//             <NavBarUser />
+//             <div className="grid grid-cols-2 divide-x py-4 px-4 mx-4">
+//                 <div className="bg-gray-200 rounded-lg">
+//                     <Tabs variant="enclosed" colorScheme="blue" height={"1100"}>
+//                         <TabList>
+//                             <Tab>Preview</Tab>
+//                             <Tab>Review</Tab>
+//                         </TabList>
+//                         <TabPanels>
+//                             <TabPanel>
+//                                 {(code)}
+//                             </TabPanel>
+//                             <TabPanel>
+//                                 {(review)}
+//                             </TabPanel>
+//                         </TabPanels>
+//                     </Tabs>
+//                 </div>
+//                 <div className="px-4 bg-gray-200 rounded-lg mx-4 py-4">
+//                   <div>
+//                       <p> Type below the request:</p>
+//                       <form className="w-full" onSubmit={handleSubmit}>
+//                           <div className="mb-8 mt-10 ">
+//                               <input
+//                                   className="shadow appearance-none border rounded w-full h-30 py-2 px-3 text-gray-700 leading-tight
+//                                                                 focus:outline-none focus:shadow-outline mb-3"
+//                                   id="response"
+//                                   type="text"
+//                                   placeholder="Enter a subject for your request"
+//                                   value={typedText}
+//                                   onChange={handleTextBoxChange}
+//                               />
+//                               <input
+//                                   className="shadow appearance-none border rounded w-full h-80 py-2 px-3 text-gray-700 leading-tight
+//                                                                 focus:outline-none focus:shadow-outline"
+//                                   id="response"
+//                                   type="text"
+//                                   placeholder="Enter the request"
+//                                   value={typedText}
+//                                   onChange={handleTextBoxChange}
+//                               />
+//                           </div>
+//                           <div className="flex items-center justify-between">
+//                               <button
+//                                   className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+//                                   type="submit"
+//                               >
+//                                   Submit
+//                               </button>
+//                           </div>
+//                       </form>
+//                       {/* Confirmation modal */}
+//                                    {showConfirmationModal && (
+//                  <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-50">
+//                      <div className="bg-white rounded-lg text-2xl shadow-lg p-8 w-100">
+//                          <p>Are you sure you want to submit?</p>
+//                          <div className="mt-4 flex justify-end">
+//                           <a href="/qhr">  <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" >Yes</button></a>
+//                              <a href="/ah"> <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md" >No</button></a>
+//                          </div>
+//                      </div>
+//                  </div>
+//              )}
+//                   </div>
+//                 </div>
+//             </div>
+//
+//         </div>
+//     );
+// }
+//
+// export default AskHelp;
+import { useState } from "react";
 import { useLocation } from 'react-router-dom';
 import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
-import { Tabs, TabList, TabPanels, Tab, TabPanel} from "@chakra-ui/react";
+import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 
 function AskHelp() {
     const location = useLocation();
-    const { code, review} = location.state || {};
+    const { code, review } = location.state || {};
 
-    // const renderContent = (title, content) => (
-    //     <Box bg='white' p={4} className="mt-2 mb-8">
-    //         <Text className="text-xl font-bold mr-2">{title} - </Text>
-    //         <pre>{content}</pre>
-    //     </Box>
-    // );
+    const [subjectText, setSubjectText] = useState('');
+    const [requestText, setRequestText] = useState('');
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
+    // Function to handle text box change
+    const handleSubjectChange = (event) => {
+        setSubjectText(event.target.value);
+    };
+
+    const handleRequestChange = (event) => {
+        setRequestText(event.target.value);
+    };
+
+    // Function to handle form submit
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        if (!subjectText || !requestText) {
+            setErrorMessage("Please fill in both the subject and the request to submit.");
+            return;
+        }
+        // Hide error message and show confirmation modal
+        setErrorMessage('');
+        setShowConfirmationModal(true);
+    };
 
     return (
         <div>
@@ -223,22 +342,75 @@ function AskHelp() {
                         </TabList>
                         <TabPanels>
                             <TabPanel>
-                                {(code)}
+                                <pre>{code}</pre>
                             </TabPanel>
                             <TabPanel>
-                                {(review)}
+                                <pre>{review}</pre>
                             </TabPanel>
                         </TabPanels>
                     </Tabs>
                 </div>
                 <div className="px-4 bg-gray-200 rounded-lg mx-4 py-4">
-                  <div>
-                      <p> Type below the request:</p>
-
-                  </div>
+                    <div>
+                        <p>Type below the request:</p>
+                        <form className="w-full" onSubmit={handleSubmit}>
+                            <div className="mb-8 mt-10">
+                                <input
+                                    className="shadow appearance-none border rounded w-full h-12 py-2 px-3 text-gray-700 leading-tight
+                                        focus:outline-none focus:shadow-outline mb-3"
+                                    id="subject"
+                                    type="text"
+                                    placeholder="Enter a subject for your request"
+                                    value={subjectText}
+                                    onChange={handleSubjectChange}
+                                />
+                                <input
+                                    className="shadow appearance-none border rounded w-full h-80 py-2 px-3 text-gray-700 leading-tight
+                                        focus:outline-none focus:shadow-outline"
+                                    id="request"
+                                    type="text"
+                                    placeholder="Enter the request"
+                                    value={requestText}
+                                    onChange={handleRequestChange}
+                                />
+                            </div>
+                            {errorMessage && (
+                                <div className="text-red-500 mb-4">
+                                    {errorMessage}
+                                </div>
+                            )}
+                            <div className="flex items-center justify-between">
+                                <button
+                                    className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                    type="submit"
+                                >
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                        {/* Confirmation modal */}
+                        {showConfirmationModal && (
+                            <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-50">
+                                <div className="bg-white rounded-lg text-2xl shadow-lg p-8 w-100">
+                                    <p>Are you sure you want to submit?</p>
+                                    <div className="mt-4 flex justify-end">
+                                        <a href="/uhr">
+                                            <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md">
+                                                Yes
+                                            </button>
+                                        </a>
+                                        <a href="/ah">
+                                            <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md">
+                                                No
+                                            </button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
-
         </div>
     );
 }

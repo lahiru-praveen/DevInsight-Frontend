@@ -353,7 +353,7 @@
 //
 // export default UserResponsePreview;
 import { useState } from 'react';
-import QAECPNav from "../../components/QAE/QAECPNav.jsx";
+// import QAECPNav from "../../components/QAE/QAECPNav.jsx";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import axios from 'axios';
 
@@ -402,7 +402,7 @@ function UserResponsePreview() {
 
     return (
         <div>
-            <QAECPNav />
+            {/*<QAECPNav />*/}
             <div className="grid grid-cols-2 divide-x py-4 px-4 mx-4">
                 <div className="bg-gray-200 rounded-lg ">
                     <Tabs variant="enclosed" colorScheme="blue" height={"1100"}>
