@@ -34,7 +34,7 @@ export const items = [
     {
         id: "Request",
         title: 'Request Description',
-        description: '22',
+        description: 'filename.py',
         status: 'Done',
         date: '2024-03-25', // Add date property
         type: 'Type A', // Add type property
@@ -42,15 +42,15 @@ export const items = [
     {
         id: "Myapp Package",
         title: 'Recurrence loops is not working',
-        description: '22',
-        status: 'Done',
+        description: 'sample.c',
+        status: 'Pending',
         date: '2024-03-26', // Add date property
         type: 'Type B', // Add type property
     },
     {
         id: "Object Detection",
         title: 'Weight is not detecting',
-        description: '11',
+        description: 'testcode.c',
         status: 'Done',
         date: '2024-03-24', // Add date property
         type: 'Type A', // Add type property
@@ -58,7 +58,7 @@ export const items = [
     {
         id: "Calculator",
         title: 'Error in Operators',
-        description: '22',
+        description: 'index.html',
         status: 'Done',
         date: '2024-03-25', // Add date property
         type: 'Type B', // Add type property
@@ -66,8 +66,8 @@ export const items = [
     {
         id: "Myapp main",
         title: 'Not functioning',
-        description: '11',
-        status: 'Done',
+        description: 'style.css',
+        status: 'Pending',
         date: '2024-03-24', // Add date property
         type: 'Type A', // Add type property
     },

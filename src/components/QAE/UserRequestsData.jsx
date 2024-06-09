@@ -2,7 +2,7 @@ export const items = [
     {
         id: "Request",
         title: 'Request Description',
-        description: '22',
+        description: 'filename.py',
         status: 'Done',
         date: '2024-03-25', // Add date property
         type: 'Type A', // Add type property
@@ -10,7 +10,7 @@ export const items = [
     {
         id: "Myapp Package",
         title: 'Recurrence loops is not working',
-        description: '22',
+        description: 'sample1.c',
         status: 'Done',
         date: '2024-03-26', // Add date property
         type: 'Type B', // Add type property
