@@ -23,7 +23,7 @@ export const Navbar = () => {
       </div>
 
       <div className='flex items-center space-x-4'>
-        <Link to ="/su">
+        <Link to ="/verify-email">
         <Button colorScheme='blue' variant='solid' size="sm">
           Sign Up
         </Button>

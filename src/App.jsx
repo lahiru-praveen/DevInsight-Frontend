@@ -30,7 +30,7 @@ import ContactUs from "./pages/Profile/ContactUs.jsx";
 import CodeSubmissions from "./pages/dashboard/CodeSubmissions.jsx";
 import ForgetPasswordAndReset from "./pages/Login/ForgetPasswordAndReset.jsx";
 import VerifyEmail from "./pages/Login/VerifyEmail.jsx";
-
+import Profile from "./pages/Profile/Profile1.jsx";
 
 export default function App() {
     return (
@@ -61,6 +61,7 @@ export default function App() {
                     <Route path="/cu" element={<ContactUs/>}/>
                     <Route path="/cs" element={<CodeSubmissions/>}/>
                     <Route path="/fpr" element={<ForgetPasswordAndReset/>}/>
+                    <Route path="/ep1" element={<Profile/>}/>
                     
                 </Routes>
                 </AuthProvider>
