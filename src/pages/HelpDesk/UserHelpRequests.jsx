@@ -816,7 +816,7 @@ function UserHelpRequests(){
     return(
         <div>
             <NavBarUser/>
-            <div className="mt-10 ml-8 text-3xl">
+            <div className="mt-10 ml-8 text-2xl">
                 <Tooltip isDisabled>
                     <SearchIcon />
                 </Tooltip>
