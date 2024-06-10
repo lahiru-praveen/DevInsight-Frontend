@@ -54,7 +54,7 @@ const SubmissionModal = ({ isOpen, onClose, p_name, code , des , entity_id}) => 
 
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size={'fit'}>
+        <Modal isOpen={isOpen} onClose={onClose} size={'fit'} closeOnOverlayClick={false}>
             <ModalOverlay />
             <ModalContent>
                 <ModalHeader>

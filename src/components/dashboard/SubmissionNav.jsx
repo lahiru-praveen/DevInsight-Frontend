@@ -5,6 +5,8 @@ import { BsFileEarmarkMedicalFill } from "react-icons/bs";
 import { FaCode } from "react-icons/fa";
 import SubmissionModal from './SubmissionModal';
 import {FcFile} from "react-icons/fc";
+import ToolTip from "../../context/ToolTip.jsx";
+import {Icon} from "@chakra-ui/icons";
 
 export default function SubmissionNav() {
     const [submissions, setSubmissions] = useState([]);
@@ -35,7 +37,7 @@ export default function SubmissionNav() {
     return (
         <div className="flex flex-col bg-[#EBEBEB] mt-4 ml-2">
             <div className="mt-4 ml-2 mr-2">
-                <h1 className="text-xl font-bold mb-4">Previous Submission List</h1>
+                <h1 className="text-xl font-bold mb-4">Latest Submissions</h1>
                 <Flex alignItems="center" p={2} borderBottom="1px solid #ccc">
                     <Box as="span" mr={2}>
                         <BsFileEarmarkMedicalFill />
@@ -46,7 +48,19 @@ export default function SubmissionNav() {
                 {submissions.map((submission, index) => (
                     <Flex key={index} alignItems="center" p={2} borderBottom="1px solid #ccc" className="mb-2" onClick={() => handleSubmissionClick(submission)} style={{ cursor: 'pointer' }} >
                         <Box as="span" mr={2}>
-                            {submission.mode === 1 ? <FaCode size="20px" /> : (submission.mode === 2 ? <FcFile size="20px" /> : <BsFileEarmarkMedicalFill size="20px" />)}
+                            {submission.mode === 1 ?
+                                (<ToolTip tooltip='Code Upload'>
+                                    <Icon as={FaCode} boxSize={'20px'} className="mr-2" />
+                                </ToolTip>)
+                                : (submission.mode === 2 ?
+                                    (<ToolTip tooltip='File Upload'>
+                                        <Icon as={FcFile} boxSize={'20px'} className="mr-2" />
+                                    </ToolTip>)
+                                : (<ToolTip tooltip='Code Upload / File Upload'>
+                                    <Icon as={BsFileEarmarkMedicalFill} boxSize={'20px'} className="mr-2" />
+                                 </ToolTip>)
+                                )
+                            }
                         </Box>
                         <Text as="span" fontSize="sm">{submission.p_name}</Text>
                         <Text as="span" fontSize="sm" ml="auto">{submission.submission_date}</Text>

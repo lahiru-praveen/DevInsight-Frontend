@@ -1,14 +1,27 @@
-import { Box, Button, Flex, Tab, TabList, TabPanel, TabPanels, Tabs, Text, CircularProgress } from "@chakra-ui/react";
-import CodeReviewPageHeading from "../../components/dashboard/CodeReviewPageHeading.jsx";
+import {
+    Box,
+    Button,
+    Flex,
+    Tab,
+    TabList,
+    TabPanel,
+    TabPanels,
+    Tabs,
+    Text,
+    CircularProgress,
+    Breadcrumb, BreadcrumbItem, BreadcrumbLink, Tooltip
+} from "@chakra-ui/react";
 import { RxDividerVertical } from "react-icons/rx";
-import { IoMdDownload } from "react-icons/io";
+import {IoMdDownload} from "react-icons/io";
 import { BsFillQuestionSquareFill } from "react-icons/bs";
 import { useState } from "react";
 import axios from "axios";
 import { useCode } from '../../context/CodeContext.jsx';
 import hljs from "highlight.js";
-import { useLocation, useNavigate } from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import FileList from "../../components/dashboard/FileList.jsx";
+import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
+import {ChevronRightIcon} from "@chakra-ui/icons";
 
 export default function CodeReview() {
     const { selectedFileContent } = useCode();
@@ -75,12 +88,31 @@ export default function CodeReview() {
     return (
         <div className="flex flex-col h-screen">
             <div>
-                <CodeReviewPageHeading />
+                <NavBarUser button1={false} button2={true} button3={true} button4={true}/>
             </div>
 
             <div className="flex flex-row flex-grow">
+
                 <div className="w-1/6 p-4 mt-3 ml-2 mr-2 bg-[#EBEBEB]">
-                    <FileList onSelectFile={() => { }} selectedFileName={selectedFileName} mode={mode} />
+                    <div className="mb-4">
+                        <Breadcrumb spacing='2px' separator={<ChevronRightIcon color='gray.500'/>}>
+                            <BreadcrumbItem>
+                                <BreadcrumbLink as={Link} to="/db">DashBoard</BreadcrumbLink>
+                            </BreadcrumbItem>
+
+                            <BreadcrumbItem>
+                                <BreadcrumbLink>Code Preview</BreadcrumbLink>
+                            </BreadcrumbItem>
+
+                            <BreadcrumbItem isCurrentPage>
+                                <BreadcrumbLink>Code Review</BreadcrumbLink>
+                            </BreadcrumbItem>
+                        </Breadcrumb>
+                    </div>
+                    <div>
+                        <FileList onSelectFile={() => {
+                        }} selectedFileName={selectedFileName} mode={mode}/>
+                    </div>
                 </div>
 
                 <div className="w-5/6 p-4 mt-3 ml-2 mr-2 h-auto font-bold bg-[#EBEBEB] color-[#898989]">
@@ -93,10 +125,12 @@ export default function CodeReview() {
                             <TabPanel>
                                 <div className="flex flex-col">
                                     <div className="flex justify-end mb-2">
-                                        <Button colorScheme="blue" border='2px' size="md" className="w-64"
-                                                onClick={handleAskHelp}>
-                                            <BsFillQuestionSquareFill className="mr-1" />Ask Help
-                                        </Button>
+                                        <Tooltip hasArrow label='Ask a help from Qauliry Assuarence Engineer' bg='blue.200' placement='bottom'>
+                                            <Button colorScheme="blue" border='2px' size="md" className="w-64"
+                                                    onClick={handleAskHelp}>
+                                                <BsFillQuestionSquareFill className="mr-2"/>Ask the Instructor
+                                            </Button>
+                                        </Tooltip>
                                     </div>
                                     <div>
                                         <Text className="text-xl font-bold mr-2">Code - </Text>
@@ -107,7 +141,7 @@ export default function CodeReview() {
                                                 </pre>
                                             ) : (
                                                 <Flex alignItems="center" justifyContent="center" className="mt-20">
-                                                    <div><CircularProgress isIndeterminate color='blue.300' /></div>
+                                                    <div><CircularProgress isIndeterminate color='blue.300'/></div>
                                                 </Flex>
                                             )}
                                         </Box>
@@ -117,15 +151,19 @@ export default function CodeReview() {
                             <TabPanel>
                                 <div className="flex flex-col ">
                                     <div className="flex justify-end mb-2">
-                                        <Button colorScheme="blue" border='2px' size="md" className="w-64"
-                                                onClick={handleAskHelp}>
-                                            <BsFillQuestionSquareFill className="mr-1" />Ask Help
-                                        </Button>
-                                        <RxDividerVertical className="mt-3" />
-                                        <Button colorScheme="blue" border='2px' size="md" className="w-64"
-                                                onClick={handleDownloadPdf}>
-                                            <IoMdDownload className="mr-1" /> Download
-                                        </Button>
+                                        <Tooltip hasArrow label='Ask a help from Qauliry Assuarence Engineer' bg='blue.200' placement='bottom'>
+                                            <Button colorScheme="blue" border='2px' size="md" className="w-64"
+                                                    onClick={handleAskHelp}>
+                                                <BsFillQuestionSquareFill className="mr-2"/>Ask the Instructor
+                                            </Button>
+                                        </Tooltip>
+                                        <RxDividerVertical className="mt-3"/>
+                                        <Tooltip hasArrow label='Download review in pdf format' bg='blue.200' placement='bottom'>
+                                            <Button colorScheme="blue" border='2px' size="md" className="w-64"
+                                                    onClick={handleDownloadPdf}>
+                                                <IoMdDownload className="mr-2"/> Download
+                                            </Button>
+                                        </Tooltip>
                                     </div>
                                     <div>
                                         <Text className="text-xl font-bold mr-2">Review - </Text>
