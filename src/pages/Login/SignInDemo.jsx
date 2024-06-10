@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+
 import {
     Button,
     FormControl,
@@ -24,7 +25,15 @@ export default function SignIn() {
     const [showIncorrectUsernameAlert, setShowIncorrectUsernameAlert] = useState(false);
     const [showLoggingInAlert, setShowLoggingInAlert] = useState(false);
     const [loginmessage,setLoginMessage] = useState('');
+    const [token, setToken] = useState('');
     const navigate = useNavigate();
+
+    // const SignInDemo = ({ setToken }) => {
+    //     const [credentials, setCredentials] = useState({
+    //       email: '',
+    //       password: '',
+    //     });
+    //     const [error, setError] = useState(null);
 
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
@@ -37,38 +46,35 @@ export default function SignIn() {
     };
 
     const handleLogin = async () => {
-        try {
+        
             setShowLoggingInAlert(true);
-            const response = await axios.post('http://localhost:8000/login', {
+            try {
+              const response = await axios.post('http://localhost:8000/login', {
                 email,
                 password,
-            });
-            console.log(response.data);
-            setLoginMessage('Login successfully');
-
-             // If email is not already registered, redirect to sign-in page
-             navigate("/db");
-            
-            
-
-
-                    
-        } catch (error) {
-            setShowLoggingInAlert(false);
-            if (error.response && error.response.status === 401) {
-                setShowIncorrectPasswordAlert(true);
-                setLoginMessage('Incorrect password. Please try again.');
-            } else if (error.response && error.response.status === 404) {
-                setShowIncorrectPasswordAlert(true);
-                setLoginMessage('User not found. Please try again.');
-            } else {
-                setLoginMessage('An error occurred. Please try again later.');
-            }
-            console.error('Error logging in:', error);
-        }
-    };
-    
-    
+              });
+              console.log(response.data);
+              setLoginMessage('Login successfully');
+              sessionStorage.setItem("email", response.data.email);
+              // If email is not already registered, redirect to sign-in page
+              navigate("/db");
+             
+              setToken(response.data.access_token); // Store token in state or local storage
+            } 
+            catch (error) {
+                setShowLoggingInAlert(false);
+                if (error.response && error.response.status === 401) {
+                  setLoginMessage('Incorrect password. Please try again.');
+                } else if (error.response && error.response.status === 404) {
+                  setLoginMessage('User not found. Please try again.');
+                } else {
+                  setLoginMessage('An error occurred. Please try again later.');
+                }
+                console.error('Error logging in:', error);
+              }
+            };
+          
+           
 
     return (
         <>
