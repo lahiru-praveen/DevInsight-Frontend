@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from 'react';
+import PropTypes from "prop-types";
 
 export const CodeContext = createContext();
 
@@ -14,4 +15,8 @@ export const CodeProvider = ({ children }) => {
 
 export const useCode = () => {
     return useContext(CodeContext);
+};
+
+CodeProvider.propTypes = {
+    children: PropTypes.node
 };

@@ -169,10 +169,10 @@
 
 /////working
 
-import { Select } from '@chakra-ui/react'
-import { Input, InputGroup, InputLeftElement} from '@chakra-ui/react';
+import { Select } from '@chakra-ui/react';
+import { Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
 import { Search2Icon } from "@chakra-ui/icons";
-import { Button} from '@chakra-ui/react'
+import { Button } from '@chakra-ui/react';
 import {
     Modal,
     ModalOverlay,
@@ -183,9 +183,10 @@ import {
     ModalCloseButton,
     FormControl,
     FormLabel,
-    useDisclosure
-  } from '@chakra-ui/react';
-import  pp  from '../../assets/pp.jpeg';
+    useDisclosure,
+    Text
+} from '@chakra-ui/react';
+import pp from '../../assets/pp.jpeg';
 import { useState, useEffect } from "react";
 import axios from "axios";
 import emailjs from "@emailjs/browser";
@@ -193,12 +194,15 @@ import emailjs from "@emailjs/browser";
 const MyComponent = () => {
     const [activeMembers, setActiveMembers] = useState([]);
     const [filteredMembers, setFilteredMembers] = useState([]);
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    const { isOpen: isRoleModalOpen, onOpen: onRoleModalOpen, onClose: onRoleModalClose } = useDisclosure();
+    const { isOpen: isConfirmModalOpen, onOpen: onConfirmModalOpen, onClose: onConfirmModalClose } = useDisclosure();
     const [index, setIndex] = useState(null);
     const [error, setError] = useState(null);
     const [role, setRole] = useState("");
     const [query, setQuery] = useState("");
-    
+    const [selectedRole, setSelectedRole] = useState("All"); // Default to 'All'
+    const [roleError, setRoleError] = useState(""); // Error state for role change
+
     useEffect(() => {
         emailjs.init("PS5ghhKYxM1wwF0sO");
     }, []);
@@ -219,15 +223,17 @@ const MyComponent = () => {
                 return updatedMembers;
             });
 
-            onClose();
+            onRoleModalClose();
+            onConfirmModalClose();
+            setRoleError(""); // Clear any previous role errors
         } catch (error) {
             console.error('Error updating role:', error);
             setError("Error resending invite. Please try again later.");
         }
         try {
             await emailjs.send("service_pst9db1", "template_ef1od5r", {
-              rolef: activeMembers[index].role,
-              recipient: activeMembers[index].email
+                rolef: role,
+                recipient: activeMembers[index].email
             });
             alert("Email successfully resent");
         } catch (error) {
@@ -238,38 +244,58 @@ const MyComponent = () => {
 
     useEffect(() => {
         const fetchActiveMembers = async () => {
-          try {
-            const response = await axios.get("http://127.0.0.1:8001/active-members");
-            setActiveMembers(response.data);
-            setFilteredMembers(response.data);
-          } catch (error) {
-            console.error('Error fetching active members:', error);
-          }
+            try {
+                const response = await axios.get("http://127.0.0.1:8001/active-members");
+                setActiveMembers(response.data);
+                setFilteredMembers(response.data);
+            } catch (error) {
+                console.error('Error fetching active members:', error);
+            }
         };
-    
+
         fetchActiveMembers();
     }, []);
 
     useEffect(() => {
-        const keys = ["name", "email", "role"];
-        const search = (data) => {
-          return data.filter((item) =>
-            keys.some((key) => item[key].toLowerCase().includes(query))
-          );
-        };
-        setFilteredMembers(search(activeMembers));
-    }, [query, activeMembers]);
+        const filterMembers = () => {
+            const keys = ["name", "email", "role"];
+            let filteredData = activeMembers;
 
-    const onOpenModal = (index) => {
+            if (query) {
+                filteredData = filteredData.filter((item) =>
+                    keys.some((key) => item[key].toLowerCase().includes(query.toLowerCase()))
+                );
+            }
+
+            if (selectedRole && selectedRole !== "All") {
+                filteredData = filteredData.filter((item) => item.role === selectedRole);
+            }
+
+            setFilteredMembers(filteredData);
+        };
+
+        filterMembers();
+    }, [query, selectedRole, activeMembers]);
+
+    const onOpenRoleModal = (index) => {
         setIndex(index);
-        onOpen();
+        setRole(activeMembers[index].role); // Set the initial role to the current role of the member
+        onRoleModalOpen();
     };
-    
+
+    const handleRoleFilterChange = (e) => {
+        setSelectedRole(e.target.value);
+    };
+
+    const handleConfirmChange = () => {
+        onConfirmModalOpen();
+    };
+
     return (
         <div className='px-20 py-5 '>
             <Modal
-                isOpen={isOpen}
-                onClose={onClose}
+                isOpen={isRoleModalOpen}
+                onClose={onRoleModalClose}
             >
                 <ModalOverlay />
                 <ModalContent>
@@ -286,30 +312,52 @@ const MyComponent = () => {
                                 <option value="Quality assurance">Quality assurance</option>
                                 <option value="Developer">Developer</option>
                             </Select>
+                            {roleError && <Text color="red.500" fontSize="sm">{roleError}</Text>}
                         </FormControl>
                     </ModalBody>
                     <ModalFooter>
-                        <Button colorScheme="blue" mr={3} onClick={handleAddInvite}>
+                        <Button colorScheme="blue" mr={3} onClick={handleConfirmChange}>
                             Change
                         </Button>
-                        <Button onClick={onClose}>Cancel</Button>
+                        <Button onClick={onRoleModalClose}>Cancel</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
+
+            <Modal
+                isOpen={isConfirmModalOpen}
+                onClose={onConfirmModalClose}
+            >
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Confirm Role Change</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Text>Are you sure you want to change the role of {activeMembers[index]?.name} to {role}?</Text>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme="blue" mr={3} onClick={handleAddInvite}>
+                            Confirm
+                        </Button>
+                        <Button onClick={onConfirmModalClose}>Cancel</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+
             <h1 className="py-5 text-xl leading-tight font-bold text-gray-500">
                 Active Members
             </h1>
             <div className='flex flex-row space-x-5 py-5'>
                 <div className='basis-1/4'>
-                    <Select placeholder='Select option'>
-                        <option value='option1'>Option 1</option>
-                        <option value='option2'>Option 2</option>
-                        <option value='option3'>Option 3</option>
+                    <Select placeholder='Select option' onChange={handleRoleFilterChange}>
+                        <option value='All'>All</option>
+                        <option value='Quality assurance'>Quality assurance</option>
+                        <option value='Developer'>Developer</option>
                     </Select>
                 </div>
                 <div className='basis-2/4'>
                     <InputGroup>
-                        <InputLeftElement children={<Search2Icon color="gray.600"/>} />
+                        <InputLeftElement children={<Search2Icon color="gray.600" />} />
                         <Input placeholder="Search..." onChange={(e) => setQuery(e.target.value.toLowerCase())} />
                     </InputGroup>
                 </div>
@@ -322,20 +370,25 @@ const MyComponent = () => {
                     <ul role="list" className="divide-y divide-gray-200 dark:divide-gray-700">
                         {filteredMembers.map((member, index) => (
                             <li key={index} className="py-3 sm:py-4">
-                                <div className="flex items-center">
-                                    <div className="flex-shrink-0">
-                                        <img className="w-8 h-8 rounded-full" src={pp} alt={member.name} />
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center">
+                                        <div className="flex-shrink-0">
+                                            <img className="w-8 h-8 rounded-full" src={pp} alt={member.name} />
+                                        </div>
+                                        <div className="flex-1 min-w-0 ms-4">
+                                            <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
+                                                {member.name}
+                                            </p>
+                                            <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                {member.email}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div className="flex-1 min-w-0 ms-4">
-                                        <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                            {member.name}
-                                        </p>
-                                        <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                                            {member.email}
-                                        </p>
-                                    </div>
-                                    <Button onClick={() => onOpenModal(index)} colorScheme='blue' size='xs'>
+                                    <p className="text-sm font-medium text-gray-900 truncate dark:text-white mx-4">
                                         {member.role}
+                                    </p>
+                                    <Button onClick={() => onOpenRoleModal(index)} colorScheme='blue' size='xs'>
+                                        Change Role
                                     </Button>
                                 </div>
                             </li>

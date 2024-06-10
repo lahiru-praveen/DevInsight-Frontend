@@ -13,8 +13,8 @@ export const Navbar = () => {
       <div className='flex justify-center w-full md:w-auto'>
         <Tabs variant='soft-rounded' colorScheme='blue'>
           <TabList className="flex flex-wrap justify-center md:justify-start space-x-4 md:space-x-8">
-            <Tab>Home</Tab>
-            <Tab>About Us</Tab>
+          <Tab as="a" href="#home">Home</Tab>
+            <Tab as="a" href="#about-us">About Us</Tab>
             <Link to="/cu">
             <Tab>Contact Us</Tab>
             </Link>

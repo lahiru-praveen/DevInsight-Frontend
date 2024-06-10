@@ -4,3 +4,6 @@
 
 
 
+html {
+    scroll-behavior: smooth;
+  }

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/vs.css';
-import {Tabs, TabList, TabPanels, Tab, TabPanel, Button, CircularProgress, Flex, Input, Text} from '@chakra-ui/react';
+import {Tabs, TabList, TabPanels, Tab, TabPanel, Button, CircularProgress, Input, Text, Modal, ModalOverlay, ModalContent, ModalBody, ModalHeader} from '@chakra-ui/react';
 import FileList from "../../components/dashboard/FileList.jsx";
 import CodePreviewPageHeading from "../../components/dashboard/CodePreviewPageHeading.jsx";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -13,11 +13,14 @@ import {IoHelpCircle} from "react-icons/io5";
 
 export default function CodePreview() {
     const { selectedFileContent, setSelectedFileContent } = useCode();
-    const [submitEnabled, setSubmitEnabled] = useState(false);
     const [selectedFileName, setSelectedFileName] = useState('');
+    const [submitEnabled, setSubmitEnabled] = useState(false);
     const [selectedLine, setSelectedLine] = useState(null);
+    const [projectID, setProjectID] = useState('');
     const [reviewContent, setReviewContent] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
+    const [suggestionContent, setSuggestionContent] = useState('');
+    const [referLinksContent, setReferLinksContent] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
     const { state } = location;
@@ -61,6 +64,7 @@ export default function CodePreview() {
         }
     }, [mode, selectedFileName, setSelectedFileContent]);
 
+
     useEffect(() => {
         if (selectedFileContent) {
             hljs.highlightAll();
@@ -68,11 +72,11 @@ export default function CodePreview() {
     }, [selectedFileContent]);
 
     useEffect(() => {
-        if (reviewContent !== '') {
-            navigate('/cr', { state: { reviewContent: reviewContent, selectedFileName: selectedFileName } });
+        if (reviewContent !== '' && suggestionContent !== '' && referLinksContent !== '') {
+            navigate('/cr', { state: { reviewContent: reviewContent, selectedFileName: selectedFileName, suggestionContent: suggestionContent, referLinksContent: referLinksContent, projectName: prName, language: Language, description: description_value, pID: projectID } });
         }
-        console.log(reviewContent);
-    }, [reviewContent, navigate, selectedFileName, mode]);
+    }, [referLinksContent]);
+
 
     useEffect(() => {
         if (prName !== '' && selectedFileContent) {
@@ -85,26 +89,49 @@ export default function CodePreview() {
 
 
     const handleSubmit = async () => {
-        setIsLoading(true); // Start loading
+        setIsModalOpen(true); // Open the modal
         console.log("Selected file name in CodePreview:", selectedFileName);
-        const fetchData = async () => {
-            try {
-
-                if (!selectedFileContent) {
-                    console.error("Selected file content is empty.");
-                }
-                const response = await axios.post("http://localhost:8000/get_code", { p_id:"1" , p_name:prName, f_name:selectedFileName, language:Language , description:description_value , code: selectedFileContent , mode:mode_value });
-                setReviewContent(response.data);
-            } catch (error) {
-                console.error("Error fetching review:", error);
-            } finally {
-                setIsLoading(false); // Stop loading
+        try {
+            if (!selectedFileContent) {
+                console.error("Selected file content is empty.");
+                return;
             }
-        };
-        fetchData(description, language).then(r =>
-            console.log(r)
-        ); // Call fetchData with description and language
+            const response1 = await axios.post("http://localhost:8000/get-review",{
+                p_id: 0,
+                p_name: prName,
+                f_name: selectedFileName,
+                language: Language,
+                description: description_value,
+                code: selectedFileContent,
+                mode: mode_value
+            });
+
+            const new_p_id = await axios.get("http://localhost:8000/get-latest-p-id")
+            setProjectID(new_p_id.data);
+
+            const { review, suggestions, refer_link } = response1.data;
+            setReviewContent(review);
+            setSuggestionContent(suggestions);
+            setReferLinksContent(refer_link);
+
+            const response2 = await axios.post("http://localhost:8000/add-review",{
+                p_id: new_p_id.data,
+                code: selectedFileContent,
+                review: review,
+                suggestions: suggestions,
+                reference_links: refer_link
+            });
+            console.log(response2);
+
+        } catch (error) {
+            console.error("Error fetching review:", error);
+        } finally {
+            setIsModalOpen(false); // Close the modal
+        }
     };
+
+
+
 
     function addLineNumbersToCode(code) {
         const lines = code.split('\n');
@@ -140,7 +167,7 @@ export default function CodePreview() {
             </div>
 
             <div className="flex flex-row flex-grow">
-                <div className="w-1/6 p-4 mt-3 ml-2 mr-2 bg-[#EBEBEB] flex flex-col">
+                <div className="w-full md:w-1/6 p-4 mt-3 ml-2 mr-2 bg-[#EBEBEB] flex flex-col">
                     <div>
                         <Text className="text-xl font-bold mr-2">Language</Text>
                         <LanguageSelectMenu onLanguageChange={handleLanguageChange} selectedLanguage={language}/>
@@ -152,28 +179,30 @@ export default function CodePreview() {
                         </div>
 
                         <Input
-                            value={prName} // Change setPrName to prName
-                            onChange={handlePrNameChange} // Change handlePrNameChange to setPrName
+                            value={prName}
+                            onChange={handlePrNameChange}
                             focusBorderColor='blue.400'
-                            placeholder='Enter the Project / Submission Name'
+                            placeholder='Enter a name for Project / Submission'
                             variant='filled'
                             className="mb-4"
                         /></div>
 
                     <div>
-                        <FileList onSelectFile={(fileName) => setSelectedFileName(fileName)} selectedFileName='' mode={mode}/>
+                        <FileList onSelectFile={(fileName) => setSelectedFileName(fileName)} selectedFileName=''
+                                  mode={mode}/>
                         <div className="flex items-center">
-                            <IoHelpCircle className="mr-2 size-7 colur" />
-                            <Text className="font-bold mr-2 text-red-400">Please select a file to initiate the review process</Text>
+                            <IoHelpCircle className="mr-2 size-7 colur"/>
+                            <Text className="font-bold mr-2 text-red-400">Please select a file to initiate the review
+                                process</Text>
                             <Text color="red.400" className="text-xl">*</Text>
                         </div>
                     </div>
 
 
                 </div>
-                <div className="w-5/6 p-4 mt-3 ml-2 mr-2 h-auto font-bold bg-[#EBEBEB] color-[#898989]">
+                <div className="w-full md:w-5/6 p-4 mt-3 ml-2 mr-2 h-auto font-bold bg-[#EBEBEB] color-[#898989]">
                     <Tabs position="relative" isFitted variant="enclosed">
-                    <TabList mb='1em'>
+                        <TabList mb='1em'>
                             <Tab>Preview</Tab>
                             <Tab isDisabled>Review</Tab>
                         </TabList>
@@ -185,23 +214,28 @@ export default function CodePreview() {
                                         <GoCodeReview className="mr-2"/>Review
                                     </Button>
                                 </div>
-                                {isLoading ? (
-                                    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 z-50">
-                                        <div className="bg-white p-5 rounded-lg">
-                                            <Flex alignItems="center" justifyContent="center">
-                                                <div><CircularProgress isIndeterminate color='blue.300'/></div>
-                                            </Flex>
-                                        </div>
-                                    </div>
+                                {selectedFileContent ? (
+                                    <pre>
+                                        {addLineNumbersToCode(selectedFileContent)}
+                                    </pre>
                                 ) : (
-                                    selectedFileContent ? (
-                                        <pre>
-                                            {addLineNumbersToCode(selectedFileContent)}
-                                        </pre>
-                                    ) : (
-                                        <div>No file or code selected</div>
-                                    )
+                                    <div>No file or code selected</div>
                                 )}
+
+                                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} isCentered>
+                                    <ModalOverlay/>
+                                    <ModalContent>
+                                        <ModalHeader>LOADING ...</ModalHeader>
+                                        <ModalBody>
+                                            <div className="flex flex-col items-center justify-center">
+                                                <div className="mr-2"><CircularProgress isIndeterminate color='blue.300'/></div>
+                                                <div className="mr-2"><Text>The review generation process may take some time.</Text></div>
+                                                <div className="mr-2"><Text>Please Wait ...</Text></div>
+                                            </div>
+                                        </ModalBody>
+                                    </ModalContent>
+                                </Modal>
+
                             </TabPanel>
                             <TabPanel>
                                 hello
