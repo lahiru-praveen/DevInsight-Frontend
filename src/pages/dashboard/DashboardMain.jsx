@@ -11,6 +11,7 @@ import { IoCloudUpload } from "react-icons/io5";
 import {AiFillFileAdd} from "react-icons/ai";
 import SubmissionNav from "../../components/dashboard/SubmissionNav.jsx";
 import {Icon} from "@chakra-ui/icons";
+import ToolTip from "../../context/ToolTip.jsx";
 
 export default function DashboardMain() {
     const [values, setValues] = useState({
@@ -265,7 +266,9 @@ export default function DashboardMain() {
                                                 <div>
                                                     <label htmlFor="fileInput">
                                                         Browse for files:
-                                                        <Icon as={AiFillFileAdd} boxSize={12} backgroundColor='white' className="p-2 ml-4 mb-4" />
+                                                        <ToolTip tooltip="Browse files for preview">
+                                                            <Icon as={AiFillFileAdd} boxSize={12} backgroundColor='white' className="p-2 ml-4 mb-4" />
+                                                        </ToolTip>
                                                     </label>
                                                     <input id="fileInput" type="file" style={{display: 'none'}}
                                                            onChange={handleFileInputChange} multiple/>
@@ -290,7 +293,9 @@ export default function DashboardMain() {
                                                             {files.map((file, index) => (
                                                                 <li className="flex" key={index}>
                                                                     <div className="pt-1">
-                                                                        <FaWindowClose color={'red'} onClick={() => handleFileRemove(index)}/>
+                                                                        <ToolTip tooltip="Remove this file">
+                                                                            <FaWindowClose color={'red'} onClick={() => handleFileRemove(index)}/>
+                                                                        </ToolTip>
                                                                     </div>
                                                                     <div className="pl-4 text-red-400">{file.name}</div>
                                                                 </li>

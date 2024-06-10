@@ -95,9 +95,12 @@ export default function CodeSubmissions() {
                 <Submissions submission={headers} drop={1} />
                 {error && <Text color="red">{error}</Text>}
                 {/* Map over filtered and sorted submissions and render Submissions component */}
-                {filteredSubmissions.map(submission => (
-                    <Submissions key={submission.p_id} submission={submission} drop={0} />
-                ))}
+                <div>
+                    {filteredSubmissions.map(submission => (
+                        <Submissions key={submission.p_id} submission={submission} drop={0} />
+                    ))}
+                </div>
+
             </div>
         </div>
     );

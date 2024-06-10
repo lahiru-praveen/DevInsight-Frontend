@@ -9,10 +9,10 @@ import {
     Tabs,
     Text,
     CircularProgress,
-    Breadcrumb, BreadcrumbItem, BreadcrumbLink
+    Breadcrumb, BreadcrumbItem, BreadcrumbLink, Tooltip
 } from "@chakra-ui/react";
 import { RxDividerVertical } from "react-icons/rx";
-import {IoIosArrowForward, IoMdDownload} from "react-icons/io";
+import {IoMdDownload} from "react-icons/io";
 import { BsFillQuestionSquareFill } from "react-icons/bs";
 import { useState } from "react";
 import axios from "axios";
@@ -21,7 +21,6 @@ import hljs from "highlight.js";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import FileList from "../../components/dashboard/FileList.jsx";
 import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
-import {IoHome} from "react-icons/io5";
 import {ChevronRightIcon} from "@chakra-ui/icons";
 
 export default function CodeReview() {
@@ -126,9 +125,12 @@ export default function CodeReview() {
                             <TabPanel>
                                 <div className="flex flex-col">
                                     <div className="flex justify-end mb-2">
-                                        <Button colorScheme="blue" border='2px' size="md" className="w-64"
-                                                onClick={handleAskHelp}>
-                                        <BsFillQuestionSquareFill className="mr-2"/>Ask the Instructor</Button>
+                                        <Tooltip hasArrow label='Ask a help from Qauliry Assuarence Engineer' bg='blue.200' placement='bottom'>
+                                            <Button colorScheme="blue" border='2px' size="md" className="w-64"
+                                                    onClick={handleAskHelp}>
+                                                <BsFillQuestionSquareFill className="mr-2"/>Ask the Instructor
+                                            </Button>
+                                        </Tooltip>
                                     </div>
                                     <div>
                                         <Text className="text-xl font-bold mr-2">Code - </Text>
@@ -149,15 +151,19 @@ export default function CodeReview() {
                             <TabPanel>
                                 <div className="flex flex-col ">
                                     <div className="flex justify-end mb-2">
-                                        <Button colorScheme="blue" border='2px' size="md" className="w-64"
-                                                onClick={handleAskHelp}>
-                                            <BsFillQuestionSquareFill className="mr-2"/>Ask the Instructor
-                                        </Button>
+                                        <Tooltip hasArrow label='Ask a help from Qauliry Assuarence Engineer' bg='blue.200' placement='bottom'>
+                                            <Button colorScheme="blue" border='2px' size="md" className="w-64"
+                                                    onClick={handleAskHelp}>
+                                                <BsFillQuestionSquareFill className="mr-2"/>Ask the Instructor
+                                            </Button>
+                                        </Tooltip>
                                         <RxDividerVertical className="mt-3"/>
-                                        <Button colorScheme="blue" border='2px' size="md" className="w-64"
-                                                onClick={handleDownloadPdf}>
-                                            <IoMdDownload className="mr-2"/> Download
-                                        </Button>
+                                        <Tooltip hasArrow label='Download review in pdf format' bg='blue.200' placement='bottom'>
+                                            <Button colorScheme="blue" border='2px' size="md" className="w-64"
+                                                    onClick={handleDownloadPdf}>
+                                                <IoMdDownload className="mr-2"/> Download
+                                            </Button>
+                                        </Tooltip>
                                     </div>
                                     <div>
                                         <Text className="text-xl font-bold mr-2">Review - </Text>

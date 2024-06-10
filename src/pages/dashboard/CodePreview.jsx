@@ -17,7 +17,7 @@ import {
     ModalContent,
     ModalBody,
     ModalHeader,
-    Breadcrumb, BreadcrumbItem, BreadcrumbLink
+    Breadcrumb, BreadcrumbItem, BreadcrumbLink, Tooltip
 } from '@chakra-ui/react';
 import FileList from "../../components/dashboard/FileList.jsx";
 import {Link, useLocation, useNavigate} from "react-router-dom";
@@ -240,10 +240,12 @@ export default function CodePreview() {
                         <TabPanels>
                             <TabPanel className="flex flex-col">
                                 <div className="flex justify-end mb-2">
-                                    <Button colorScheme="blue" border='2px' size="lg" className="w-64"
-                                            onClick={handleSubmit} type={"submit"} isDisabled={!submitEnabled}>
-                                        <GoCodeReview className="mr-2"/>Review
-                                    </Button>
+                                    <Tooltip hasArrow label='For review this selected code content' bg='blue.200' placement='bottom'>
+                                        <Button colorScheme="blue" border='2px' size="lg" className="w-64"
+                                                onClick={handleSubmit} type={"submit"} isDisabled={!submitEnabled}>
+                                            <GoCodeReview className="mr-2"/>Review
+                                        </Button>
+                                    </Tooltip>
                                 </div>
                                 {selectedFileContent ? (
                                     <pre>
