@@ -54,7 +54,8 @@ export default function NavBarUser({ button1, button2, button3, button4 }) {
                                 </Wrap>
                             </MenuButton>
                             <MenuList>
-                                <MenuItem as='a' href='#'>Profile</MenuItem>
+                                {/* <MenuItem as='a' href='#'>Profile</MenuItem> */}
+                                <MenuItem as={Link} to="/ep">Profile</MenuItem>
                                 <MenuDivider />
                                 <MenuItem as='a' href='#'>Settings</MenuItem>
                                 <MenuDivider />

@@ -808,103 +808,25 @@
 // }
 //
 // export default UserHelpRequests;
-import { useState, useEffect } from 'react';
 import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
+import { Tooltip } from '@chakra-ui/react'
+import {SearchIcon} from "@chakra-ui/icons";
 
-function UserHelpRequests() {
-    const [sortedItems, setSortedItems] = useState([]);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [setSortBy] = useState(null);
-    const [deleteIndex, setDeleteIndex] = useState(null);
-    const [showPopup, setShowPopup] = useState(false);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch('/api/get/');
-                const data = await response.json();
-                setSortedItems(data);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
-        fetchData();
-    }, []); // Fetch data only once on component mount
-
-    const handleSort = (sortBy) => {
-        let sorted;
-        if (sortBy === 'date') {
-            sorted = [...sortedItems].sort((a, b) => new Date(a.date) - new Date(b.date));
-        } else if (sortBy === 'type') {
-            sorted = [...sortedItems].sort((a, b) => a.type.localeCompare(b.type));
-        } else {
-            sorted = [...sortedItems];
-        }
-        setSortedItems(sorted);
-        setSortBy(sortBy);
-    };
-
-    const handleDelete = (index) => {
-        setDeleteIndex(index);
-        setShowPopup(true);
-    };
-
-    const confirmDelete = () => {
-        const updatedItems = [...sortedItems];
-        updatedItems.splice(deleteIndex, 1);
-        setSortedItems(updatedItems);
-        setShowPopup(false);
-    };
-
-    const cancelDelete = () => {
-        setDeleteIndex(null);
-        setShowPopup(false);
-    };
-
-    const filteredItems = sortedItems.filter(item =>
-        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.status.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.date.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
-    return (
-        <div className="font-roboto">
-            <NavBarUser button1={false} button2={false} button3={false} button4={false}/>
-            <div className="text-5xl font-bold mr-10 pl-10 pt-10"><p>Help Desk</p></div>
-            <div className=" text-right text-2xl pt-5 pr-10">
-                <select onChange={(e) => handleSort(e.target.value)}>
-                    <option value="date">Sort by Date</option>
-                    <option value="type">Sort by Type</option>
-                    <option value="null">Reset</option>
-                </select>
-            </div>
-            <input
-                type="text"
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="p-2 m-4 border border-gray-300 rounded-md"
-            />
-            <div>
-                {filteredItems.map((item, index) => (
-                    <div key={index} className="bg-gray-200 mx-10 my-10 py-5 rounded-lg text-left">
-                        <div className="flex w-full text-2xl items-center justify-between">
-                            <div className="w-1/4 text-left pl-10"><p>{item.id}</p></div>
-                            <div className="w-1/4 text-left"><p>{item.title}</p></div>
-                            <div className="w-1/6 text-left"><p>{item.description}</p></div>
-                            <div className="w-1/4 text-left"><p>{item.status}</p></div>
-                            <div className="w-1/4 text-left"><p>{item.date}</p></div>
-                            <div className=" text-left border bg-red-500 rounded-lg px-5 py-1 text-white">
-                                <p>
-                                    <button onClick={() => handleDelete(index)}>Delete</button>
-                                </p>
-                            </div>
-                            <div className=" text-left border bg-blue-500 rounded-lg px-4 py-1 text-white"><p><a href="/qcp">Open</a></p></div>
-                        </div>
-                    </div>
-                ))}
+function UserHelpRequests(){
+    return(
+        <div>
+            <NavBarUser/>
+            <div className="mt-10 ml-8 text-2xl">
+                <Tooltip isDisabled>
+                    <SearchIcon />
+                </Tooltip>
+                <input
+                    className="shadow appearance-none border rounded w-50 h-10 ml-5 py-2 px-3 text-gray-700 leading-tight
+                                        focus:outline-none focus:shadow-outline"
+                    id="request"
+                    type="text"
+                    placeholder="Search the requests"
+                />
             </div>
         </div>
     )
