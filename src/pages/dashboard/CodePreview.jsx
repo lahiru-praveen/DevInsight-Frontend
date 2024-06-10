@@ -2,23 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/vs.css';
-import {
-    Tabs,
-    TabList,
-    TabPanels,
-    Tab,
-    TabPanel,
-    Button,
-    CircularProgress,
-    Input,
-    Text,
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalBody,
-    ModalHeader,
-    Breadcrumb, BreadcrumbItem, BreadcrumbLink, Tooltip
-} from '@chakra-ui/react';
+import {Tabs, TabList, TabPanels, Tab, TabPanel, Button, CircularProgress, Input, Text, Modal, ModalOverlay, ModalContent, ModalBody, ModalHeader, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Tooltip} from '@chakra-ui/react';
 import FileList from "../../components/dashboard/FileList.jsx";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import { GoCodeReview } from "react-icons/go";
@@ -26,7 +10,7 @@ import { useCode } from '../../context/CodeContext.jsx';
 import LanguageSelectMenu from "../../components/dashboard/LanguageSelectMenu.jsx";
 import {IoHelpCircle, IoHome} from "react-icons/io5";
 import {IoIosArrowForward} from "react-icons/io";
-import {ChevronRightIcon} from "@chakra-ui/icons";
+import {CheckIcon, ChevronRightIcon, Icon, WarningTwoIcon} from "@chakra-ui/icons";
 import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
 
 export default function CodePreview() {
@@ -39,11 +23,19 @@ export default function CodePreview() {
     const [suggestionContent, setSuggestionContent] = useState('');
     const [referLinksContent, setReferLinksContent] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
+    const [availabilityMessage, setAvailabilityMessage] = useState('');
+    const [projectNames, setProjectNames] = useState([]);
     const navigate = useNavigate();
     const location = useLocation();
     const { state } = location;
     let { code, mode, language, description } = state || {};
     const mode_value = mode;
+    const [Language, setLanguage] = useState(language);
+    const description_value = description;
+    const handleLanguageChange = (language) => {setLanguage(language);};
+    const [prName, setPrName] = useState('')
+
     if (language === ""){
         language = "Not given";
     }
@@ -51,15 +43,44 @@ export default function CodePreview() {
         description = "Not given";
     }
 
-    const [Language, setLanguage] = useState(language);
-    const description_value = description;
+    const handlePrNameChange = (event) => {
+        const newPrName = event.target.value;
+        setPrName(newPrName);
 
-    const handleLanguageChange = (language) => {
-        setLanguage(language);
+        if (newPrName !== '') {
+            setIsCheckingAvailability(true);
+            setSubmitEnabled(false);
+
+            const formattedNewPrName = newPrName.toLowerCase();
+            const formattedProjectNames = projectNames.map(name => name.toLowerCase());
+
+            const projectExists = formattedProjectNames.includes(formattedNewPrName);
+            if (projectExists) {
+                setAvailabilityMessage(`The project name ${newPrName} already exists on this account.`);
+            } else {
+                setAvailabilityMessage(`${newPrName} is available.`);
+                if (selectedFileContent) {
+                    setSubmitEnabled(true);
+                }
+            }
+            setIsCheckingAvailability(false);
+        } else {
+            setAvailabilityMessage('');
+        }
     };
+    useEffect(() => {
+        const fetchProjectNames = async () => {
+            try {
+                const response = await axios.get("http://localhost:8000/project-names");
+                setProjectNames(response.data);
+                console.log(response.data);
+            } catch (error) {
+                console.error("Error fetching project names:", error);
+            }
+        };
 
-    const [prName, setPrName] = useState('')
-    const handlePrNameChange = (event) => setPrName(event.target.value)
+        fetchProjectNames();
+    }, [code]);
 
     useEffect(() => {
         if (mode === 1 && code !== '') {
@@ -97,14 +118,12 @@ export default function CodePreview() {
 
 
     useEffect(() => {
-        if (prName !== '' && selectedFileContent) {
+        if (prName !== '' && selectedFileContent &&  availabilityMessage.includes('available')) {
             setSubmitEnabled(true);
         } else {
             setSubmitEnabled(false);
         }
-    }, [prName,selectedFileContent]);
-
-
+    }, [prName,selectedFileContent, availabilityMessage]);
 
     const handleSubmit = async () => {
         setIsModalOpen(true); // Open the modal
@@ -203,20 +222,27 @@ export default function CodePreview() {
                         <Text className="text-xl font-bold mr-2">Language</Text>
                         <LanguageSelectMenu onLanguageChange={handleLanguageChange} selectedLanguage={language}/>
                     </div>
+
                     <div>
                         <div className="flex items-center">
                             <Text className="text-xl font-bold mr-2">Project Name</Text>
                             <Text color="red.400" className="text-xl">*</Text>
                         </div>
-
-                        <Input
-                            value={prName}
-                            onChange={handlePrNameChange}
-                            focusBorderColor='blue.400'
-                            placeholder='Enter a name for Project / Submission'
-                            variant='filled'
-                            className="mb-4"
-                        /></div>
+                        <div className="mb-4">
+                            <Input value={prName} onChange={handlePrNameChange} focusBorderColor='blue.400' placeholder='Enter a name for Project / Submission' variant='filled'/>
+                            {isCheckingAvailability ? (
+                                <Text className="text-gray-600">Checking availability...</Text>
+                            ) : (
+                                availabilityMessage === `${prName} is available.` ? (
+                                    <Text className="text-green-400 font-bold"><Icon as={CheckIcon} color='green.400' className="mr-2"/>{availabilityMessage}
+                                    </Text>
+                                ) : ( availabilityMessage === `The project name ${prName} already exists on this account.` ? (
+                                    <Text className="text-red-500 font-bold"><Icon as={WarningTwoIcon} color='red.500' className="mr-2"/>{availabilityMessage}
+                                    </Text> ) : ( <Text> </Text> )
+                                )
+                            )}
+                        </div>
+                    </div>
 
                     <div>
                         <FileList onSelectFile={(fileName) => setSelectedFileName(fileName)} selectedFileName=''

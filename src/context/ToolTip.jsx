@@ -23,7 +23,7 @@ const ToolTip = ({ children, tooltip }) => {
                     ref={tooltipRef}
                     className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition bg-blue-200 text-white p-1 rounded absolute top-full mt-2 whitespace-nowrap"
                     style={{
-                        zIndex: "1000", // Set a higher z-index value than other elements
+                        zIndex: "1000",
                     }}
                 >
                     {tooltip}
