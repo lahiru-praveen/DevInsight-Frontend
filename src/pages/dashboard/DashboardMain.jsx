@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import {Button, Tabs, TabList, TabPanels, Tab, TabPanel, Textarea, Text, Box,} from '@chakra-ui/react';
+import {Button, Tabs, TabList, TabPanels, Tab, TabPanel, Textarea, Text, Box, Tooltip,} from '@chakra-ui/react';
 import { FaWindowClose } from "react-icons/fa";
 import LanguageSelectMenu from "../../components/dashboard/LanguageSelectMenu.jsx";
 import {useNavigate} from "react-router-dom";
@@ -10,6 +10,8 @@ import { FaFlagCheckered } from "react-icons/fa";
 import { IoCloudUpload } from "react-icons/io5";
 import {AiFillFileAdd} from "react-icons/ai";
 import SubmissionNav from "../../components/dashboard/SubmissionNav.jsx";
+import {Icon} from "@chakra-ui/icons";
+import ToolTip from "../../context/ToolTip.jsx";
 
 export default function DashboardMain() {
     const [values, setValues] = useState({
@@ -212,7 +214,7 @@ export default function DashboardMain() {
     return (
         <div className="flex flex-col h-screen ">
             <div>
-                <NavBarUser/>
+                <NavBarUser button1={false} button2={false} button3={false} button4={false}/>
             </div>
 
             <div className="flex flex-row  flex-grow">
@@ -222,9 +224,12 @@ export default function DashboardMain() {
 
                 <form onSubmit={handleSubmit} className="w-5/6 p-4 flex flex-col">
                 <div className="flex justify-end mb-4">
+                    <Tooltip hasArrow label='Submit the codes/files' bg='blue.200' placement='bottom'>
                         <Button isDisabled={!submitEnabled} border='2px' size="lg" colorScheme='blue' className="w-64" type={"submit"}>
-                            <MdDriveFolderUpload className="mr-2" />Submit
+                            <Icon as={MdDriveFolderUpload} boxSize={6} color='white' className="mr-2" />Submit
                         </Button>
+                    </Tooltip>
+
                     </div>
 
                     <div className="p-4">
@@ -260,7 +265,10 @@ export default function DashboardMain() {
                                                  style={{ minHeight: "45vh" }} overflow='hidden' position="relative">
                                                 <div>
                                                     <label htmlFor="fileInput">
-                                                        Browse for files<AiFillFileAdd className="size-10 p-2 bg-white"/>
+                                                        Browse for files:
+                                                        <ToolTip tooltip="Browse files for preview">
+                                                            <Icon as={AiFillFileAdd} boxSize={12} backgroundColor='white' className="p-2 ml-4 mb-4" />
+                                                        </ToolTip>
                                                     </label>
                                                     <input id="fileInput" type="file" style={{display: 'none'}}
                                                            onChange={handleFileInputChange} multiple/>
@@ -272,17 +280,23 @@ export default function DashboardMain() {
                                                 {files.length > 0 ? (
                                                     <div>
                                                         <div className="text-red-300 font-bold">Files Chosen:
-                                                            <Button size="sm" onClick={handleClearFiles}
-                                                                    borderColor='blue.500' textColor='blue.500'
-                                                                    className="border-2 ml-3" bgColor="'#EBEBEB'">
-                                                                Cancel
-                                                            </Button>
+                                                            <Tooltip hasArrow label='Cansel all selected files' bg='blue.200' placement='bottom'>
+                                                                <Button size="sm" onClick={handleClearFiles}
+                                                                        borderColor='blue.500' textColor='blue.500'
+                                                                        className="border-2 ml-3" bgColor="'#EBEBEB'">
+                                                                    Cancel
+                                                                </Button>
+                                                            </Tooltip>
+
                                                         </div>
                                                         <ul>
                                                             {files.map((file, index) => (
                                                                 <li className="flex" key={index}>
-                                                                    <div className="pt-1"><FaWindowClose
-                                                                        onClick={() => handleFileRemove(index)}/></div>
+                                                                    <div className="pt-1">
+                                                                        <ToolTip tooltip="Remove this file">
+                                                                            <FaWindowClose color={'red'} onClick={() => handleFileRemove(index)}/>
+                                                                        </ToolTip>
+                                                                    </div>
                                                                     <div className="pl-4 text-red-400">{file.name}</div>
                                                                 </li>
                                                             ))}
@@ -291,7 +305,7 @@ export default function DashboardMain() {
                                                 ) : (
                                                     <div className="flex flex-col items-center justify-center">
                                                         <div className="flex-row flex">
-                                                            <IoCloudUpload className="size-20"/>
+                                                            <Icon as={IoCloudUpload} boxSize={20} className="mr-2" />
                                                         </div>
                                                         <div>
                                                             <Text className="font-bold">Drop Files here</Text>
@@ -322,21 +336,29 @@ export default function DashboardMain() {
                                         <Text fontSize='18px' className="font-bold mt-3 mb-3">
                                             Enter the Code
                                         </Text>
-                                        <LanguageSelectMenu onLanguageChange={handleLanguageChange}
-                                                            selectedLanguage="Not given"/>
-                                        <div className="flex-grow relative">
-                                            <div className="flex justify-end">
-                                                <Button onClick={checkLanguage} border='2px' size="md"
-                                                        colorScheme='blue' className="w-44 mb-2" type={"submit"}>
-                                                    <FaFlagCheckered className="mr-2"/>Check
-                                                </Button>
+                                        <div className="flex flex-grow relative mb-2">
+                                            <div>
+                                                <LanguageSelectMenu onLanguageChange={handleLanguageChange}
+                                                                    selectedLanguage="Not given"/>
                                             </div>
+                                            <div className="flex justify-end flex-grow">
+                                                <Tooltip hasArrow label='Through this, you can check whether the code langugae is the same as the language you selected' bg='blue.200' placement='bottom'>
+                                                    <Button onClick={checkLanguage} border='2px' size="md"
+                                                            colorScheme='blue' className="w-60 mb-2" type={"submit"}>
+                                                        <Icon as={FaFlagCheckered} boxSize={5} color='white' className="mr-2"/>
+                                                        Check The Language
+                                                    </Button>
+                                                </Tooltip>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex-grow relative">
                                             <Textarea bgColor={'#EBEBEB'} color={'#646464'} fontSize="18px"
                                                       placeholder='Paste code here' value={values.value2}
                                                       name={values.value2}
                                                       onChange={(event) => handleChange(event, 'value2')} style={{
                                                 height: calculateHeight(values.value2),
-                                                minHeight: '25rem'
+                                                minHeight: '27rem'
                                             }}/>
 
                                         </div>

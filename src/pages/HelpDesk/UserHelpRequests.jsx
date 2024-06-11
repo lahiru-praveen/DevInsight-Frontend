@@ -815,8 +815,8 @@ import {SearchIcon} from "@chakra-ui/icons";
 function UserHelpRequests(){
     return(
         <div>
-            <NavBarUser/>
-            <div className="mt-10 ml-8 text-3xl">
+            <NavBarUser button4={false} button2={false} button3={false} button1={false}/>
+            <div className="mt-10 ml-8 text-2xl">
                 <Tooltip isDisabled>
                     <SearchIcon />
                 </Tooltip>
@@ -828,6 +828,33 @@ function UserHelpRequests(){
                     placeholder="Search the requests"
                 />
             </div>
+
+                         <div className="p-3 mx-10 text-2xl mt-20 font-inter">
+                             <div className="flex w-full text-2xl items-center justify-between">
+                                 <div className="w-1/4 text-left pl-10"><p>Project Name</p></div>
+                                 <div className="w-1/4 text-left"><p>File Name</p></div>
+                                 {/*<div className="w-1/6 text-left"><p>Title</p></div>*/}
+                                 <div className="w-1/4 text-left"><p>File Name</p></div>
+                                 <div className="w-1/4 text-left"><p>Status</p></div>
+                                 <div className="w-1/6 text-left"><p></p></div>
+                                 <div className="w-1/4 text-left flex relative">
+                                     <p>Date</p>
+                                     {/*<button onClick={() => setShowDropdown(!showDropdown)} className="ml-2 bg-gray-300 p-1 rounded">*/}
+                                     {/*    ▼*/}
+                                     {/*</button>*/}
+                                     {/*//              {showDropdown && (*/}
+                                     {/*//                             <div className="absolute bg-white border rounded mt-2">*/}
+                                     {/*//                                 <button onClick={() => handleSort('asc')} className="block px-4 py-2 text-left">Ascending</button>*/}
+                                     {/*//                                 <button onClick={() => handleSort('desc')} className="block px-4 py-2 text-left">Descending</button>*/}
+                                     {/*//                             </div>*/}
+                                     {/*//                         )}*/}
+                                     {/*//                     </div>*/}
+                                     <div className="text-white"><p>Delete</p></div>
+                                     <div className="px-5"></div>
+                                     <div className="text-white"><p><a href="/qcp">View</a></p></div>
+                                 </div>
+                             </div>
+                         </div>
         </div>
     )
 }
