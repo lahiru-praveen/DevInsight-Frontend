@@ -863,14 +863,14 @@
 //
 // export default QAEHelpRequests;
 
-import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
+import NavBarQAE from "../../components/dashboard/NavBarQAE.jsx";
 import { Tooltip } from '@chakra-ui/react'
 import {SearchIcon} from "@chakra-ui/icons";
 
 function QAEHelpRequests(){
     return(
         <div>
-            <NavBarUser/>
+            <NavBarQAE/>
             <div className="mt-10 ml-8 text-3xl">
                 <Tooltip isDisabled>
                     <SearchIcon />
