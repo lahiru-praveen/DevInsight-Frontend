@@ -128,7 +128,7 @@ export default function CodeReview() {
                                         <Tooltip hasArrow label='Ask a help from Qauliry Assuarence Engineer' bg='blue.200' placement='bottom'>
                                             <Button colorScheme="blue" border='2px' size="md" className="w-64"
                                                     onClick={handleAskHelp}>
-                                                <BsFillQuestionSquareFill className="mr-2"/>Ask the Instructor
+                                                <BsFillQuestionSquareFill className="mr-2"/>Ask the QAE
                                             </Button>
                                         </Tooltip>
                                     </div>
@@ -154,7 +154,7 @@ export default function CodeReview() {
                                         <Tooltip hasArrow label='Ask a help from Qauliry Assuarence Engineer' bg='blue.200' placement='bottom'>
                                             <Button colorScheme="blue" border='2px' size="md" className="w-64"
                                                     onClick={handleAskHelp}>
-                                                <BsFillQuestionSquareFill className="mr-2"/>Ask the Instructor
+                                                <BsFillQuestionSquareFill className="mr-2"/>Ask the QAE
                                             </Button>
                                         </Tooltip>
                                         <RxDividerVertical className="mt-3"/>
