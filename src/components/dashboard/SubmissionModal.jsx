@@ -1,4 +1,4 @@
-import {Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Tabs, TabList, Tab, TabPanels, TabPanel, Text, Box} from '@chakra-ui/react';
+import {Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Tabs, TabList, Tab, TabPanels, TabPanel, Text, Box,} from '@chakra-ui/react';
 import PropTypes from 'prop-types';
 import axios from "axios";
 import {useEffect, useState} from "react";
@@ -35,11 +35,9 @@ const SubmissionModal = ({ isOpen, onClose, p_name, code , des , entity_id}) => 
             if (confirmed) {
                 const response = await axios.delete("http://localhost:8000/delete-sub", {data: { entity_id }});
                 if (response.status === 200) {
-                    // Handle successful deletion
-                    console.log("Delete successful:", response.data);
-                    window.location.reload();
-                    window.alert("Delete Record successful!");
+                    alert("Submission Deleted Successfully");
                     onClose(); // Close the modal after deletion
+                    window.location.reload();
                 } else {
                     // Handle deletion failure
                     console.error("Delete failed:", response.data);

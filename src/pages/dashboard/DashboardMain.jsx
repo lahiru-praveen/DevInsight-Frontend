@@ -1,5 +1,18 @@
 import { useState, useEffect } from 'react';
-import {Button, Tabs, TabList, TabPanels, Tab, TabPanel, Textarea, Text, Box, Tooltip,} from '@chakra-ui/react';
+import {
+    Button,
+    Tabs,
+    TabList,
+    TabPanels,
+    Tab,
+    TabPanel,
+    Textarea,
+    Text,
+    Box,
+    Tooltip,
+    Alert,
+    AlertIcon,
+} from '@chakra-ui/react';
 import { FaWindowClose } from "react-icons/fa";
 import LanguageSelectMenu from "../../components/dashboard/LanguageSelectMenu.jsx";
 import {useNavigate} from "react-router-dom";
@@ -26,6 +39,9 @@ export default function DashboardMain() {
     const [selectedLanguage, setSelectedLanguage] = useState('not mentioned');
     const allowedExtensions = ['.txt', '.py','.java','.html','.php','.rb','.cs','.cpp','.css','.go','.rs','.swift','.js'];
     const WORD_LIMIT = 150;
+    const [fileAlerts, setFileAlerts] = useState([]);
+    const [alertLanguageMessage, setAlertLanguageMessage] = useState('');
+    const [alertLanguageStatus, setAlertLanguageStatus] = useState('');
 
     const handleLanguageChange = (language) => {
         setSelectedLanguage(language);
@@ -36,6 +52,7 @@ export default function DashboardMain() {
         const fileList = event.dataTransfer.items;
 
         const droppedFiles = [];
+        const newAlerts = []; // Move the declaration outside the loop
 
         // Iterate through dropped items
         for (let i = 0; i < fileList.length; i++) {
@@ -50,14 +67,16 @@ export default function DashboardMain() {
                     // File extension is allowed
                     droppedFiles.push(file);
                 } else {
-                    window.alert("\u26A0 \t" + " UPLOAD ERROR\n\n" + "Sorry, this extension is not allowed.\n" + "File - " + file.name + "\n" + "Invalid file extension - " + extension);
+                    newAlerts.push({ message: `Sorry, this extension is not allowed.  |  File - ${file.name}  |  Invalid file extension - ${extension}`, status: 'warning' });
                 }
             }
         }
 
         // Add dropped files to the existing files state
         setFiles((prevFiles) => [...prevFiles, ...droppedFiles]);
+        setFileAlerts((prevAlerts) => [...prevAlerts, ...newAlerts]);
     };
+
 
     const handleDragOver = (event) => {
         event.preventDefault();
@@ -86,8 +105,6 @@ export default function DashboardMain() {
                 ...values,
                 [identifier]: truncatedText
             });
-            // Alert the user about the word limit
-            alert(`Maximum ${WORD_LIMIT} words allowed.`);
         }
     };
 
@@ -99,19 +116,29 @@ export default function DashboardMain() {
     const handleFileInputChange = (event) => {
         const selectedFiles = Array.from(event.target.files);
 
-        // Filter selected files to allow only .txt and .pdf extensions
-        const filteredFiles = selectedFiles.filter(file => {
+        // Filter selected files to allow only allowed extensions and store alerts for invalid files
+        const filteredFiles = [];
+        const newAlerts = [];
+
+        selectedFiles.forEach(file => {
             const extension = file.name.split('.').pop().toLowerCase();
-            if(allowedExtensions.includes('.' + extension)){
-                return allowedExtensions.includes('.' + extension);
+            if (allowedExtensions.includes('.' + extension)) {
+                filteredFiles.push(file);
             } else {
-                window.alert("\u26A0 \t" + " UPLOAD ERROR\n\n" + "Sorry, this extension is not allowed.\n" + "File - " + file.name + "\n" + "Invalid file extension - " + extension);
+                newAlerts.push({ message: `Sorry, this extension is not allowed.  |  File - ${file.name}  |  Invalid file extension - ${extension}`, status: 'warning' });
             }
         });
 
-        // Add filtered files to the files state
-        setFiles((prevFiles) => [...prevFiles, ...filteredFiles]);
+        // Add filtered files to the files state and new alerts to the fileAlerts state
+        setFiles(prevFiles => [...prevFiles, ...filteredFiles]);
+        setFileAlerts(prevAlerts => [...prevAlerts, ...newAlerts]);
     };
+
+    const handleFileAlertClose = (index) => {
+        setFileAlerts((prevAlerts) => prevAlerts.filter((_, i) => i !== index));
+    };
+
+
 
     const handleFileRemove = (index) => {
         const updatedFiles = [...files];
@@ -188,17 +215,22 @@ export default function DashboardMain() {
                     .then(res => {
                         console.log(res.data);
                         if (res.data === 1) {
-                            alert("\u2714 \t " + "Language matches");
+                            setAlertLanguageMessage("Language matches");
+                            setAlertLanguageStatus('success');
                         } else {
-                            alert("\u26A0 \t" + " INSERTED INFORMATION ERROR\n\n" +"Language does not match");
-                        }
+                            setAlertLanguageMessage("Language does not match");
+                            setAlertLanguageStatus('error');                        }
                     })
                     .catch(error => console.error(error));
+                setAlertLanguageMessage("There was an error processing your request");
+                setAlertLanguageStatus('warning');
             } else {
-                alert("\u26A0 \t" + " INSERTED INFORMATION ERROR\n\n" + "Please select a language and enter code before checking.");
+                setAlertLanguageMessage("Please select a language and enter code before checking.");
+                setAlertLanguageStatus('error');
             }
         } catch (error) {
-            console.log("An error occurred:", error);
+            setAlertLanguageMessage("An error occurred while checking the language.");
+            setAlertLanguageStatus('warning');
         }
     };
 
@@ -223,14 +255,31 @@ export default function DashboardMain() {
                 </div>
 
                 <form onSubmit={handleSubmit} className="w-5/6 p-4 flex flex-col">
-                <div className="flex justify-end mb-4">
+
+                    {fileAlerts.length > 0 && (
+                        fileAlerts.map((alert, index) => (
+                            <Alert key={index} status={alert.status} closeable>
+                                <AlertIcon />
+                                {alert.message}
+                                <Icon as={FaWindowClose} boxSize={5} color='red' size="sm" onClick={() => handleFileAlertClose(index)} ml="auto" mr={-2} />
+                            </Alert>
+                        ))
+                    )}
+
+                    <div className="flex justify-end mb-4">
                     <Tooltip hasArrow label='Submit the codes/files' bg='blue.200' placement='bottom'>
                         <Button isDisabled={!submitEnabled} border='2px' size="lg" colorScheme='blue' className="w-64" type={"submit"}>
                             <Icon as={MdDriveFolderUpload} boxSize={6} color='white' className="mr-2" />Submit
                         </Button>
                     </Tooltip>
-
                     </div>
+
+                    {alertLanguageMessage && (
+                        <Alert status={alertLanguageStatus}>
+                            <AlertIcon />
+                            {alertLanguageMessage}
+                        </Alert>
+                    )}
 
                     <div className="p-4">
                         <Tabs isFitted variant='enclosed'>
