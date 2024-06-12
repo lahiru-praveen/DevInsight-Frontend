@@ -10,7 +10,7 @@ import { useCode } from '../../context/CodeContext.jsx';
 import LanguageSelectMenu from "../../components/dashboard/LanguageSelectMenu.jsx";
 import {IoHelpCircle, IoHome} from "react-icons/io5";
 import {IoIosArrowForward} from "react-icons/io";
-import {CheckIcon, ChevronRightIcon, Icon, WarningTwoIcon} from "@chakra-ui/icons";
+import {ChevronRightIcon} from "@chakra-ui/icons";
 import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
 
 export default function CodePreview() {
@@ -23,64 +23,24 @@ export default function CodePreview() {
     const [suggestionContent, setSuggestionContent] = useState('');
     const [referLinksContent, setReferLinksContent] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
-    const [availabilityMessage, setAvailabilityMessage] = useState('');
-    const [projectNames, setProjectNames] = useState([]);
     const navigate = useNavigate();
     const location = useLocation();
     const { state } = location;
-    let { code, mode, language, description } = state || {};
+    let { code, mode, language, description, projectName } = state || {};
     const mode_value = mode;
-    const [Language, setLanguage] = useState(language);
-    const description_value = description;
-    const handleLanguageChange = (language) => {setLanguage(language);};
-    const [prName, setPrName] = useState('')
+
+    const prName = projectName
 
     if (language === ""){
         language = "Not given";
     }
+    const [Language, setLanguage] = useState(language);
+    const handleLanguageChange = (language) => {setLanguage(language);};
+
     if (description === ""){
         description = "Not given";
     }
-
-    const handlePrNameChange = (event) => {
-        const newPrName = event.target.value;
-        setPrName(newPrName);
-
-        if (newPrName !== '') {
-            setIsCheckingAvailability(true);
-            setSubmitEnabled(false);
-
-            const formattedNewPrName = newPrName.toLowerCase();
-            const formattedProjectNames = projectNames.map(name => name.toLowerCase());
-
-            const projectExists = formattedProjectNames.includes(formattedNewPrName);
-            if (projectExists) {
-                setAvailabilityMessage(`The project name ${newPrName} already exists on this account.`);
-            } else {
-                setAvailabilityMessage(`${newPrName} is available.`);
-                if (selectedFileContent) {
-                    setSubmitEnabled(true);
-                }
-            }
-            setIsCheckingAvailability(false);
-        } else {
-            setAvailabilityMessage('');
-        }
-    };
-    useEffect(() => {
-        const fetchProjectNames = async () => {
-            try {
-                const response = await axios.get("http://localhost:8000/project-names");
-                setProjectNames(response.data);
-                console.log(response.data);
-            } catch (error) {
-                console.error("Error fetching project names:", error);
-            }
-        };
-
-        fetchProjectNames();
-    }, [code]);
+    const description_value = description;
 
     useEffect(() => {
         if (mode === 1 && code !== '') {
@@ -118,12 +78,12 @@ export default function CodePreview() {
 
 
     useEffect(() => {
-        if (prName !== '' && selectedFileContent &&  availabilityMessage.includes('available')) {
+        if (prName !== '' && selectedFileContent ) {
             setSubmitEnabled(true);
         } else {
             setSubmitEnabled(false);
         }
-    }, [prName,selectedFileContent, availabilityMessage]);
+    }, [prName,selectedFileContent]);
 
     const handleSubmit = async () => {
         setIsModalOpen(true); // Open the modal
@@ -229,18 +189,7 @@ export default function CodePreview() {
                             <Text color="red.400" className="text-xl">*</Text>
                         </div>
                         <div className="mb-4">
-                            <Input value={prName} onChange={handlePrNameChange} focusBorderColor='blue.400' placeholder='Enter a name for Project / Submission' variant='filled'/>
-                            {isCheckingAvailability ? (
-                                <Text className="text-gray-600">Checking availability...</Text>
-                            ) : (
-                                availabilityMessage === `${prName} is available.` ? (
-                                    <Text className="text-green-400 font-bold"><Icon as={CheckIcon} color='green.400' className="mr-2"/>{availabilityMessage}
-                                    </Text>
-                                ) : ( availabilityMessage === `The project name ${prName} already exists on this account.` ? (
-                                    <Text className="text-red-500 font-bold"><Icon as={WarningTwoIcon} color='red.500' className="mr-2"/>{availabilityMessage}
-                                    </Text> ) : ( <Text> </Text> )
-                                )
-                            )}
+                            <Input value={prName} placeholder='{prName}' isDisabled variant='filled'/>
                         </div>
                     </div>
 
