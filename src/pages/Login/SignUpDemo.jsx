@@ -13,8 +13,14 @@ import {
     useColorModeValue,
     Alert,
     AlertIcon,
+    Select,
+    InputGroup,
+    InputLeftElement
 } from '@chakra-ui/react';
+
 import logo from '../../assets/devsign.png';
+
+
 
 
 export default function SignUp() {
@@ -22,6 +28,7 @@ export default function SignUp() {
     const [lastName, setLastName] = useState('');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
+    const [company, setCompany] = useState('');
     const [password, setPassword] = useState('');
     const [reEnterPassword, setReEnterPassword] = useState('');
     const [isFilled, setIsFilled] = useState(false);
@@ -32,8 +39,12 @@ export default function SignUp() {
 
     useEffect(() => {
         const emailFromQuery = searchParams.get('email');
+        const companyFromQuery = searchParams.get('company');
         if (emailFromQuery) {
             setEmail(emailFromQuery);
+        }
+        if (companyFromQuery) {
+            setCompany(companyFromQuery);
         }
     }, [searchParams]);
     
@@ -83,22 +94,20 @@ export default function SignUp() {
             username !== '' &&
             email !== '' &&
             password !== '' &&
-            reEnterPassword !== ''
+            reEnterPassword !== '' &&
+            company !== ''
         );
     };
 
-    // const validateEmail = (emailValue) => {
-    //     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    //     if (!emailRegex.test(emailValue)) {
-    //         setEmailError('Please enter a valid email address.');
-    //     } else {
-    //         setEmailError('');
-    //     }
-    // };
-
+ 
     const validateEmail = (email) => {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return re.test(String(email).toLowerCase());
+    };
+
+    const handleCompanyChange = (event) => {
+        setCompany(event.target.value);
+        checkIsFilled();
     };
 
     const validatePassword = (password, reEnterPassword) => {
@@ -119,27 +128,26 @@ export default function SignUp() {
     };
     
 
-   
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (isFilled && password === reEnterPassword) {
             try {
                 const response = await axios.post('http://localhost:8000/signup', {
-                    
                     firstName,
                     lastName,
                     username,
                     email,
                     password,
-                    role: "Developer",
                     company,
+                    role: "Developer",
+                    skills: [],
+                    profileStatus: "Active",
                 });
-
-                const { access_token, verificationCode } = response.data;
+    
+                const { access_token, verification_code } = response.data;
                 sessionStorage.setItem("token", access_token);
+    
                 navigate('/si');
-
-               
             } catch (error) {
                 if (error.response && error.response.status === 400 && error.response.data.detail === "User already exists") {
                     setMessage("Email is already registered");
@@ -151,6 +159,7 @@ export default function SignUp() {
             setPasswordError('Fill all the details');
         }
     };
+    
 
     return (
         <Flex minH={'100vh'} align={'center'} justify={'center'}>
@@ -201,15 +210,28 @@ export default function SignUp() {
                         onChange={handleUsernameChange}
                     />
                 </FormControl>
-                <FormControl id="email">
-                    <Input
-                        placeholder="Email"
-                        _placeholder={{ color: 'gray.500' }}
-                        type="email"
-                        value={email}
-                        onChange={handleEmailChange}
-                    />
-                </FormControl>
+                <Flex>
+                    <FormControl id="company" flex={1} mr={2}>
+                        <Input placeholder="Company" 
+                        _placeholder={{ color: 'gray.500' }}  
+                        type="text" 
+                        value={company} 
+                        onChange={handleCompanyChange}
+                        />
+                           
+                
+                    </FormControl>
+                    <FormControl id="email" flex={2}>
+                        
+                            <Input
+                                placeholder="Email"
+                                _placeholder={{ color: 'gray.500' }}
+                                type="email"
+                                value={email}
+                                onChange={handleEmailChange}
+                            />
+                    </FormControl>
+                </Flex>
                 <FormControl id="password">
                     <Input
                         placeholder="Password"

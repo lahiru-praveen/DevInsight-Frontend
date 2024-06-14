@@ -46,33 +46,43 @@ export default function SignIn() {
     };
 
     const handleLogin = async () => {
-        
-            setShowLoggingInAlert(true);
-            try {
-              const response = await axios.post('http://localhost:8000/login', {
+        setShowLoggingInAlert(true);
+        try {
+            const response = await axios.post('http://localhost:8000/login', {
                 email,
                 password,
-              });
-              console.log(response.data);
-              setLoginMessage('Login successfully');
-              sessionStorage.setItem("email", response.data.email);
-              // If email is not already registered, redirect to sign-in page
-              navigate("/db");
-             
-              setToken(response.data.access_token); // Store token in state or local storage
-            } 
-            catch (error) {
-                setShowLoggingInAlert(false);
-                if (error.response && error.response.status === 401) {
-                  setLoginMessage('Incorrect password. Please try again.');
-                } else if (error.response && error.response.status === 404) {
-                  setLoginMessage('User not found. Please try again.');
-                } else {
-                  setLoginMessage('An error occurred. Please try again later.');
-                }
-                console.error('Error logging in:', error);
-              }
-            };
+            });
+            console.log(response.data);
+    
+            // Check if the profile status is 'Suspend'
+            if (response.data.profileStatus === 'Suspend') {
+                // Update the profile status to 'Active'
+                const updatedProfile = { ...response.data, profileStatus: 'Active' };
+                await axios.put('http://localhost:8000/api/update_profile_status', updatedProfile);
+    
+                // Also update the local state to reflect the change
+                setProfile((prevProfile) => ({ ...prevProfile, profileStatus: 'Active' }));
+            }
+    
+            setLoginMessage('Login successfully');
+            sessionStorage.setItem('email', response.data.email);
+            navigate('/db');
+        } catch (error) {
+            setShowLoggingInAlert(false);
+            if (error.response && error.response.status === 401) {
+                setLoginMessage('Incorrect password. Please try again.');
+            } else if (error.response && error.response.status === 404) {
+                setLoginMessage('User not found. Please try again.');
+            } else {
+                setLoginMessage('An error occurred. Please try again later.');
+            }
+            console.error('Error logging in:', error);
+        }
+    };
+    
+    
+    
+    
           
            
 
