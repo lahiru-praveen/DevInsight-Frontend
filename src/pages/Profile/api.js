@@ -33,14 +33,22 @@ export const uploadProfilePicture = async (userId, file, token) => {
   formData.append('file', file);
 
   try {
-    const response = await axios.post(`http://127.0.0.1:8000/api/profile/${userId}/picture`, formData, {
+    const response = await fetch(`http://127.0.0.1:8000/api/profile/${userId}/picture`, {
+      method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data',
       },
+      body: formData,
     });
-    return response.data;
+
+    if (!response.ok) {
+      throw new Error('Failed to upload profile picture');
+    }
+
+    return response.json();
   } catch (error) {
-    throw error.response.data;
+    console.error('Error uploading profile picture:', error);
+    throw error;
   }
 };
+
