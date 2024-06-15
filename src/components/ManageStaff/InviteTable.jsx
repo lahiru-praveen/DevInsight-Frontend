@@ -256,6 +256,17 @@ export const InviteTable = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check if email and role are provided
+    if (!email) {
+      setEmailError("Email is required.");
+      return;
+    }
+    if (!role) {
+      setRoleError("Role is required.");
+      return;
+    }
+
     const serviceId = "service_pst9db1";
     const templateId = "template_bq195h8";
     try {
@@ -264,6 +275,7 @@ export const InviteTable = () => {
         recipient: email
       });
       alert("Email successfully sent");
+      onClose2(); // Close the modal after sending the email
     } catch (error) {
       console.error("Error sending email:", error);
       alert("Error sending email. Please try again later.");
@@ -287,16 +299,20 @@ export const InviteTable = () => {
   };
 
   const handleAddInvite = async () => {
+    // Check if email and role are provided
+    if (!email) {
+      setEmailError("Email is required.");
+      return;
+    }
+    if (!role) {
+      setRoleError("Role is required.");
+      return;
+    }
+
     // Check if email already exists in invites
     const emailExists = invites.some(invite => invite.email === email);
     if (emailExists) {
       setEmailError("This email is already invited.");
-      return;
-    }
-
-    // Check if role is selected
-    if (!role) {
-      setRoleError("Role is required.");
       return;
     }
 
@@ -381,8 +397,8 @@ export const InviteTable = () => {
                 }}
                 placeholder="Select role"
               >
-                <option value="admin">Admin</option>
-                <option value="user">User</option>
+                <option value="Quality assurance">Quality assurance</option>
+                <option value="Developer">Developer</option>
               </Select>
               {roleError && <FormErrorMessage>{roleError}</FormErrorMessage>}
             </FormControl>
@@ -390,9 +406,11 @@ export const InviteTable = () => {
 
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={handleAddInvite}>
-              Send
+              Add Invite
             </Button>
-            <Button onClick={handleSubmit}>Send Email</Button>
+            <Button colorScheme="blue" onClick={handleSubmit}>
+              Send Email
+            </Button>
             <Button onClick={onClose2}>Cancel</Button>
           </ModalFooter>
         </ModalContent>
@@ -400,7 +418,7 @@ export const InviteTable = () => {
 
       <div>
         <h1 className="py-5 text-xl leading-tight font-bold text-gray-500">
-          Invites
+          Invitations
         </h1>
       </div>
       <div className='flex flex-row space-x-5 py-5'>
@@ -418,18 +436,18 @@ export const InviteTable = () => {
           <Button className='w-full' colorScheme='blue' variant='outline'>Search</Button>
         </div>
         <div className='basis-1/4'>
-          <Button onClick={onOpen2} className='w-full' colorScheme='blue'>Send Invite</Button>
+          <Button onClick={onOpen2} className='w-full' colorScheme='blue'>Send Invitation</Button>
         </div>
       </div> 
 
       <div className="overflow-x-auto shadow-md sm:rounded-lg overflow-y-scroll h-64">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead>
+          <thead className="sticky top-0 bg-white">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sent Date</th>
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -448,20 +466,20 @@ export const InviteTable = () => {
                 <td className="px-6 py-4">{invite.role}</td>
                 <td className="px-6 py-4">{invite.date ? new Date(invite.date).toLocaleString() : 'N/A'}</td>
                 <td className="px-6 py-4">
-                  <div className="flex justify-end space-x-2">
-                    <button
-                      onClick={() => onOpenModal(index)}
-                      className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                    >
-                      Delete
-                    </button>
-                    <button
-                      onClick={() => handleResend(index)}
-                      className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                    >
-                      Resend
-                    </button>
-                  </div>
+                <div className="flex justify-end space-x-2">
+                  <button
+                    onClick={() => onOpenModal(index)}
+                    className="px-3 py-1 text-red-500 hover:text-red-600"
+                  >
+                    Delete
+                  </button>
+                  <button
+                    onClick={() => handleResend(index)}
+                    className="px-3 py-1 text-blue-500 hover:text-blue-600"
+                  >
+                    Resend
+                  </button>
+                </div>
                 </td>
               </tr>
             ))}
