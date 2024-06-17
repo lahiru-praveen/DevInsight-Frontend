@@ -1,10 +1,9 @@
-// 
+
 
 // SignUpDemo.jsx
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
-import emailjs from 'emailjs-com';
 import {
     Button,
     FormControl,
@@ -14,29 +13,53 @@ import {
     useColorModeValue,
     Alert,
     AlertIcon,
+    Select,
+    InputGroup,
+    InputLeftElement
 } from '@chakra-ui/react';
+
 import logo from '../../assets/devsign.png';
+
+
+
 
 export default function SignUp() {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
+    const [company, setCompany] = useState('');
     const [password, setPassword] = useState('');
     const [reEnterPassword, setReEnterPassword] = useState('');
     const [isFilled, setIsFilled] = useState(false);
     const [passwordError, setPasswordError] = useState('');
     const [message, setMessage] = useState('');
-    const [emailError, setEmailError] = useState('');
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+
+    useEffect(() => {
+        const emailFromQuery = searchParams.get('email');
+        const companyFromQuery = searchParams.get('company');
+        if (emailFromQuery) {
+            setEmail(emailFromQuery);
+        }
+        if (companyFromQuery) {
+            setCompany(companyFromQuery);
+        }
+    }, [searchParams]);
+    
 
     const handleFirstNameChange = (event) => {
-        setFirstName(event.target.value);
+        const firstNameValue = event.target.value;
+        setFirstName(firstNameValue);
+        setUsername(`${firstNameValue} ${lastName}`);
         checkIsFilled();
     };
 
     const handleLastNameChange = (event) => {
-        setLastName(event.target.value);
+        const lastNameValue = event.target.value;
+        setLastName(lastNameValue);
+        setUsername(`${firstName} ${lastNameValue}`);
         checkIsFilled();
     };
 
@@ -46,10 +69,10 @@ export default function SignUp() {
     };
 
     const handleEmailChange = (event) => {
-        const emailValue = event.target.value;
-        setEmail(emailValue);
+        const email = event.target.value;
+        setEmail(email);
         checkIsFilled();
-        validateEmail(emailValue);
+        validateEmail(email);
     };
 
     const handlePasswordChange = (event) => {
@@ -71,68 +94,60 @@ export default function SignUp() {
             username !== '' &&
             email !== '' &&
             password !== '' &&
-            reEnterPassword !== ''
+            reEnterPassword !== '' &&
+            company !== ''
         );
     };
 
-    const validateEmail = (emailValue) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(emailValue)) {
-            setEmailError('Please enter a valid email address.');
-        } else {
-            setEmailError('');
-        }
+ 
+    const validateEmail = (email) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+    };
+
+    const handleCompanyChange = (event) => {
+        setCompany(event.target.value);
+        checkIsFilled();
     };
 
     const validatePassword = (password, reEnterPassword) => {
-        if (reEnterPassword !== '' && password !== reEnterPassword) {
+        const capitalLetterRegex = /[A-Z]/;
+        const specialCharacterRegex = /[!@#$%^&*(),.?":{}|<>]/;
+    
+        if (password.length < 6) {
+            setPasswordError('Password must be at least 6 characters long.');
+        } else if (!capitalLetterRegex.test(password)) {
+            setPasswordError('Password must contain at least one capital letter.');
+        } else if (!specialCharacterRegex.test(password)) {
+            setPasswordError('Password must contain at least one special character.');
+        } else if (reEnterPassword !== '' && password !== reEnterPassword) {
             setPasswordError('Passwords do not match');
         } else {
             setPasswordError('');
         }
     };
-
-    const sendVerificationEmail = async (userData) => {
-        const templateParams = {
-            email: userData.email,
-            verification_link: `${window.location.origin}/verify-email?email=${encodeURIComponent(userData.email)}&code=${userData.verificationCode}`,
-        };
-
-        try {
-            await emailjs.send(
-                'YOUR_SERVICE_ID',
-                'YOUR_TEMPLATE_ID',
-                templateParams,
-                'YOUR_USER_ID'
-            );
-            setMessage('Verification email sent! Please check your inbox.');
-        } catch (error) {
-            console.error('Failed to send verification email:', error);
-            setMessage('Failed to send verification email. Please try again.');
-        }
-    };
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (isFilled && password === reEnterPassword) {
             try {
                 const response = await axios.post('http://localhost:8000/signup', {
-                    
                     firstName,
                     lastName,
                     username,
                     email,
                     password,
+                    company,
                     role: "Developer",
-                    company: "99x"
+                    skills: [],
+                    profileStatus: "Active",
                 });
-
-                const { access_token, verificationCode } = response.data;
+    
+                const { access_token, verification_code } = response.data;
                 sessionStorage.setItem("token", access_token);
-
-                await sendVerificationEmail({ email, verificationCode });
-
-                navigate(`/verify-email?email=${encodeURIComponent(email)}`);
+    
+                navigate('/si');
             } catch (error) {
                 if (error.response && error.response.status === 400 && error.response.data.detail === "User already exists") {
                     setMessage("Email is already registered");
@@ -144,6 +159,7 @@ export default function SignUp() {
             setPasswordError('Fill all the details');
         }
     };
+    
 
     return (
         <Flex minH={'100vh'} align={'center'} justify={'center'}>
@@ -194,15 +210,28 @@ export default function SignUp() {
                         onChange={handleUsernameChange}
                     />
                 </FormControl>
-                <FormControl id="email">
-                    <Input
-                        placeholder="Email"
-                        _placeholder={{ color: 'gray.500' }}
-                        type="email"
-                        value={email}
-                        onChange={handleEmailChange}
-                    />
-                </FormControl>
+                <Flex>
+                    <FormControl id="company" flex={1} mr={2}>
+                        <Input placeholder="Company" 
+                        _placeholder={{ color: 'gray.500' }}  
+                        type="text" 
+                        value={company} 
+                        onChange={handleCompanyChange}
+                        />
+                           
+                
+                    </FormControl>
+                    <FormControl id="email" flex={2}>
+                        
+                            <Input
+                                placeholder="Email"
+                                _placeholder={{ color: 'gray.500' }}
+                                type="email"
+                                value={email}
+                                onChange={handleEmailChange}
+                            />
+                    </FormControl>
+                </Flex>
                 <FormControl id="password">
                     <Input
                         placeholder="Password"
