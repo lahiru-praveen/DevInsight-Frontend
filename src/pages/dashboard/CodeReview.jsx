@@ -136,7 +136,7 @@ export default function CodeReview() {
                                         <Text className="text-xl font-bold mr-2">Code - </Text>
                                         <Box bg='white' p={4} className="mt-2 mb-8">
                                             {selectedFileContent ? (
-                                                <pre className="line-numbers">
+                                                <pre className="line-numbers text-lg">
                                                     {addLineNumbersToCode(selectedFileContent)}
                                                 </pre>
                                             ) : (
@@ -169,7 +169,7 @@ export default function CodeReview() {
                                         <Text className="text-xl font-bold mr-2">Review - </Text>
                                         <Box bg='white' p={4} className="mt-2 mb-8">
                                             {reviewContent ? (
-                                                <pre>{reviewContent}</pre>
+                                                <pre className="text-lg">{reviewContent}</pre>
                                             ) : (
                                                 <Text>There is an error </Text>
                                             )}
@@ -178,7 +178,7 @@ export default function CodeReview() {
                                         <Text className="text-xl font-bold mr-2">Suggestions - </Text>
                                         <Box bg='white' p={4} className="mt-2 mb-8">
                                             {suggestionContent ? (
-                                                <pre>{suggestionContent}</pre>
+                                                <pre className="text-lg">{suggestionContent}</pre>
                                             ) : (
                                                 <Text>There is an error </Text>
                                             )}
@@ -187,7 +187,7 @@ export default function CodeReview() {
                                         <Text className="text-xl font-bold mr-2">Refer Links - </Text>
                                         <Box bg='white' p={4} className="mt-2 mb-8">
                                             {referLinksContent ? (
-                                                <pre>{referLinksContent}</pre>
+                                                <pre className="text-lg">{referLinksContent}</pre>
                                             ) : (
                                                 <Text>There is an error </Text>
                                             )}
