@@ -4,7 +4,9 @@ import { CodeProvider } from './context/CodeContext.jsx';
 import { AuthProvider } from '././pages/Profile/authContext.jsx';
 import DashboardMain from "./pages/dashboard/DashboardMain.jsx";
 import CodePreview from "./pages/dashboard/CodePreview.jsx";
-import SignInDemo from "./pages/Login/SignInDemo.jsx";
+import LoginDeveloper from "./pages/Login/LoginDeveloper.jsx";
+import LoginManager from "./pages/Login/LoginManager.jsx";
+import LoginBoth from "./pages/Login/LoginBoth.jsx";
 import SignUpDemo from "./pages/Login/SignUpDemo.jsx";
 import QAEHelpRequests from "./pages/HelpDesk/QAEHelpRequests.jsx";
 import Landing from "./pages/Landing/Landing.jsx";
@@ -28,7 +30,9 @@ import UserResponsePreview from "./pages/HelpDesk/UserResponsePreview.jsx";
 import ManagerProfile from "./pages/MangerProfile/ManagerProfile.jsx";
 import Chatbot from "./pages/Chatbot/chatbot.jsx";
 import AccSuccess from "./pages/CreateOrg/AccSuccess.jsx";
-
+import Settings from "./pages/Profile/Settings.jsx";
+import FaceRecognition from "./pages/Login/FaceRecognition.jsx";
+import FaceCaptureModal from "./pages/Login/FaceCaptureModal.jsx";
 
 
 export default function App() {
@@ -44,14 +48,15 @@ export default function App() {
                     <Route path="/qhr" element={<QAEHelpRequests/>} />
                     <Route path="/uhr" element={<UserHelpRequests/>} />
                     <Route path="/qcp" element={<QAECodePreview/>} />
-                    <Route path="/si" element={<SignInDemo/>}/>
+                    <Route path="/login-developer" element={<LoginDeveloper/>}/>
+                    <Route path="/login-manager" element={<LoginManager/>}/>
+                    <Route path="/login-both" element={<LoginBoth/>}/>
                     <Route path="/su" element={<SignUpDemo/>}/>
                     <Route path="/co" element={<Createorg1/>}/>
-                    <Route path="/og" element={<OrganRegister/>}/>
                     <Route path="/fp" element={<ForgetPassword/>}/>
                     <Route path="/oa" element={<CreateOrg/>}/>
                     <Route path="/verify-email" element={<VerifyEmail/>}/>
-                    <Route path="/ep" element={<EditProfile userId="123"/>}/>
+                    <Route path="/edit-profile" element={<EditProfile userId="123"/>}/>
                     <Route path="/co1" element={<Createorg1/>}/>
                     <Route path="/co2" element={<Createorg2/>}/>
                     <Route path="/co3" element={<Createorg3/>}/>
@@ -65,6 +70,9 @@ export default function App() {
                     <Route path="/cb" element={<Chatbot/>}/>
                     <Route path="/as" element={<AccSuccess/>}/>
                     <Route path="/fpr" element={<ForgetPasswordAndReset/>}/>
+                    <Route path="/settings" element={<Settings/>}/>
+                    <Route path="/face-recognition" element={<FaceRecognition/>}/>
+                    <Route path="/face-capture" element={<FaceCaptureModal/>}/>
                    
                     
                 </Routes>

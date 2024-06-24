@@ -75,15 +75,18 @@ export default function ForgetPasswordAndReset() {
                     <Input type="password" value={confirmNewPassword} onChange={(e) => setConfirmNewPassword(e.target.value)} />
                 </FormControl>
                 <Stack spacing={6}>
-                    <Button onClick={handleSave} color={'white'} bg={'blue.500'} _hover={{ bg: 'blue.600' }}>
-                        Save
-                    </Button>
+                {!successMessage && (
+                        <Button onClick={handleSave} color={'white'} bg={'blue.500'} _hover={{ bg: 'blue.600' }}>
+                            Save
+                        </Button>
+                    )}
                 </Stack>
+                
 
                 {successMessage && (
                     <Stack spacing={6}>
-                        <Button onClick={() => navigate('/si')} color={'white'} bg={'green.500'} _hover={{ bg: 'green.600' }}>
-                            click here to Sign In
+                        <Button onClick={() => navigate('/login-developer')} color={'white'} bg={'green.500'} _hover={{ bg: 'green.600' }}>
+                            Click here to Login
                         </Button>
                     </Stack>
                 )}

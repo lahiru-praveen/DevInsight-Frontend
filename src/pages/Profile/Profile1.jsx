@@ -1,92 +1,263 @@
-import React from 'react';
-import { Box, Heading, Flex, Avatar, Text, Badge, Image, Stack } from '@chakra-ui/react';
+// import React, { useState, useEffect } from 'react';
+// import {
+//   Button,
+//   Flex,
+//   Heading,
+//   Text,
+//   Card,
+//   CardBody,
+//   Input,
+//   FormControl,
+//   FormLabel,
+//   IconButton,
+// } from '@chakra-ui/react';
+// import { CloseIcon } from '@chakra-ui/icons';
+// import { useNavigate } from 'react-router-dom';
 
-const sharedClasses = {
-  rounded: 'rounded-lg',
-  p4: 'p-4',
-  flex: 'flex',
-  itemsCenter: 'items-center',
-  textZinc: 'text-zinc-600',
-  bgGreen: 'bg-green-500',
-  textWhite: 'text-white',
-  justifyCenter: 'justify-center',
-  roundedFull: 'rounded-full',
-  text2xl: 'text-2xl',
-  fontBold: 'font-bold',
-  ml4: 'ml-4',
-  textLg: 'text-lg',
-  fontSemibold: 'font-semibold',
-  bgBlue: 'bg-blue-500',
-  textXs: 'text-xs',
-  px2: 'px-2',
-  py1: 'py-1',
-  bgTeal100: 'bg-teal-100',
-  textTeal800: 'text-teal-800',
-  textSm: 'text-sm',
-  gap2: 'gap-2',
-  w16: 'w-16',
-  h16: 'h-16',
-  w24: 'w-24',
-  h24: 'h-24',
-  mr4: 'mr-4',
-};
+// import ProfilePic from "../../assets/profile pic.jpg";
+// import ComLogo from "../../assets/99x.png";
 
-const Profile = () => {
-  return (
-    <Box p={4}>
-      <Box borderWidth="1px" borderRadius="lg" p={4} mb={4}>
-        <Heading as="h2" size="lg" mb={4} className="font-bold">Profile</Heading>
-        <Flex alignItems="center">
-          <Flex
-            alignItems="center"
-            justifyContent="center"
-            bg="green.500"
-            color="white"
-            borderRadius="full"
-            w={16}
-            h={16}
-            fontSize="2xl"
-            fontWeight="bold"
-          >
-            BM
-          </Flex>
-          <Box ml={4}>
-            <Text fontSize="lg" fontWeight="semibold">Buwaneka Marasinghe</Text>
-            <Text color="gray.600">buwaneka@gmail.com</Text>
-            <Badge colorScheme="blue" className="text-xs font-semibold px-2 py-1 rounded">ADMIN</Badge>
-          </Box>
-        </Flex>
-      </Box>
+// import { getUserProfile, createUserProfile, uploadProfilePicture } from './api';
 
-      <Box borderWidth="1px" borderRadius="lg" p={4} mb={4}>
-        <Heading as="h2" size="lg" mb={4} className="font-bold">Skills</Heading>
-        <Flex wrap="wrap" gap={2}>
-          {['JavaScript', 'React', 'Node.js', 'Python', 'CSS', 'HTML', 'Git', 'SQL'].map(skill => (
-            <Badge key={skill} bg="teal.100" color="teal.800" fontSize="sm" className="font-semibold px-2 py-1 rounded">{skill}</Badge>
-          ))}
-        </Flex>
-      </Box>
+// const EditProfile = ({ userId, token }) => {
+//   const [profile, setProfile] = useState({
+//     lastName: '',
+//     firstName: '',
+//     username: '',
+//     email: '',
+//     role: '',
+//     skills: '',
+//     profilePicture: '',
+//   });
 
-      <Box borderWidth="1px" borderRadius="lg" p={4}>
-        <Heading as="h2" size="lg" mb={4} className="font-bold">Company</Heading>
-        <Flex>
-          <Image src="https://placehold.co/100x100" alt="Company Inc." className="w-24 h-24 rounded mr-4" />
-          <Stack>
-            <Text fontSize="sm" color="gray.600">Company Name</Text>
-            <Text fontSize="lg" fontWeight="semibold">Company Inc.</Text>
-            <Text fontSize="sm" color="gray.600">Username</Text>
-            <Text fontSize="lg" fontWeight="semibold">companyuser</Text>
-            <Text fontSize="sm" color="gray.600">Email</Text>
-            <Text fontSize="lg" fontWeight="semibold">company@example.com</Text>
-            <Text fontSize="sm" color="gray.600">Phone</Text>
-            <Text fontSize="lg" fontWeight="semibold">123-456-7890</Text>
-            <Text fontSize="sm" color="gray.600">Address</Text>
-            <Text fontSize="lg" fontWeight="semibold">123 Main Street, City, Country</Text>
-          </Stack>
-        </Flex>
-      </Box>
-    </Box>
-  );
-};
+//   const [file, setFile] = useState(null);
+//   const [message, setMessage] = useState(null);
+//   const [error, setError] = useState(null);
+//   const navigate = useNavigate();
 
-export default Profile;
+//   // State variable to hold profile picture
+//   const [profilePicture, setProfilePicture] = useState(ProfilePic);
+
+//   // State variable to hold programming languages
+//   const [languages, setLanguages] = useState(['JavaScript', 'Python', 'Java', 'C++', 'Ruby', 'Go']);
+
+//   // State to handle new skill input
+//   const [newSkill, setNewSkill] = useState('');
+
+//   // State to handle edit mode
+//   const [isEditing, setIsEditing] = useState(false);
+
+//   useEffect(() => {
+//     const fetchProfile = async () => {
+//       try {
+//         const email = sessionStorage.getItem("email");
+//         const data = await getUserProfile(email, token);
+//         console.log(data);
+//         setProfile(data);
+//         setProfilePicture(data.profilePicture || ProfilePic);
+//         setLanguages(data.skills ? data.skills.split(',') : []);
+//       } catch (error) {
+//         setError(error.detail);
+//       }
+//     };
+
+//     fetchProfile();
+//   }, [userId, token]);
+
+//   // Handle input change for user details
+//   const handleInputChange = (e) => {
+//     const { name, value } = e.target;
+//     setProfile((prevProfile) => ({ ...prevProfile, [name]: value }));
+//   };
+
+//   // Handle new skill input change
+//   const handleNewSkillChange = (e) => {
+//     setNewSkill(e.target.value);
+//   };
+
+//   // Handle Logout
+//   const handleLogout = () => {
+//     // Clear session storage
+//     sessionStorage.clear();
+
+//     // Navigate to the '/si' route
+//     navigate('/si');
+//   };
+
+//   // Add new skill to the languages array
+//   const addSkill = () => {
+//     if (newSkill.trim()) {
+//       setLanguages((prevLanguages) => [...prevLanguages, newSkill.trim()]);
+//       setNewSkill('');
+//     }
+//   };
+
+//   // Delete skill from the languages array
+//   const deleteSkill = (index) => {
+//     setLanguages((prevLanguages) => prevLanguages.filter((_, i) => i !== index));
+//   };
+
+//   // Toggle edit mode
+//   const toggleEditMode = () => {
+//     setIsEditing(!isEditing);
+//   };
+
+//   // Handle form submission
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     try {
+//       const updatedProfile = { ...profile, skills: languages.join(',') };
+//       await createUserProfile(profile.email, updatedProfile, token);
+//       if (file) {
+//         await uploadProfilePicture(userId, file, token);
+//       }
+//       setMessage('Profile updated successfully');
+//       setIsEditing(false);
+//     } catch (error) {
+//       setError(error.detail);
+//     }
+//   };
+
+//   // Handle profile picture change
+//   const handleProfilePictureChange = (e) => {
+//     const file = e.target.files[0];
+//     if (file) {
+//       const reader = new FileReader();
+//       reader.onloadend = () => {
+//         setProfilePicture(reader.result);
+//         setFile(file);
+//       };
+//       reader.readAsDataURL(file);
+//     }
+//   };
+
+//   return (
+//     <Flex>
+//       {/* Left side of the page */}
+//       <div className="w-1/2 h-screen">
+//         <Card className="ml-10 mt-10 w-5/6 h-screen" variant="outline">
+//           <CardBody className="flex flex-col justify-evenly">
+//             {/* Profile picture */}
+//             <img src={profilePicture} className="rounded-full w-64 h-64 mx-auto" alt="Profile" />
+
+//             {isEditing ? (
+//               <form onSubmit={handleSubmit}>
+//                 <FormControl id="username" className="mb-3">
+//                   <FormLabel>Username</FormLabel>
+//                   <Input
+//                     type="text"
+//                     name="username"
+//                     value={profile.username}
+//                     onChange={handleInputChange}
+//                   />
+//                 </FormControl>
+//                 <FormControl id="profilePicture" className="mb-3">
+//                   <FormLabel>Profile Picture</FormLabel>
+//                   <Input
+//                     type="file"
+//                     accept="image/*"
+//                     onChange={handleProfilePictureChange}
+//                   />
+//                 </FormControl>
+//                 <Button type="submit" colorScheme="blue">
+//                   Save Changes
+//                 </Button>
+//               </form>
+//             ) : (
+//               <center>
+//                 {/* User information */}
+//                 <Heading className="p-3">{profile.name}</Heading>
+//                 <Text className="font-bold text-3xl mb-3">{profile.username}</Text>
+//                 <Text className="mb-3">{profile.email}</Text>
+//                 <Button size="xs" variant="solid" colorScheme="blue">
+//                   {profile.role}
+//                 </Button>
+//               </center>
+//             )}
+
+//             {/* Edit profile button */}
+//             <div className="mt-20">
+//               <Button w="full" variant="solid" colorScheme="blue" onClick={toggleEditMode}>
+//                 {isEditing ? 'Cancel' : 'Edit Profile'}
+//               </Button>
+//             </div>
+//           </CardBody>
+//         </Card>
+//       </div>
+
+//       {/* Right side of the page */}
+//       <div className="w-1/2">
+//         {/* Company card */}
+//         <Card className="h-2/5 mt-10 mb-10 ml-10 w-5/6" variant="outline">
+//           <CardBody>
+//             {/* Company logo */}
+//             <div className="float-left mr-4 mt-16">
+//               <img src={ComLogo} alt="Company Logo" width="200" height="100" />
+//             </div>
+//             <Text className="text-right mr-10">99x</Text>
+//             <br />
+//             <Text className="text-right mr-10">125ILM</Text>
+//             <br />
+//             <Text className="text-right mr-10">99Xprvt</Text>
+//             <br />
+//             <a href="https://99x.io" className="text-right">
+//               99x - Creating impactful digital products | 99x
+//             </a>
+//           </CardBody>
+//         </Card>
+
+//         {/* Programming languages card */}
+//         <Card className="h-2/5 mt-10 ml-10 w-5/6" variant="outline">
+//           <CardBody>
+//             <Heading>Skills</Heading>
+//             <br />
+//             <Flex wrap="wrap">
+//               {/* Display programming languages as buttons with delete option */}
+//               {languages.map((language, index) => (
+//                 <Flex key={index} align="center" m="1">
+//                   <Button variant="outline" colorScheme="blue">
+//                     {language}
+//                   </Button>
+//                   {isEditing && (
+//                     <IconButton
+//                       aria-label="Delete skill"
+//                       icon={<CloseIcon />}
+//                       size="xs"
+//                       ml="2"
+//                       onClick={() => deleteSkill(index)}
+//                     />
+//                   )}
+//                 </Flex>
+//               ))}
+//             </Flex>
+//             {isEditing && (
+//               <FormControl mt="4">
+//                 <FormLabel>New Skill</FormLabel>
+//                 <Flex>
+//                   <Input
+//                     type="text"
+//                     value={newSkill}
+//                     onChange={handleNewSkillChange}
+//                   />
+//                   <Button ml="2" onClick={addSkill} colorScheme="blue">
+//                     Add
+//                   </Button>
+//                 </Flex>
+//               </FormControl>
+//             )}
+//           </CardBody>
+//           <Flex justify="space-between" p={4}>
+//             <Button w="48%" variant="solid" colorScheme="red">
+//               Deactivate
+//             </Button>
+//             <Button w="48%" variant="solid" colorScheme="blue" onClick={handleLogout}>
+//               Log Out
+//             </Button>
+//           </Flex>
+//         </Card>
+//       </div>
+//     </Flex>
+//   );
+// };
+
+// export default EditProfile;

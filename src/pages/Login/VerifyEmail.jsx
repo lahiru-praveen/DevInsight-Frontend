@@ -123,7 +123,7 @@ export default function VerifyEmail() {
                 {isVerified && (
                     <Alert status="success">
                         <AlertIcon />
-                        Email verified successfully. Please proceed to sign up.
+                        Please verify your email. If you don't see the email, please check spam.
                     </Alert>
                 )}
                 {isError && (
