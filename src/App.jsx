@@ -65,6 +65,8 @@ export default function App() {
                     <Route path="/cb" element={<Chatbot/>}/>
                     <Route path="/as" element={<AccSuccess/>}/>
                     <Route path="/fpr" element={<ForgetPasswordAndReset/>}/>
+                   
+                    
                 </Routes>
                 </AuthProvider>
             </CodeProvider>

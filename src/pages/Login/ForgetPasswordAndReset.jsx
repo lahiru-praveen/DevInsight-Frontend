@@ -1,22 +1,71 @@
 import { useState } from 'react';
-import { Button, Flex, FormControl, FormLabel, Input, Stack, Text, useColorModeValue } from '@chakra-ui/react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Button, Flex, FormControl, FormLabel, Input, Stack, Text, useColorModeValue, Alert, AlertIcon } from '@chakra-ui/react';
 import logo from '../../assets/devsign.png';
 
 export default function ForgetPasswordAndReset() {
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
+    const { email, code } = location.state;
 
-    const handleSave = () => {
-        // Add your logic to save the new password
-        console.log('New password:', newPassword);
-        console.log('Confirm new password:', confirmNewPassword);
+    const handleSave = async () => {
+        if (newPassword !== confirmNewPassword) {
+            setErrorMessage('Passwords do not match. Please re-enter.');
+            return;
+        }
+
+        if (!/(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{6,})/.test(newPassword)) {
+            setErrorMessage('Password must contain at least 6 characters, one capital letter, and one special character.');
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:8000/api/change-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, code, new_password: newPassword }),
+            });
+
+            if (response.ok) {
+                setSuccessMessage('Password changed successfully!');
+                setErrorMessage('');
+            } else {
+                const errorData = await response.json();
+                setErrorMessage(`Password change failed: ${errorData.detail}`);
+                setSuccessMessage('');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            setErrorMessage('An error occurred. Please try again.');
+            setSuccessMessage('');
+        }
     };
 
     return (
         <Flex minH={'100vh'} align={'center'} justify={'center'}>
             <Stack spacing={6} w={'full'} maxW={'md'} bg={useColorModeValue('white', 'gray.700')} rounded={'xl'} p={6} my={12}>
-                <center><img src={logo} height={200} width={200} alt="Logo"/></center>
-               
+                <center><img src={logo} height={200} width={200} alt="Logo" /></center>
+
+                {errorMessage && (
+                    <Alert status="error" rounded="md">
+                        <AlertIcon />
+                        {errorMessage}
+                    </Alert>
+                )}
+
+                {successMessage && (
+                    <Alert status="success" rounded="md">
+                        <AlertIcon />
+                        {successMessage}
+                    </Alert>
+                )}
+
                 <FormControl>
                     <FormLabel>New Password</FormLabel>
                     <Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
@@ -30,7 +79,14 @@ export default function ForgetPasswordAndReset() {
                         Save
                     </Button>
                 </Stack>
-                
+
+                {successMessage && (
+                    <Stack spacing={6}>
+                        <Button onClick={() => navigate('/si')} color={'white'} bg={'green.500'} _hover={{ bg: 'green.600' }}>
+                            click here to Sign In
+                        </Button>
+                    </Stack>
+                )}
             </Stack>
         </Flex>
     );

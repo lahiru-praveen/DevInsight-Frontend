@@ -29,9 +29,11 @@ export default function Submissions({ submission, drop }) {
             </ToolTip>));
 
     const file_name = f_name === '' ?
-        <ToolTip tooltip="No any file here">
-            <Icon as={FcSms} boxSize={25} className="mr-2" />
-        </ToolTip>
+        <div className="ml-5">
+            <ToolTip tooltip="No any file here">
+                <Icon as={FcSms} boxSize={25} className="mr-2" />
+            </ToolTip>
+        </div>
         : (f_name);
 
     const dropType = drop === 0 ? <Icon as={FcExpand} boxSize={25} className="mr-2" onClick={() => setModalOpen(true)} style={{ cursor: 'pointer' }} /> : <Icon as={VscBlank} boxSize={25} className="mr-2" />;
@@ -50,16 +52,19 @@ export default function Submissions({ submission, drop }) {
                 </ToolTip>
         );
 
-    const lan = language === "Not given" ?
-        <ToolTip tooltip='Language not given' >
-            <Icon as={FcDisapprove} boxSize={25} className="mr-2" />
-        </ToolTip>
-
+    const lan = language === "Not given" || language === "not mentioned" ?
+        <div className="ml-5">
+            <ToolTip tooltip='Language not given' >
+                <Icon as={FcDisapprove} boxSize={25} className="mr-2" />
+            </ToolTip>
+        </div>
         : language;
-    const des = description === "Not given" ?
-        <ToolTip tooltip='No any description given'>
-            <Icon as={FcDisapprove} title="This is" boxSize={25} className="mr-2" />
-        </ToolTip>
+    const des = description === "Not given" || description === "" ?
+        <div className="ml-5">
+            <ToolTip tooltip='No any description given'>
+                <Icon as={FcDisapprove} title="This is" boxSize={25} className="mr-2" />
+            </ToolTip>
+        </div>
         : description;
 
     useEffect(() => {
@@ -82,26 +87,26 @@ export default function Submissions({ submission, drop }) {
             <div>
                 <Card>
                     <Flex flexDirection="row" className="bg-[#EBEBEB] mb-2 mt-1">
-                        <CardHeader className="mr-4 w-[100px]">
+                        <CardHeader className="mr-4 w-[50px]">
                             {typeIcon}
                         </CardHeader>
                         <CardHeader className="mr-4 w-[150px]">
                             <Text className="font-bold" fontSize="16px">{p_id}</Text>
                         </CardHeader>
-                        <CardHeader className="mr-4 w-[250px]">
+                        <CardHeader className="mr-4 w-[350px]">
                             <Text className="font-bold" fontSize="16px">{p_name}</Text>
                         </CardHeader>
-                        <CardHeader className="mr-4 w-[250px]">
+                        <CardHeader className="mr-4 w-[300px]">
                             <Text className="font-bold" fontSize="16px">{file_name}</Text>
                         </CardHeader>
-                        <CardHeader className="mr-4 w-[300px]">
+                        <CardHeader className="mr-4 w-[200px]">
                             <Text className="font-bold" fontSize="16px">{submission_date}</Text>
                         </CardHeader>
                         <CardHeader className="mr-4 w-[200px]">
                             <Text className="font-bold" fontSize="16px">{lan}</Text>
                         </CardHeader>
                         <CardHeader className="mr-4 w-[600px]">
-                            <Text className="font-bold" fontSize="16px">{des}</Text>
+                            <Text className="font-bold w-[600px]" fontSize="16px" isTruncated  >{des}</Text>
                         </CardHeader>
                         <CardHeader>
                             {helpType}
