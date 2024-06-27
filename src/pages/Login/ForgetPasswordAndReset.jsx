@@ -34,6 +34,7 @@ export default function ForgetPasswordAndReset() {
 
             if (response.ok) {
                 setSuccessMessage('Password changed successfully!');
+                sessionStorage.clear();
                 setErrorMessage('');
             } else {
                 const errorData = await response.json();

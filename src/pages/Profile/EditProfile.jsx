@@ -192,7 +192,7 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
                   )}
                   {croppedImage && (
                     <div>
-                      <Avatar src={croppedImage} size="xl" mt={4} />
+                      <Avatar src={croppedImage} size="2xl" mt={4} />
                       <Button mt={2} onClick={handleSave}>Save</Button>
                     </div>
                   )}
@@ -258,14 +258,11 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
   );
 };
 
-const ProfileAndSkills = ({ profile, onUpdateProfile, handleLogout, handleDeactivate, token }) => {
+const ProfileAndSkills = ({ profile, onUpdateProfile, token }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  
 
-  const handleUserLogout = () => {
-    setIsLoggingOut(true);
-    handleLogout(); // Call the handleLogout function passed from props
-  };
+  
 
   return (
     <Box position="relative" className="bg-gray-100 shadow-lg rounded-lg p-6 max-w-xl mx-auto mt-8">
@@ -281,7 +278,7 @@ const ProfileAndSkills = ({ profile, onUpdateProfile, handleLogout, handleDeacti
       </Button>
 
       <Box mt={10} className="text-center">
-        <Avatar height="200" width="200" name={profile.username} src={profile.profilePicture} className="mx-auto mb={4}" />
+        <Avatar size="2xl" name={profile.username} src={profile.profilePicture} className="mx-auto mb={4}" />
         <Heading as="h2" size="lg" mb={2}>
           {profile.username}
         </Heading>
@@ -300,6 +297,14 @@ const ProfileAndSkills = ({ profile, onUpdateProfile, handleLogout, handleDeacti
           <Button colorScheme="blue" size="xs" mt={2} mb={2} variant="solid">
             {profile.role}
           </Button>
+          <Box mt={4} mb={4}>
+          <Text fontSize="sm" color="gray.600" mb={1}>
+            Organization
+          </Text>
+          <Text fontSize="md" color="gray.500">
+            {profile.company}
+          </Text>
+        </Box>
         </Box>
         <Divider mt={4} mb={4} />
         <Box mt={4} mb={4}>
@@ -319,31 +324,7 @@ const ProfileAndSkills = ({ profile, onUpdateProfile, handleLogout, handleDeacti
           </Box>
         </Box>
       </Box>
-      <Flex justifyContent="space-between">
-        <Button
-          colorScheme="red"
-          size="md"
-          mt={4}
-          onClick={() => {
-            if (window.confirm('Are you sure you want to deactivate your profile?')) {
-              handleDeactivate(profile.email, token);
-            }
-          }}
-        >
-          Deactivate
-        </Button>
-
-        
-        <Button
-          colorScheme="teal"
-          size="md"
-          mt={4}
-          onClick={handleUserLogout}
-          disabled={isLoggingOut}
-        >
-          {isLoggingOut ? <Spinner size="sm" /> : 'Log Out'}
-        </Button>
-      </Flex>
+      
       <EditProfile
         token={token}
         isOpen={isModalOpen}
@@ -358,7 +339,6 @@ const ProfilePage = () => {
   const [profile, setProfile] = useState({});
   const [error, setError] = useState(null);
   const token = sessionStorage.getItem('token');
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -379,33 +359,9 @@ const ProfilePage = () => {
     setProfile(updatedProfile);
   };
 
-  const handleLogout = () => {
-    setIsLoggingOut(true);
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('email');
-    navigate('/login-developer');
-  };
+  
 
-  const handleDeactivate = async (email, token) => {
-    try {
-      const response = await fetch(`http://127.0.0.1:8000/api/user_deactivate/${email}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.detail);
-      }
-      sessionStorage.removeItem('token');
-      sessionStorage.removeItem('email');
-      navigate('/login-developer');
-    } catch (error) {
-      setError(error.detail || error.message);
-    }
-  };
+  
   
 
 
@@ -414,8 +370,6 @@ const ProfilePage = () => {
       <ProfileAndSkills
         profile={profile}
         onUpdateProfile={handleUpdateProfile}
-        handleLogout={handleLogout}
-        handleDeactivate={handleDeactivate}
         token={token}
       />
     </ChakraProvider>

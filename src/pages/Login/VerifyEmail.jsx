@@ -126,12 +126,12 @@ export default function VerifyEmail() {
                         Please verify your email. If you don't see the email, please check spam.
                     </Alert>
                 )}
-                {isError && (
+                {/* {isError && (
                     <Alert status="error">
                         <AlertIcon />
                         Error verifying email. Please try again.
                     </Alert>
-                )}
+                )} */}
 
                 <center>
                     <img src={logo} height={200} width={200} alt="Logo" />

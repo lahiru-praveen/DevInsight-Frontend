@@ -37,7 +37,7 @@ export default function ForgetPassword() {
       const timer = setTimeout(() => {
         setSuccessMessage('');
         setErrorMessage('');
-      }, 8000); // Close the message after 5 seconds
+      }, 8000); // Close the message after 8 seconds
 
       return () => clearTimeout(timer);
     }

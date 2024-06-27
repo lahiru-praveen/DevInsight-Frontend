@@ -31,9 +31,10 @@ import ManagerProfile from "./pages/MangerProfile/ManagerProfile.jsx";
 import Chatbot from "./pages/Chatbot/chatbot.jsx";
 import AccSuccess from "./pages/CreateOrg/AccSuccess.jsx";
 import Settings from "./pages/Profile/Settings.jsx";
-import FaceRecognition from "./pages/Login/FaceRecognition.jsx";
-import FaceCaptureModal from "./pages/Login/FaceCaptureModal.jsx";
-
+import LoginFace from "./pages/Login/FaceLogin.jsx";
+import RegisterFace from "./pages/Login/FaceRegister.jsx";
+import FingerprintLogin from "./pages/Login/FingerprintLogin.jsx";
+import ChangePassword from "./pages/Profile/ChangePassword.jsx";
 
 export default function App() {
     return (
@@ -71,8 +72,10 @@ export default function App() {
                     <Route path="/as" element={<AccSuccess/>}/>
                     <Route path="/fpr" element={<ForgetPasswordAndReset/>}/>
                     <Route path="/settings" element={<Settings/>}/>
-                    <Route path="/face-recognition" element={<FaceRecognition/>}/>
-                    <Route path="/face-capture" element={<FaceCaptureModal/>}/>
+                    <Route path="/face-login" element={<LoginFace/>}/>
+                    <Route path="/face-register" element={<RegisterFace/>}/>
+                    <Route path="/fingerprint-register" element={<FingerprintLogin/>}/>
+                    <Route path="/change-password" element={<ChangePassword />}/>
                    
                     
                 </Routes>

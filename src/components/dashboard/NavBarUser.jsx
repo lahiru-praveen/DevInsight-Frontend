@@ -132,7 +132,7 @@ export default function NavBarUser() {
           throw new Error('Email is undefined');
         }
 
-        const profileResponse = await fetch(`http://localhost:8000/profile/${email}`, {
+        const profileResponse = await fetch(`http://localhost:8000/api/profile/${email}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
