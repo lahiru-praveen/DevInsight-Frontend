@@ -3,8 +3,9 @@ import { Avatar, AvatarBadge, Wrap, WrapItem, Button, Text } from '@chakra-ui/re
 import { Menu, MenuButton, MenuList, MenuItem, MenuDivider } from '@chakra-ui/react'
 import { Link, useLocation } from "react-router-dom";
 import {RxDividerVertical} from "react-icons/rx";
+import PropTypes from "prop-types";
 
-export default function NavBarUser() {
+export default function NavBarUser({ button1, button2, button3, button4 }) {
     const location = useLocation();
 
     return (
@@ -17,19 +18,19 @@ export default function NavBarUser() {
                 </div>
                 <div className="flex items-center  p-5">
                     <Link to="/db">
-                        <Button colorScheme={location.pathname === '/db' ? 'blue' : 'gray'}>Dashboard</Button>
+                        <Button isDisabled={button1} colorScheme={location.pathname === '/db' ? 'blue' : 'gray'}>Dashboard</Button>
                     </Link>
                     <RxDividerVertical className="ml-1 mr-1"/>
                     <Link to="/cs">
-                        <Button colorScheme={location.pathname === '/cs' ? 'blue' : 'gray'}>Submissions</Button>
+                        <Button isDisabled={button2} colorScheme={location.pathname === '/cs' ? 'blue' : 'gray'}>Submissions</Button>
                     </Link>
                     <RxDividerVertical className="ml-1 mr-1"/>
                     <Link to="/uhr">
-                        <Button colorScheme={location.pathname === '/uhr' ? 'blue' : 'gray'}>Help Requests</Button>
+                        <Button isDisabled={button3} colorScheme={location.pathname === '/uhr' ? 'blue' : 'gray'}>Help Requests</Button>
                     </Link>
                     <RxDividerVertical className="ml-1 mr-1"/>
                     <Link to="/cu">
-                        <Button colorScheme={location.pathname === '/cu' ? 'blue' : 'gray'}>Help</Button>
+                        <Button isDisabled={button4} colorScheme={location.pathname === '/cu' ? 'blue' : 'gray'}>Help</Button>
                     </Link>
                 </div>
                 <div className="flex flex-row">
@@ -53,7 +54,8 @@ export default function NavBarUser() {
                                 </Wrap>
                             </MenuButton>
                             <MenuList>
-                                <MenuItem as='a' href='#'>Profile</MenuItem>
+                                {/* <MenuItem as='a' href='#'>Profile</MenuItem> */}
+                                <MenuItem as={Link} to="/ep">Profile</MenuItem>
                                 <MenuDivider />
                                 <MenuItem as='a' href='#'>Settings</MenuItem>
                                 <MenuDivider />
@@ -66,3 +68,10 @@ export default function NavBarUser() {
         </>
     )
 }
+
+NavBarUser.propTypes = {
+    button1: PropTypes.bool.isRequired,
+    button2: PropTypes.bool.isRequired,
+    button3: PropTypes.bool.isRequired,
+    button4: PropTypes.bool.isRequired,
+};

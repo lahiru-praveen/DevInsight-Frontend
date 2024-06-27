@@ -1,8 +1,9 @@
 
-import { useState, Redirect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
+// SignUpDemo.jsx
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import axios from 'axios';
 import {
     Button,
     FormControl,
@@ -12,164 +13,153 @@ import {
     useColorModeValue,
     Alert,
     AlertIcon,
+    Select,
+    InputGroup,
+    InputLeftElement
 } from '@chakra-ui/react';
 
 import logo from '../../assets/devsign.png';
 
+
+
+
 export default function SignUp() {
-    
-    // State variables for form inputs and validation
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
+    const [company, setCompany] = useState('');
     const [password, setPassword] = useState('');
     const [reEnterPassword, setReEnterPassword] = useState('');
     const [isFilled, setIsFilled] = useState(false);
     const [passwordError, setPasswordError] = useState('');
-    const [message,setMessage] = useState('');
+    const [message, setMessage] = useState('');
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
 
-    // Function to handle changes in the first name input
+    useEffect(() => {
+        const emailFromQuery = searchParams.get('email');
+        const companyFromQuery = searchParams.get('company');
+        if (emailFromQuery) {
+            setEmail(emailFromQuery);
+        }
+        if (companyFromQuery) {
+            setCompany(companyFromQuery);
+        }
+    }, [searchParams]);
+    
+
     const handleFirstNameChange = (event) => {
-        setFirstName(event.target.value);
-        setIsFilled(
-            firstName !== '' &&
-                lastName !== '' &&
-                username !== '' &&
-                email !== '' &&
-                password !== '' &&
-                reEnterPassword !== ''
-        );
+        const firstNameValue = event.target.value;
+        setFirstName(firstNameValue);
+        setUsername(`${firstNameValue} ${lastName}`);
+        checkIsFilled();
     };
 
-    // Function to handle changes in the last name input
     const handleLastNameChange = (event) => {
-        setLastName(event.target.value);
-        setIsFilled(
-            firstName !== '' &&
-                lastName !== '' &&
-                username !== '' &&
-                email !== '' &&
-                password !== '' &&
-                reEnterPassword !== ''
-        );
+        const lastNameValue = event.target.value;
+        setLastName(lastNameValue);
+        setUsername(`${firstName} ${lastNameValue}`);
+        checkIsFilled();
     };
 
-    // Function to handle changes in the username input
     const handleUsernameChange = (event) => {
         setUsername(event.target.value);
-        setIsFilled(
-            firstName !== '' &&
-                lastName !== '' &&
-                username !== '' &&
-                email !== '' &&
-                password !== '' &&
-                reEnterPassword !== ''
-        );
+        checkIsFilled();
     };
 
-  
-    // Function to handle changes in the email input
-     const handleEmailChange = (event) => {
-            const emailValue = event.target.value;
-            setEmail(emailValue);
-            setIsFilled(
-                firstName !== '' &&
-                    lastName !== '' &&
-                    username !== '' &&
-                    emailValue !== '' &&
-                    password !== '' &&
-                    reEnterPassword !== ''
-            );
-
-            
-            // Check if the email contains the "@" sign
-            // if (!emailValue.includes('@')) {
-            //     setMessage('Email should include @ sign');
-            // } else {
-            //     setMessage('');
+    const handleEmailChange = (event) => {
+        const email = event.target.value;
+        setEmail(email);
+        checkIsFilled();
+        validateEmail(email);
     };
 
-
-    // Function to handle changes in the password input
     const handlePasswordChange = (event) => {
         setPassword(event.target.value);
-        setIsFilled(
-            firstName !== '' &&
-                lastName !== '' &&
-                username !== '' &&
-                email !== '' &&
-                password !== '' &&
-                reEnterPassword !== ''
-        );
-        // Check if the passwords match and update the error state
-        if (reEnterPassword !== '' && event.target.value !== reEnterPassword) {
-            setPasswordError('Passwords do not match');
-        } else {
-            setPasswordError('');
-        }
+        checkIsFilled();
+        validatePassword(event.target.value, reEnterPassword);
     };
 
-    // Function to handle changes in the re-enter password input
     const handleReEnterPasswordChange = (event) => {
         setReEnterPassword(event.target.value);
+        checkIsFilled();
+        validatePassword(password, event.target.value);
+    };
+
+    const checkIsFilled = () => {
         setIsFilled(
             firstName !== '' &&
-                lastName !== '' &&
-                username !== '' &&
-                email !== '' &&
-                password !== '' &&
-                reEnterPassword !== ''
+            lastName !== '' &&
+            username !== '' &&
+            email !== '' &&
+            password !== '' &&
+            reEnterPassword !== '' &&
+            company !== ''
         );
-        // Check if the passwords match and update the error state
-        if (event.target.value !== password) {
+    };
+
+ 
+    const validateEmail = (email) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+    };
+
+    const handleCompanyChange = (event) => {
+        setCompany(event.target.value);
+        checkIsFilled();
+    };
+
+    const validatePassword = (password, reEnterPassword) => {
+        const capitalLetterRegex = /[A-Z]/;
+        const specialCharacterRegex = /[!@#$%^&*(),.?":{}|<>]/;
+    
+        if (password.length < 6) {
+            setPasswordError('Password must be at least 6 characters long.');
+        } else if (!capitalLetterRegex.test(password)) {
+            setPasswordError('Password must contain at least one capital letter.');
+        } else if (!specialCharacterRegex.test(password)) {
+            setPasswordError('Password must contain at least one special character.');
+        } else if (reEnterPassword !== '' && password !== reEnterPassword) {
             setPasswordError('Passwords do not match');
         } else {
             setPasswordError('');
         }
     };
+    
 
-  
-  // State variable for redirection
-const [redirect, setRedirect] = useState(false);
-
-
-
-const handleSubmit = async () => {
-    console.log("Submitting form...");
-    if (isFilled && password === reEnterPassword) {
-        try {
-            // Check if the email is already registered
-            const response = await axios.post('http://localhost:8000/signup', {
-                firstName,
-                lastName,
-                username,
-                email,
-                password,
-            });
-            console.log("Form submitted successfully:", response.data);
-            // If email is not already registered, redirect to sign-in page
-            navigate("/si");
-
-        } catch (error) {
-            console.error('Error signing up:', error);
-            if (error.response && error.response.status === 400 && error.response.data.detail === "User already exists") {
-                setMessage("Email is already registered");
-            } else {
-                setMessage("An error occurred while signing up");
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (isFilled && password === reEnterPassword) {
+            try {
+                const response = await axios.post('http://localhost:8000/signup', {
+                    firstName,
+                    lastName,
+                    username,
+                    email,
+                    password,
+                    company,
+                    role: "Developer",
+                    skills: [],
+                    profileStatus: "Active",
+                });
+    
+                const { access_token, verification_code } = response.data;
+                sessionStorage.setItem("token", access_token);
+    
+                navigate('/si');
+            } catch (error) {
+                if (error.response && error.response.status === 400 && error.response.data.detail === "User already exists") {
+                    setMessage("Email is already registered");
+                } else {
+                    setMessage("An error occurred while signing up");
+                }
             }
+        } else {
+            setPasswordError('Fill all the details');
         }
-    } else {
-        setPasswordError('Fill all the details');
-    }
-};
-
-// Redirect to landing page after successful form submission
-if (redirect) {
-    return <Redirect to="/SignInDemo" />;
-}
-
+    };
+    
 
     return (
         <Flex minH={'100vh'} align={'center'} justify={'center'}>
@@ -182,21 +172,15 @@ if (redirect) {
                 p={6}
                 my={12}
             >
-                {/* Alert for password mismatch */}
                 {passwordError && (
                     <Alert status="error">
                         <AlertIcon />
                         {passwordError}
                     </Alert>
                 )}
-
-                {/* Logo */}
                 <center>
-                    {' '}
                     <img src={logo} height={200} width={200} alt={'DevInsightLOGO'} />
                 </center>
-
-                {/* Form inputs */}
                 <Flex>
                     <FormControl id="firstName" mr={3} flex={1}>
                         <Input
@@ -219,22 +203,35 @@ if (redirect) {
                 </Flex>
                 <FormControl id="username">
                     <Input
-                        placeholder="Username"
+                        placeholder="Profile name"
                         _placeholder={{ color: 'gray.500' }}
                         type="text"
                         value={username}
                         onChange={handleUsernameChange}
                     />
                 </FormControl>
-                <FormControl id="email">
-                    <Input
-                        placeholder="Email"
-                        _placeholder={{ color: 'gray.500' }}
-                        type="email"
-                        value={email}
-                        onChange={handleEmailChange}
-                    />
-                </FormControl>
+                <Flex>
+                    <FormControl id="company" flex={1} mr={2}>
+                        <Input placeholder="Company" 
+                        _placeholder={{ color: 'gray.500' }}  
+                        type="text" 
+                        value={company} 
+                        onChange={handleCompanyChange}
+                        />
+                           
+                
+                    </FormControl>
+                    <FormControl id="email" flex={2}>
+                        
+                            <Input
+                                placeholder="Email"
+                                _placeholder={{ color: 'gray.500' }}
+                                type="email"
+                                value={email}
+                                onChange={handleEmailChange}
+                            />
+                    </FormControl>
+                </Flex>
                 <FormControl id="password">
                     <Input
                         placeholder="Password"
@@ -253,19 +250,15 @@ if (redirect) {
                         onChange={handleReEnterPasswordChange}
                     />
                 </FormControl>
-
-                {/* Submit button */}
                 <Stack spacing={6}>
-                   
-                   <Button
-                       bg={isFilled && password === reEnterPassword ? 'blue.400' : 'blue.200'}
-                       color={'white'}
-                       onClick={handleSubmit}>
-                       Sign Up
-                   </Button>
-               </Stack>
-               <p>{message}</p>
-               
+                    <Button
+                        bg={isFilled && password === reEnterPassword ? 'blue.400' : 'blue.200'}
+                        color={'white'}
+                        onClick={handleSubmit}>
+                        Sign Up
+                    </Button>
+                </Stack>
+                <p>{message}</p>
             </Stack>
         </Flex>
     );
