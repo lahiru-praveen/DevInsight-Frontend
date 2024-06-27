@@ -28,6 +28,10 @@ import UserResponsePreview from "./pages/HelpDesk/UserResponsePreview.jsx";
 import ManagerProfile from "./pages/MangerProfile/ManagerProfile.jsx";
 import Chatbot from "./pages/Chatbot/chatbot.jsx";
 import AccSuccess from "./pages/CreateOrg/AccSuccess.jsx";
+import Profilenew from "./pages/Profile_2/Profile_page.jsx";
+import AdminProfilenew from "./pages/Profile_2/adminProfile_page.jsx";
+import Profilepage from "./pages/Profile_2/profilepage.jsx";
+import Orgnizationpage from "./pages/Organization_2/organizationpage.jsx";
 
 
 
@@ -65,8 +69,10 @@ export default function App() {
                     <Route path="/cb" element={<Chatbot/>}/>
                     <Route path="/as" element={<AccSuccess/>}/>
                     <Route path="/fpr" element={<ForgetPasswordAndReset/>}/>
-                   
-                    
+                    <Route path="/ppnew" element={<Profilenew/>}/>
+                    <Route path="/appnew" element={<AdminProfilenew/>}/>
+                    <Route path="/ppage" element={<Profilepage/>}/>
+                    <Route path="/opage" element={<Orgnizationpage/>}/>
                 </Routes>
                 </AuthProvider>
             </CodeProvider>
