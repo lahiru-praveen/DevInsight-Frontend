@@ -1,5 +1,6 @@
 
 
+
 // SignUpDemo.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -13,15 +14,11 @@ import {
     useColorModeValue,
     Alert,
     AlertIcon,
-    Select,
     InputGroup,
-    InputLeftElement
+    InputLeftElement,
 } from '@chakra-ui/react';
 
 import logo from '../../assets/devsign.png';
-
-
-
 
 export default function SignUp() {
     const [firstName, setFirstName] = useState('');
@@ -34,6 +31,7 @@ export default function SignUp() {
     const [isFilled, setIsFilled] = useState(false);
     const [passwordError, setPasswordError] = useState('');
     const [message, setMessage] = useState('');
+    const [userId, setUserId] = useState('');
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
@@ -47,7 +45,6 @@ export default function SignUp() {
             setCompany(companyFromQuery);
         }
     }, [searchParams]);
-    
 
     const handleFirstNameChange = (event) => {
         const firstNameValue = event.target.value;
@@ -99,7 +96,6 @@ export default function SignUp() {
         );
     };
 
- 
     const validateEmail = (email) => {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return re.test(String(email).toLowerCase());
@@ -113,7 +109,7 @@ export default function SignUp() {
     const validatePassword = (password, reEnterPassword) => {
         const capitalLetterRegex = /[A-Z]/;
         const specialCharacterRegex = /[!@#$%^&*(),.?":{}|<>]/;
-    
+
         if (password.length < 6) {
             setPasswordError('Password must be at least 6 characters long.');
         } else if (!capitalLetterRegex.test(password)) {
@@ -126,13 +122,13 @@ export default function SignUp() {
             setPasswordError('');
         }
     };
-    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (isFilled && password === reEnterPassword) {
             try {
                 const response = await axios.post('http://localhost:8000/signup', {
+    
                     firstName,
                     lastName,
                     username,
@@ -143,11 +139,13 @@ export default function SignUp() {
                     skills: [],
                     profileStatus: "Active",
                 });
-    
-                const { access_token, verification_code } = response.data;
-                sessionStorage.setItem("token", access_token);
-    
-                navigate('/si');
+
+                const { access_token, user_id, verificationCode } = response.data;
+                sessionStorage.setItem( "token", access_token );
+                setUserId(user_id); // Store user ID in state
+                // localStorage.setItem("email", email);
+
+                navigate('/login-developer');
             } catch (error) {
                 if (error.response && error.response.status === 400 && error.response.data.detail === "User already exists") {
                     setMessage("Email is already registered");
@@ -159,7 +157,6 @@ export default function SignUp() {
             setPasswordError('Fill all the details');
         }
     };
-    
 
     return (
         <Flex minH={'100vh'} align={'center'} justify={'center'}>
@@ -176,6 +173,18 @@ export default function SignUp() {
                     <Alert status="error">
                         <AlertIcon />
                         {passwordError}
+                    </Alert>
+                )}
+                {message && (
+                    <Alert status="error">
+                        <AlertIcon />
+                        {message}
+                    </Alert>
+                )}
+                {userId && (
+                    <Alert status="success">
+                        <AlertIcon />
+                        Signup successful! Your user ID is: {userId}
                     </Alert>
                 )}
                 <center>
@@ -212,24 +221,22 @@ export default function SignUp() {
                 </FormControl>
                 <Flex>
                     <FormControl id="company" flex={1} mr={2}>
-                        <Input placeholder="Company" 
-                        _placeholder={{ color: 'gray.500' }}  
-                        type="text" 
-                        value={company} 
-                        onChange={handleCompanyChange}
+                        <Input
+                            placeholder="Company"
+                            _placeholder={{ color: 'gray.500' }}
+                            type="text"
+                            value={company}
+                            onChange={handleCompanyChange}
                         />
-                           
-                
                     </FormControl>
                     <FormControl id="email" flex={2}>
-                        
-                            <Input
-                                placeholder="Email"
-                                _placeholder={{ color: 'gray.500' }}
-                                type="email"
-                                value={email}
-                                onChange={handleEmailChange}
-                            />
+                        <Input
+                            placeholder="Email"
+                            _placeholder={{ color: 'gray.500' }}
+                            type="email"
+                            value={email}
+                            onChange={handleEmailChange}
+                        />
                     </FormControl>
                 </Flex>
                 <FormControl id="password">
@@ -258,7 +265,6 @@ export default function SignUp() {
                         Sign Up
                     </Button>
                 </Stack>
-                <p>{message}</p>
             </Stack>
         </Flex>
     );
