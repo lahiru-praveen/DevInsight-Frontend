@@ -8,12 +8,12 @@
 //     const [typedText, setTypedText] = useState('');
 //     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 //
-//     // Function to handle text box change
-//     const handleTextBoxChange = (event) => {
-//         setTypedText(event.target.value);
-//     };
-//
-//     // Function to handle form submit
+// //     // Function to handle text box change
+// //     const handleTextBoxChange = (event) => {
+// //         setTypedText(event.target.value);
+// //     };
+// //
+// //     // Function to handle form submit
 //     const handleSubmit = async (event) => {
 //         event.preventDefault();
 //         // Show confirmation modal
@@ -40,7 +40,7 @@
 //             console.error('Error details:', error.response);
 //         }
 //     };
-//
+
 //     // Function to cancel submission
 //     const cancelSubmission = () => {
 //         // Close the confirmation modal
@@ -299,10 +299,11 @@ import { useState } from "react";
 import { useLocation } from 'react-router-dom';
 import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+import axios from 'axios';
 
 function AskHelp() {
     const location = useLocation();
-    const { code, review } = location.state || {};
+    const {   code, review } = location.state || {};
 
     const [subjectText, setSubjectText] = useState('');
     const [requestText, setRequestText] = useState('');
@@ -329,6 +330,41 @@ function AskHelp() {
         setErrorMessage('');
         setShowConfirmationModal(true);
     };
+    // Function to handle form submit
+    // const handleSubmit = async (event) => {
+    //     event.preventDefault();
+    //     // Show confirmation modal
+    //     setShowConfirmationModal(true);
+    // };
+
+    // // Function to confirm submission
+    // const handleSubmit = async (event) => {
+    //     event.preventDefault();
+    //     // Show confirmation modal
+    //     setShowConfirmationModal(true);
+    // };
+
+    // Function to confirm submission
+    const confirmSubmission = async () => {
+        try {
+            // Send a POST request to the server to save the typed text
+            const response = await axios.post(
+                'http://localhost:8000/api/sam/',
+                { "requestText": requestText },
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+            console.log('Response saved successfully:', response.data);
+            // Clear the input field after successful submission
+            setRequestText('');
+            // Close the confirmation modal
+            setShowConfirmationModal(false);
+        } catch (error) {
+            console.error('Failed to save response:', error);
+            // Log error details
+            console.error('Error details:', error.response);
+        }
+    };
+
 
     return (
         <div>
@@ -395,7 +431,7 @@ function AskHelp() {
                                     <p>Are you sure you want to submit?</p>
                                     <div className="mt-4 flex justify-end">
                                         <a href="/uhr">
-                                            <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md">
+                                            <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={confirmSubmission}>
                                                 Yes
                                             </button>
                                         </a>

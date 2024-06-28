@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Box, Input, Button, Text, VStack, Code, Container } from "@chakra-ui/react";
+import { Box, Input, Button, Text, VStack, Container } from "@chakra-ui/react";
 import axios from 'axios';
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 const Chatbot = () => {
   const [messages, setMessages] = useState([]);
@@ -20,21 +22,60 @@ const Chatbot = () => {
     setInput('');
   };
 
+  const renderMessageContent = (content) => {
+    const codeBlockPattern = /```([\s\S]*?)```/g;
+    const boldPattern = /\*\*(.*?)\*\*/g;
+    const parts = content.split(codeBlockPattern);
+
+    return parts.map((part, index) => {
+      if (index % 2 === 1) {
+        return (
+          <SyntaxHighlighter key={index} language="javascript" style={docco}>
+            {part.trim()}
+          </SyntaxHighlighter>
+        );
+      }
+
+      const subParts = part.split(boldPattern);
+      return subParts.map((subPart, subIndex) => {
+        if (subIndex % 2 === 1) {
+          return <b key={subIndex}>{subPart}</b>;
+        }
+        return <span key={subIndex}>{subPart}</span>;
+      });
+    });
+  };
+
   return (
     <Container centerContent>
       <VStack spacing={4} w="100%">
-        <Box w="100%" bg="gray.100" p={4} borderRadius="md" boxShadow="md">
-          <VStack align="start">
+        <Box
+          w="100%"
+          bg="gray.100"
+          p={4}
+          borderRadius="md"
+          boxShadow="md"
+          maxH="500px"
+          overflowY="auto"
+          
+        >
+          <VStack align="start" spacing={3}>
             {messages.map((msg, index) => (
-              <Box key={index} alignSelf={msg.role === 'user' ? 'flex-end' : 'flex-start'}>
+              <Box
+                key={index}
+                alignSelf={msg.role === 'user' ? 'flex-end' : 'flex-start'}
+                w="100%"
+              >
                 <Text
                   bg={msg.role === 'user' ? 'blue.200' : 'green.200'}
                   borderRadius="md"
                   p={2}
                   maxW="80%"
+                  whiteSpace="pre-wrap"
+                  wordBreak="break-word"
                 >
-                  {msg.role === 'user' ? <Text as="b">User: </Text> : <Text as="b">Bot: </Text>}
-                  <Code whiteSpace="pre-wrap">{msg.content}</Code>
+                  {msg.role === 'user' ? <b>User: </b> : <b>Bot: </b>}
+                  {renderMessageContent(msg.content)}
                 </Text>
               </Box>
             ))}
