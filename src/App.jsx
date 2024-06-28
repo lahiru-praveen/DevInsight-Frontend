@@ -13,7 +13,6 @@ import Landing from "./pages/Landing/Landing.jsx";
 import Createorg1 from "./pages/CreateOrg/Createorg1.jsx";
 import QAECodePreview from "./pages/./HelpDesk/QAECodePreview.jsx";
 import UserHelpRequests from "./pages/HelpDesk/UserHelpRequests.jsx";
-import OrganRegister from "./pages/Login/OrganizationCreateAccount.jsx";
 import ForgetPassword from "./pages/Login/ForgetPassword.jsx";
 import CreateOrg from "./pages/Login/OrganizationCreateAccount.jsx";
 import EditProfile from "./pages/Profile/EditProfile.jsx";
