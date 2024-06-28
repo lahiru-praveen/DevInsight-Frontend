@@ -35,6 +35,12 @@ import LoginFace from "./pages/Login/FaceLogin.jsx";
 import RegisterFace from "./pages/Login/FaceRegister.jsx";
 import FingerprintLogin from "./pages/Login/FingerprintLogin.jsx";
 import ChangePassword from "./pages/Profile/ChangePassword.jsx";
+import Profilenew from "./pages/Profile_2/Profile_page.jsx";
+import AdminProfilenew from "./pages/Profile_2/adminProfile_page.jsx";
+import Profilepage from "./pages/Profile_2/profilepage.jsx";
+import Orgnizationpage from "./pages/Organization_2/organizationpage.jsx";
+
+
 
 export default function App() {
     return (
@@ -76,8 +82,10 @@ export default function App() {
                     <Route path="/face-register" element={<RegisterFace/>}/>
                     <Route path="/fingerprint-register" element={<FingerprintLogin/>}/>
                     <Route path="/change-password" element={<ChangePassword />}/>
-                   
-                    
+                    <Route path="/ppnew" element={<Profilenew/>}/>
+                    <Route path="/appnew" element={<AdminProfilenew/>}/>
+                    <Route path="/ppage" element={<Profilepage/>}/>
+                    <Route path="/opage" element={<Orgnizationpage/>}/>
                 </Routes>
                 </AuthProvider>
             </CodeProvider>
