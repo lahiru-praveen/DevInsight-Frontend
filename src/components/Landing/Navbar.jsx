@@ -14,10 +14,10 @@ export const Navbar = () => {
         <Tabs variant='soft-rounded' colorScheme='blue'>
           <TabList className="flex flex-wrap justify-center md:justify-start space-x-4 md:space-x-8">
           <Tab as="a" href="#home">Home</Tab>
+          <Tab as="a" href="#features">Features</Tab>
             <Tab as="a" href="#about-us">About Us</Tab>
-            <Link to="/cu">
-            <Tab>Contact Us</Tab>
-            </Link>
+            <Tab as="a" href="#contact-us">Contact Us</Tab>
+            
           </TabList>
         </Tabs>
       </div>
@@ -28,7 +28,7 @@ export const Navbar = () => {
           Sign Up
         </Button>
         </Link>
-        <Link to ="si">
+        <Link to ="/login-both">
         <Button colorScheme='blue' variant='outline' size="sm">
           Log In
         </Button>

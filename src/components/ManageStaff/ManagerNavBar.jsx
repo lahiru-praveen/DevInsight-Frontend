@@ -5,14 +5,15 @@ import {
   useDisclosure
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
-import Devinsight from '../../assets/Devinsight.png'; // Ensure you have a logo image in this path
+import Devinsight from '../../assets/Devinsight.png';
+import Bethesda from '../../assets/bethesda.svg';  // Ensure you have a logo image in this path
 
 const ManagerNavBar = () => {
   const user = {
-    firstName: 'Lahiru',
-    lastName: 'Paraveen',
-    email: 'lahirup@gmail.com',
-    photo: 'https://bit.ly/broken-link',
+    Organizaltion_name: 'Bethesda',
+    
+    email: 'admin@bethesda.com',
+    photo:'Bethesda',
   };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -36,7 +37,7 @@ const ManagerNavBar = () => {
         <Flex alignItems="center">
           <Box textAlign="right" mr={3}>
             <Text fontWeight="bold" color="black">
-              {user.firstName} {user.lastName}
+              {user.Organizaltion_name} 
             </Text>
             <Text fontSize="sm" color="gray.300">
               {user.email}
@@ -44,19 +45,19 @@ const ManagerNavBar = () => {
           </Box>
           <Menu>
             <MenuButton as={Button} rounded={'full'} variant={'link'} cursor={'pointer'} minW={0}>
-              <Avatar size="md" name={`${user.firstName} ${user.lastName}`} src={user.photo} />
+              <Avatar size="md" name={`${user.firstName} ${user.lastName}`} src={Bethesda} />
             </MenuButton>
             <MenuList>
               <Box px="4" py="2">
                 <Text fontWeight="bold" color="black">
-                  {user.firstName} {user.lastName}
+                  {user.Organizaltion_name} 
                 </Text>
                 <Text fontSize="sm" color="gray.500">
                   {user.email}
                 </Text>
               </Box>
               <MenuDivider />
-              <MenuItem as={Link} to="/mp" >View Profile</MenuItem>
+              <MenuItem as={Link} to="/opage" >Organization</MenuItem>
               <MenuItem as={Link} to="/settings">Settings</MenuItem>
               <MenuItem onClick={onOpen}>Logout</MenuItem>
             </MenuList>
