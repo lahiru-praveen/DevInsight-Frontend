@@ -15,7 +15,7 @@
 // }
 
 import React, { useState } from 'react';
-import { Box, Input, Button, Text, VStack, Container, Drawer, DrawerBody, DrawerFooter, DrawerHeader, DrawerOverlay, DrawerContent, DrawerCloseButton, useDisclosure } from "@chakra-ui/react";
+import { Box, Input, Button, Text, VStack, Container, Drawer, DrawerBody, DrawerFooter, DrawerHeader, DrawerOverlay, DrawerContent, DrawerCloseButton, useDisclosure, Spinner } from "@chakra-ui/react";
 import axios from 'axios';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
@@ -24,20 +24,24 @@ const Chatbot = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
   const btnRef = React.useRef();
 
   const handleSendMessage = async () => {
     const userMessage = { role: "user", content: input };
     setMessages([...messages, userMessage]);
+    setInput('');
+    setLoading(true);
 
     try {
       const response = await axios.post('http://127.0.0.1:8000/api/chat', { message: input });
       const botMessage = { role: "bot", content: response.data.reply };
-      setMessages([...messages, userMessage, botMessage]);
+      setMessages((prevMessages) => [...prevMessages, botMessage]);
     } catch (error) {
       console.error("Error sending message: ", error);
+    } finally {
+      setLoading(false);
     }
-    setInput('');
   };
 
   const renderMessageContent = (content) => {
@@ -77,19 +81,19 @@ const Chatbot = () => {
         size="xl"
       >
         <DrawerOverlay />
-        <DrawerContent>
+        <DrawerContent height="100vh">
           <DrawerCloseButton />
           <DrawerHeader>Chatbot</DrawerHeader>
 
-          <DrawerBody>
-            <VStack spacing={4} w="100%">
+          <DrawerBody display="flex" flexDirection="column">
+            <VStack spacing={4} w="100%" flex="1" overflowY="auto">
               <Box
                 w="100%"
                 bg="gray.100"
                 p={4}
                 borderRadius="md"
                 boxShadow="md"
-                maxH="500px"
+                flex="1"
                 overflowY="auto"
               >
                 <VStack align="start" spacing={3}>
@@ -112,6 +116,7 @@ const Chatbot = () => {
                       </Text>
                     </Box>
                   ))}
+                  {loading && <Spinner size="xl" />}
                 </VStack>
               </Box>
               <Box w="100%" display="flex" mt={2}>
@@ -120,17 +125,12 @@ const Chatbot = () => {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   mr={2}
+                  disabled={loading}
                 />
-                <Button onClick={handleSendMessage} colorScheme="blue">Send</Button>
+                <Button onClick={handleSendMessage} colorScheme="blue" isLoading={loading} loadingText="Sending">Send</Button>
               </Box>
             </VStack>
           </DrawerBody>
-
-          <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
-              Close
-            </Button>
-          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </Container>
