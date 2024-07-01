@@ -9,6 +9,8 @@ import {
     Button,
     FormControl,
     Flex,
+    Box,
+    Spacer,
     Input,
     Stack,
     useColorModeValue,
@@ -16,9 +18,11 @@ import {
     AlertIcon,
     InputGroup,
     InputLeftElement,
+    Text,
 } from '@chakra-ui/react';
 
 import logo from '../../assets/devsign.png';
+import image from '../../assets/su.png';
 
 export default function SignUp() {
     const [firstName, setFirstName] = useState('');
@@ -159,14 +163,37 @@ export default function SignUp() {
     };
 
     return (
-        <Flex minH={'100vh'} align={'center'} justify={'center'}>
+    <Flex>
+        {/* left box */}
+        
+        <Box
+                flex={1}
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                bg={useColorModeValue('white', 'gray.700')}
+                
+            >
+                <Box mt={20}>
+                    <img src={logo} height={200} width={200} alt={'DevInsightLOGO'} />
+                </Box>
+                <Spacer />
+                <Box>
+                    <img src={image} alt="Sample GIF"  height={800} width={800}/>
+                </Box>
+            </Box> 
+        
+        {/* Right box */}
+
+        <Flex flex={1} minH={'100vh'} align={'center'} justify={'center'} bg={useColorModeValue('gray.50')}>
             <Stack
                 spacing={6}
                 w={'full'}
                 maxW={'md'}
-                bg={useColorModeValue('white', 'gray.700')}
+                bg={useColorModeValue('gray-200')}
                 rounded={'xl'}
-                p={6}
+                mr={30}
                 my={12}
             >
                 {passwordError && (
@@ -187,9 +214,12 @@ export default function SignUp() {
                         Signup successful! Your user ID is: {userId}
                     </Alert>
                 )}
-                <center>
+                {/* <center>
                     <img src={logo} height={200} width={200} alt={'DevInsightLOGO'} />
-                </center>
+                </center> */}
+                <Text fontSize="4xl" fontWeight="bold">
+                         Welcome to DevInsight
+                    </Text>
                 <Flex>
                     <FormControl id="firstName" mr={3} flex={1}>
                         <Input
@@ -267,5 +297,6 @@ export default function SignUp() {
                 </Stack>
             </Stack>
         </Flex>
+    </Flex>
     );
 }
