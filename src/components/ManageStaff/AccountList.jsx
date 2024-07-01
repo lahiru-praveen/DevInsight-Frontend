@@ -258,7 +258,7 @@
 
 
 
-import { Select, Input, InputGroup, InputLeftElement, Button, Alert, AlertIcon } from '@chakra-ui/react';
+import { Select, Input, InputGroup, InputLeftElement, Button, Alert, AlertIcon, Spinner } from '@chakra-ui/react';
 import { Search2Icon } from "@chakra-ui/icons";
 import {
     Modal,
@@ -282,6 +282,7 @@ const MyComponent = () => {
     const [filteredMembers, setFilteredMembers] = useState([]);
     const { isOpen: isRoleModalOpen, onOpen: onRoleModalOpen, onClose: onRoleModalClose } = useDisclosure();
     const { isOpen: isConfirmModalOpen, onOpen: onConfirmModalOpen, onClose: onConfirmModalClose } = useDisclosure();
+    const { isOpen: isLoadingModalOpen, onOpen: onLoadingModalOpen, onClose: onLoadingModalClose } = useDisclosure(); // Loading modal state
     const [index, setIndex] = useState(null);
     const [error, setError] = useState(null);
     const [role, setRole] = useState("");
@@ -293,6 +294,7 @@ const MyComponent = () => {
 
     const handleAddInvite = async () => {
         try {
+            onLoadingModalOpen(); // Show loading modal
             const memberToUpdate = activeMembers[index];
 
             // Call the API endpoint to update the member's role
@@ -322,6 +324,8 @@ const MyComponent = () => {
         } catch (error) {
             console.error('Error updating role:', error);
             setError("Error updating role. Please try again later.");
+        } finally {
+            onLoadingModalClose(); // Hide loading modal
         }
     };
 
@@ -442,6 +446,16 @@ const MyComponent = () => {
                 </ModalContent>
             </Modal>
 
+            <Modal isOpen={isLoadingModalOpen} onClose={onLoadingModalClose} isCentered>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalBody textAlign="center">
+                        <Spinner size="xl" />
+                        <Text mt={4}>Changing the role...</Text>
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
+
             {successAlert && (
                 <Alert
                 status="success"
@@ -457,17 +471,17 @@ const MyComponent = () => {
                     Role changed successfully!
                 </Text>
                 <Text
-    as="button"
-    onClick={closeSuccessAlert}
-    mt={4}
-    color="blue.500"
-    fontSize="sm"
-    fontWeight="bold"
-    textDecoration="underline"
-    _hover={{ cursor: 'pointer', textDecoration: 'none' }}
->
-    Close
-</Text>
+                    as="button"
+                    onClick={closeSuccessAlert}
+                    mt={4}
+                    color="blue.500"
+                    fontSize="sm"
+                    fontWeight="bold"
+                    textDecoration="underline"
+                    _hover={{ cursor: 'pointer', textDecoration: 'none' }}
+                >
+                    Close
+                </Text>
             </Alert>
             )}
 
@@ -476,29 +490,28 @@ const MyComponent = () => {
             </h1>
             <div className='flex flex-row space-x-5 py-5'>
                 <div className='basis-1/4'>
-                    <Select placeholder='Filter option' onChange={handleRoleFilterChange} value={selectedRole}>
+                    <Select  onChange={handleRoleFilterChange} value={selectedRole}>
                         <option value='All'>All</option>
                         <option value='Quality assurance'>Quality assurance</option>
                         <option value='Developer'>Developer</option>
                     </Select>
                 </div>
-                <div className='basis-2/4'>
+                <div className='basis-3/4'>
                     <InputGroup>
                         <InputLeftElement children={<Search2Icon color="gray.600" />} />
                         <Input placeholder="Search..." onChange={(e) => setQuery(e.target.value)} />
                     </InputGroup>
                 </div>
-                <div className='basis-1/4'>
-                    <Button className='w-full' colorScheme='blue'>Search</Button>
-                </div>
+                
             </div>
             <div className="w-full overflow-y-scroll bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
                 <div className="flow-root w">
                     <ul role="list" className="divide-y divide-gray-200 dark:divide-gray-700">
                         <li className="py-2 sm:py-4 flex justify-between font-semibold text-gray-700 dark:text-gray-300">
-                            <div className="flex items-center w-1/3">Member</div>
-                            <div className="flex items-center w-1/3">Role</div>
-                            <div className="flex items-center w-1/3">Action</div>
+                        
+                            <div className="  w-1/3  py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">MEMBERS</div>
+                            <div className=" w-1/3  py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ROLE</div>
+                            <div className="  w-1/3  py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">ACTIONS</div>
                         </li>
                         {filteredMembers.map((member, index) => (
                             <li key={index} className="py-3 sm:py-4">
@@ -520,9 +533,8 @@ const MyComponent = () => {
                                         {member.role}
                                     </p>
                                     <div className="w-1/3 text-right">
-                                        <Button onClick={() => onOpenRoleModal(index)} colorScheme='blue' size>
-                                            Change Role
-                                        </Button>
+                                        
+                                        <button onClick={() => onOpenRoleModal(index)} className="px-3 py-1 text-blue-500 hover:text-blue-600">Change Role</button>
                                     </div>
                                 </div>
                             </li>
@@ -535,5 +547,3 @@ const MyComponent = () => {
 };
 
 export default MyComponent;
-
-                                   
