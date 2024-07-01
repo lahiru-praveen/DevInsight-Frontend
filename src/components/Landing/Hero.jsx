@@ -166,9 +166,9 @@ const Hero = () => {
         }}
       />
       <div className='mx-auto w-4/5 py-24'>
-      <div id="home" className="max-w-screen-2xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid lg:grid-cols-12">
+      <div id="home" className="max-w-screen-2xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-56 lg:grid lg:grid-cols-12">
       <div className="mr-auto place-self-center lg:col-span-7">
-        <div className="flex flex-col justify-start gap-2 flex justify-center h-full">
+        <div className="flex flex-col justify-start gap-2  h-full">
           <div className="flex justify-start">
           <h1 className="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-white">
           Enhance Your Code with DevInsight
@@ -178,7 +178,7 @@ const Hero = () => {
           Welcome to DevInsight, the premier platform for code reviews. Our intuitive and collaborative environment empowers developers to refine their code, enhance performance, and ensure quality. Join a community of passionate coders and elevate your projects with insightful feedback and expert advice. 
          
           </p>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-4 py-6">
             <div>
               <Link to="/co3">
                 <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">

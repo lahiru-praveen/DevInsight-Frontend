@@ -292,7 +292,7 @@
 
 
 import React, { useState } from 'react';
-import { Input, InputGroup, InputRightElement, Button, Alert, AlertIcon, FormControl, FormLabel, Checkbox, Text, Progress } from '@chakra-ui/react';
+import { Input, InputGroup, InputRightElement, Button, Alert, AlertIcon, FormControl, FormLabel, Checkbox, Text, Progress, Spinner } from '@chakra-ui/react';
 import Devinsight from '../../assets/Devinsight.png';
 import axios from 'axios';
 
@@ -311,13 +311,14 @@ function InteractiveForm() {
         domain: '',
         password: '',
         confirmPassword: '',
-        logo_url: '',
+        logo_url: '', // Keeping this field to send as empty to the backend
     });
 
     const [errors, setErrors] = useState({});
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [passwordStrength, setPasswordStrength] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = (event) => {
         const { name, value, type, checked } = event.target;
@@ -340,7 +341,7 @@ function InteractiveForm() {
         }
     };
 
-    const validateForm = async () => {
+    const validateForm = () => {
         const newErrors = {};
 
         // Step 1 validations
@@ -360,11 +361,6 @@ function InteractiveForm() {
             }
         }
 
-        if (formData.admin_email) {
-            const emailExists = await checkEmailExists(formData.admin_email);
-            if (emailExists) newErrors.admin_email = 'Admin email already exists';
-        }
-
         // Step 2 validations
         if (!formData.password) newErrors.password = 'Password is required';
         if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
@@ -374,10 +370,21 @@ function InteractiveForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const newErrors = await validateForm();
+        setIsLoading(true);
+        const newErrors = validateForm();
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
+            setIsLoading(false);
             return;
+        }
+        // If all validations are OK, check the email availability
+        if (formData.admin_email) {
+            const emailExists = await checkEmailExists(formData.admin_email);
+            if (emailExists) {
+                setErrors({ admin_email: 'Admin email already exists' });
+                setIsLoading(false);
+                return;
+            }
         }
         try {
             const { confirmPassword, ...dataToSubmit } = formData;
@@ -388,6 +395,8 @@ function InteractiveForm() {
             console.error(error);
             setErrorMessage('Registration failed! Please try again.');
             setSuccessMessage('');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -536,11 +545,14 @@ function InteractiveForm() {
                         {errors.confirmPassword && <Alert status="error"><AlertIcon />{errors.confirmPassword}</Alert>}
                     </FormControl>
 
-                    <button type="submit" className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        Submit
-                    </button>
-                    {successMessage && <Alert status="success" className="mt-4"><AlertIcon />{successMessage}</Alert>}
-                    {errorMessage && <Alert status="error" className="mt-4"><AlertIcon />{errorMessage}</Alert>}
+                    <div className="flex justify-center">
+                        <Button type="submit" colorScheme="blue" isLoading={isLoading}>
+                            Register
+                        </Button>
+                    </div>
+
+                    {successMessage && <Alert status="success"><AlertIcon />{successMessage}</Alert>}
+                    {errorMessage && <Alert status="error"><AlertIcon />{errorMessage}</Alert>}
                 </div>
             </div>
         </form>
