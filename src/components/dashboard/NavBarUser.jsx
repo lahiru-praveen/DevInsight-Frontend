@@ -1,26 +1,36 @@
-import PropTypes from "prop-types";
 import logo from "../../assets/Devinsight.png";
+import React, { useState, useEffect } from 'react';
 import {
     Avatar,
     Wrap,
     WrapItem,
+    Button,
     Text,
     Menu,
     MenuButton,
     MenuList,
     MenuItem,
     MenuDivider,
-    Tabs,
-    TabList,
-    Tab,
-    Box
+    AlertDialog,
+    AlertDialogBody,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogContent,
+    AlertDialogOverlay,
+    Tabs, TabList, Tab, Box,
 } from '@chakra-ui/react';
 import { AvatarBadge } from '@chakra-ui/react';
 import { Link, useLocation } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export default function NavBarUser({ button1, button2, button3, button4 }) {
     const location = useLocation();
-
+    const [profile, setProfile] = useState({
+        username: '',
+        email: '',
+        company: '',
+        role: '',
+    });
     const tabIndex = () => {
         switch (location.pathname) {
             case '/db':
@@ -36,57 +46,158 @@ export default function NavBarUser({ button1, button2, button3, button4 }) {
         }
     };
 
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const cancelRef = React.useRef();
+
+    const handleLogout = () => {
+        setIsLoggingOut(true);
+    };
+
+    const handleLogoutConfirm = () => {
+        setIsLoggingOut(false);
+        sessionStorage.clear(); // Clear session storage
+        window.location.href = '/login-developer'; // Redirect to the signin page
+    };
+
+    useEffect(() => {
+        // Fetch user data from the database
+        const fetchProfile = async () => {
+            try {
+                const token = sessionStorage.getItem('access_token'); // Assuming you're storing the token in sessionStorage
+                if (!token) {
+                    throw new Error('No token found');
+                }
+
+                const response = await fetch('http://localhost:8000/api/profile', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user data');
+                }
+
+                const userData = await response.json();
+                console.log('User data:', userData); // Log the user data to check its content
+
+                // Fetch user profile from the database based on the email
+                const email = userData.email;
+                if (!email) {
+                    throw new Error('Email is undefined');
+                }
+
+                const profileResponse = await fetch(`http://localhost:8000/api/profile/${email}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+                    },
+                });
+
+                if (!profileResponse.ok) {
+                    throw new Error('Failed to fetch profile data');
+                }
+
+                const profileData = await profileResponse.json();
+                console.log('Profile data:', profileData); // Log the profile data to check its content
+                setProfile(profileData); // Update user data in state
+            } catch (error) {
+                console.error('Error fetching profile data:', error);
+                // Handle error, show error message, etc.
+                // Redirect to the sign-in page if no token is found
+                if (error.message === 'No token found') {
+                    window.location.href = '/login-developer';
+                }
+            }
+        };
+
+        fetchProfile();
+    }, []);
+
     return (
         <>
             <div className="flex flex-row items-center px-4 justify-between bg-white text-black text-xl border-2 border-solid">
                 <div className='flex items-center mb-4  md:mb-0'>
-                    <img src={logo} className="w-24 h-auto md:w-32 md:h-auto" alt="Pic" />
+                    <img src={logo} className="w-24 h-auto md:w-32 md:h-auto" alt="Pic"/>
                 </div>
-
                 <div className="flex items-center p-5">
                     <Tabs index={tabIndex()} variant="soft-rounded" colorScheme='blue'>
                         <TabList>
-                            <Tab as={Link} to="/db" isDisabled={button1} colorScheme={location.pathname === '/db' ? 'blue' : 'gray'}>Dashboard</Tab>
-                            <Tab as={Link} to="/cs" isDisabled={button2} colorScheme={location.pathname === '/cs' ? 'blue' : 'gray'}>Submissions</Tab>
-                            <Tab as={Link} to="/uhr" isDisabled={button3} colorScheme={location.pathname === '/uhr' ? 'blue' : 'gray'}>Help Requests</Tab>
-                            <Tab as={Link} to="/cu" isDisabled={button4} colorScheme={location.pathname === '/cu' ? 'blue' : 'gray'}>Help</Tab>
+                            <Tab as={Link} to="/db" isDisabled={button1}
+                                 colorScheme={location.pathname === '/db' ? 'blue' : 'gray'}>Dashboard</Tab>
+                            <Tab as={Link} to="/cs" isDisabled={button2}
+                                 colorScheme={location.pathname === '/cs' ? 'blue' : 'gray'}>Submissions</Tab>
+                            <Tab as={Link} to="/uhr" isDisabled={button3}
+                                 colorScheme={location.pathname === '/uhr' ? 'blue' : 'gray'}>Help Requests</Tab>
+                            <Tab as={Link} to="/cu" isDisabled={button4}
+                                 colorScheme={location.pathname === '/cu' ? 'blue' : 'gray'}>Help</Tab>
                         </TabList>
                     </Tabs>
                 </div>
-
                 <div className="flex flex-row">
                     <div className="flex-col">
-                        <Box textAlign="right" mr={3}>
-                            <Text fontWeight="bold" color="black">
-                                Lahiru Praveen
-                            </Text>
-                            <Text fontSize="sm" color="gray.300">
-                                99X
-                            </Text>
-                        </Box>
+                        {profile && (
+                            <Box textAlign="right" mr={3}>
+                                <Text fontWeight="bold" color="black">
+                                    {profile.username}
+                                </Text>
+                                <Text fontSize="sm" color="gray.300">
+                                    {profile.company}
+                                </Text>
+                            </Box>
+                        )}
                     </div>
                     <div>
                         <Menu>
                             <MenuButton>
                                 <Wrap>
                                     <WrapItem className="mr-2">
-                                        <Avatar size="md" name='Dan Abrahmov' src='https://bit.ly/dan-abramov'>
-                                            <AvatarBadge boxSize='1.25em' bg='green.500' />
+                                        <Avatar size="lg" name={profile.name} src={profile.profilePicture}>
+                                            <AvatarBadge boxSize='1.25em' bg='green.500'/>
                                         </Avatar>
                                     </WrapItem>
                                 </Wrap>
                             </MenuButton>
                             <MenuList>
-                                <MenuItem as={Link} to="/ep">Profile</MenuItem>
-                                <MenuDivider />
-                                <MenuItem as='a' href='#'>Settings</MenuItem>
-                                <MenuDivider />
-                                <MenuItem as='a' href='#'>Log Out</MenuItem>
+                                <MenuItem as={Link} to="/edit-profile">Profile</MenuItem>
+                                <MenuDivider/>
+                                <MenuItem as={Link} to="/settings">Settings</MenuItem>
+                                <MenuDivider/>
+                                <MenuItem onClick={handleLogout}>Log Out</MenuItem>
                             </MenuList>
                         </Menu>
                     </div>
                 </div>
             </div>
+            {isLoggingOut && (
+                <AlertDialog
+                    isOpen={true}
+                    leastDestructiveRef={cancelRef}
+                    onClose={() => setIsLoggingOut(false)}
+                >
+                    <AlertDialogOverlay>
+                        <AlertDialogContent>
+                            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                                Logging Out
+                            </AlertDialogHeader>
+                            <AlertDialogBody>
+                                Are you sure you want to log out?
+                            </AlertDialogBody>
+                            <AlertDialogFooter>
+                                <Button ref={cancelRef} onClick={() => setIsLoggingOut(false)}>
+                                    Cancel
+                                </Button>
+                                <Button colorScheme="red" onClick={handleLogoutConfirm} ml={3}>
+                                    Log Out
+                                </Button>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialogOverlay>
+                </AlertDialog>
+            )}
         </>
     );
 }
@@ -104,3 +215,7 @@ NavBarUser.defaultProps = {
     button3: false,
     button4: false,
 };
+
+
+
+
