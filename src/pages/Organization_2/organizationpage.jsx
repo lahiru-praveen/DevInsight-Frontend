@@ -634,7 +634,11 @@ import {
   ModalCloseButton,
   ModalBody,
   ModalFooter,
+  Icon,
+  VStack
 } from '@chakra-ui/react';
+import { FiUpload } from 'react-icons/fi';
+import { Divider } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
 
 const OrganizationModal = ({ isOpen, onClose, onSave, organization }) => {
@@ -698,33 +702,59 @@ const OrganizationModal = ({ isOpen, onClose, onSave, organization }) => {
         <ModalHeader>Edit Organization</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <FormControl mb={4}>
-            <FormLabel>Name</FormLabel>
-            <Input value={name} onChange={(e) => setName(e.target.value)} />
-          </FormControl>
-          <FormControl mb={4}>
-            <FormLabel>Address</FormLabel>
-            <Input value={address} onChange={(e) => setAddress(e.target.value)} />
-          </FormControl>
-          <FormControl mb={4}>
-            <FormLabel>Phone</FormLabel>
-            <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
-          </FormControl>
-          <FormControl mb={4}>
-            <FormLabel>Logo URL</FormLabel>
-            <Input type="file" onChange={handleFileChange} />
-            <Button mt={2} onClick={handleFileUpload}>Upload</Button>
-            {logoUrl && (
-              <Box mt={4} width="100px" height="100px">
-                <Image src={logoUrl} alt="Logo Preview" objectFit="cover" />
-              </Box>
-            )}
-          </FormControl>
+          <VStack spacing={4}>
+            <FormControl>
+              <FormLabel>Name</FormLabel>
+              <Input value={name} onChange={(e) => setName(e.target.value)} />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Address</FormLabel>
+              <Input value={address} onChange={(e) => setAddress(e.target.value)} />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Phone</FormLabel>
+              <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Logo</FormLabel>
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                hidden
+                id="file-upload"
+              />
+              <Button
+                as="label"
+                htmlFor="file-upload"
+                leftIcon={<Icon as={FiUpload} />}
+                colorScheme="teal"
+                variant="outline"
+                width="100%"
+                cursor="pointer"
+              >
+                {selectedFile ? selectedFile.name : "Choose Image"}
+              </Button>
+              {logoUrl && (
+                <Box mt={4} width="150px" height="150px" mx="auto">
+                  <Image
+                    src={logoUrl}
+                    alt="Logo Preview"
+                    objectFit="cover"
+                    width="100%"
+                    height="100%"
+                    borderRadius="md"
+                  />
+                </Box>
+              )}
+            </FormControl>
+          </VStack>
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme="blue" onClick={handleSave}>
+          <Button colorScheme="blue" mr={3} onClick={handleSave}>
             Save
           </Button>
+          <Button variant="ghost" onClick={onClose}>Cancel</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
@@ -744,62 +774,89 @@ OrganizationModal.propTypes = {
   }).isRequired,
 };
 
+
+
 const OrganizationDetails = ({ organization, onUpdateOrganization }) => {
-  const [isOrganizationModalOpen, setIsOrganizationModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <Box position="relative" className="bg-white shadow-lg rounded-lg p-6 max-w-xl mx-auto mt-8">
+    <Box 
+      position="relative" 
+      bg="gray.100" 
+      shadow="lg" 
+      borderRadius="lg" 
+      p={6} 
+      maxW="xl" 
+      mx="auto"
+      minH="calc(100vh - 2rem)"
+      display="flex"
+      flexDirection="column"
+    >
       <Button
         position="absolute"
         top={4}
         right={4}
         variant="link"
         colorScheme="teal"
-        onClick={() => setIsOrganizationModalOpen(true)}
+        onClick={() => setIsModalOpen(true)}
       >
         Edit Organization
       </Button>
-      <Box mb={8} className="text-center space-y-4">
-        <Heading as="h2" size="lg" mb={4}>
-          Organization
-        </Heading>
+
+      <VStack spacing={6} align="center" flex={1} justifyContent="center">
         {organization.logo_url && (
-          <Box mb={4}>
-            <Image src={organization.logo_url} alt={`${organization.company_name} logo`} style={{ maxWidth: '100px', margin: '0 auto' }} />
+          <Box width="150px" height="150px">
+            <Image 
+              src={organization.logo_url} 
+              alt={`${organization.company_name} logo`} 
+              objectFit="cover"
+              width="100%"
+              height="100%"
+              borderRadius="md"
+            />
           </Box>
         )}
-        <Text fontSize="md" color="gray.500" mb={4}>
+        <Heading as="h2" size="lg" textAlign="center">
           {organization.company_name}
-        </Text>
-        <Text fontSize="sm" color="gray.600" mb={1}>
-          Email
-        </Text>
-        <Text fontSize="md" color="gray.500" mb={4}>
-          {organization.admin_email}
-        </Text>
-        <Text fontSize="sm" color="gray.600" mb={1}>
-          Address
-        </Text>
-        <Text fontSize="md" color="gray.500" mb={4}>
-          {organization.company_address}
-        </Text>
-        <Text fontSize="sm" color="gray.600" mb={1}>
-          Phone
-        </Text>
-        <Text fontSize="md" color="gray.500" mb={4}>
-          {organization.phone_number}
-        </Text>
-      </Box>
+        </Heading>
+        <Divider w="100%" />
+        <VStack align="center" spacing={2}>
+          <Text fontSize="sm" color="gray.500">
+            Email
+          </Text>
+          <Text fontSize="md" color="gray.700">
+            {organization.admin_email}
+          </Text>
+        </VStack>
+        <Divider w="100%" />
+        <VStack align="center" spacing={2}>
+          <Text fontSize="sm" color="gray.500">
+            Address
+          </Text>
+          <Text fontSize="md" color="gray.700" textAlign="center">
+            {organization.company_address}
+          </Text>
+        </VStack>
+        <Divider w="100%" />
+        <VStack align="center" spacing={2}>
+          <Text fontSize="sm" color="gray.500">
+            Phone
+          </Text>
+          <Text fontSize="md" color="gray.700">
+            {organization.phone_number}
+          </Text>
+        </VStack>
+      </VStack>
+      
       <OrganizationModal
-        isOpen={isOrganizationModalOpen}
-        onClose={() => setIsOrganizationModalOpen(false)}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
         onSave={onUpdateOrganization}
         organization={organization}
       />
     </Box>
   );
 };
-
 OrganizationDetails.propTypes = {
   organization: PropTypes.shape({
     company_name: PropTypes.string,

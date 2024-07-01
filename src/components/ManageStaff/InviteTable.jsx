@@ -210,15 +210,13 @@ export const InviteTable = () => {
       </div>
 
       <div className="flex flex-row space-x-5 py-5">
-        <div className="basis-2/4">
+        <div className="basis-3/4">
           <InputGroup>
             <InputLeftElement pointerEvents="none" children={<SearchIcon color="gray.600" />} />
             <Input placeholder="Search..." value={query} onChange={(e) => setQuery(e.target.value)} />
           </InputGroup>
         </div>
-        <div className="basis-1/4">
-          <Button className="w-full" colorScheme="blue" variant="outline">Search</Button>
-        </div>
+        
         <div className="basis-1/4">
           <Button onClick={onOpen2} className="w-full" colorScheme="blue">Send Invitation</Button>
         </div>
