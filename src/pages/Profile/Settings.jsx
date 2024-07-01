@@ -99,7 +99,8 @@ const Settings = () => {
     }
   };
 
-  const handleDeactivate = async (email, token) => {
+  const handleDeactivate = async (email) => {
+    const token = sessionStorage.getItem('access_token');
     try {
       const response = await fetch(`http://127.0.0.1:8000/api/user_deactivate/${email}`, {
         method: 'POST',
@@ -122,7 +123,7 @@ const Settings = () => {
 
   const handleDelete = async (email) => {
     try {
-      const token = sessionStorage.getItem('token');
+      const token = sessionStorage.getItem('access_token');
       if (!token) {
         throw new Error('User is not authenticated');
       }
