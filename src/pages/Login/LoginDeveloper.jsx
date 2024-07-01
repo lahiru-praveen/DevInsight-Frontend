@@ -122,7 +122,7 @@ export default function LoginDeveloper() {
                         </Alert>
                     )}
                     <Text fontSize="4xl" fontWeight="bold">
-                         Welcome Back!
+                         Welcome!
                     </Text>   
                  <Text fontSize="2xl" >  Login to your account.</Text>
                     

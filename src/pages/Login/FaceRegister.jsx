@@ -109,22 +109,22 @@ const RegisterFace = () => {
           <Flex
             justifyContent="space-between"
             mt="4"
-            position="absolute"
+           
             bottom="-20px"
             left="0"
             right="0"
-            zIndex="10"
-            px="4"
+            zIndex={1}
           >
             <Button onClick={capture} colorScheme="blue" size="md" width="45%">Register</Button>
             <Button onClick={handleCancel} colorScheme="gray" size="md" width="45%">Cancel</Button>
           </Flex>
-
+          <Box align="center" justify="center">
           {typeof message === 'string' ? (
-            <Text mt="4" color={message.startsWith('Error') ? 'red.500' : 'green.500'}>{message}</Text>
+            <Heading mt="4" size="md" color={message.startsWith('Error') ? 'red.500' : 'green.500'}>{message}</Heading>
           ) : (
             <Text mt="4" color="red.500">Error: Unexpected response format</Text>
           )}
+          </Box>
         </Box>
       </Flex>
     </Flex>
