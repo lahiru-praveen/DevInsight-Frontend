@@ -1,37 +1,29 @@
-
-
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   ChakraProvider,
-  Box,
   Button,
   Avatar,
   Text,
   Heading,
   Divider,
-  FormControl,
-  FormLabel,
+  FormControl, FormLabel,
   Input,
   HStack,
-  Tag,
-  TagLabel,
-  TagCloseButton,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
+  Tag, TagLabel, TagCloseButton,
+  Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter,
   Flex,
+  Alert, AlertIcon, AlertTitle,
+  Spinner,
+  Box,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { getUserProfile, createUserProfile, uploadProfilePicture } from './api';
+import Cropper from 'react-cropper';
+import 'cropperjs/dist/cropper.css';
 
-const predefinedSkills = ['C', 'C#', 'C++', 'Python', 'Java', 'React', 'Node.js'];
+const predefinedSkills = ['C', 'HTML', 'CSS', 'Python', 'Java', 'React', 'Node.js', 'FastAPI', 'Prolog'];
 
-const EditProfile = ({ userId, token, isOpen, onClose, onSave}) => {
+const EditProfile = ({ token, isOpen, onClose, onSave }) => {
   const [profile, setProfile] = useState({
     lastName: '',
     firstName: '',
@@ -41,27 +33,30 @@ const EditProfile = ({ userId, token, isOpen, onClose, onSave}) => {
     role: '',
     skills: [],
     profilePicture: '',
+    user_Id: '',
     profileStatus: 'active',
   });
 
   const [file, setFile] = useState(null);
   const [error, setError] = useState(null);
   const [newSkill, setNewSkill] = useState('');
-  const [skills, setSkills] = useState([]);
+  const [skillsToAdd, setSkillsToAdd] = useState([]);
+  const [skillsToRemove, setSkillsToRemove] = useState([]);
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const email = sessionStorage.getItem('email');
         const data = await getUserProfile(email, token);
         setProfile(data);
-        setSkills(data.skills ? data.skills.split(',') : []);
+        setSkillsToAdd([]);
+        setSkillsToRemove([]);
       } catch (error) {
         setError(error.detail);
       }
     };
-  
+
     fetchProfile();
   }, [token]);
 
@@ -72,34 +67,46 @@ const EditProfile = ({ userId, token, isOpen, onClose, onSave}) => {
 
   const handleAddSkill = () => {
     if (newSkill.trim() !== '') {
-      setSkills([...skills, newSkill.trim()]);
+      setSkillsToAdd([...skillsToAdd, newSkill.trim()]);
       setNewSkill('');
     }
   };
 
   const handleAddPredefinedSkill = (skill) => {
-    if (!skills.includes(skill)) {
-      setSkills([...skills, skill]);
+    if (!profile.skills.includes(skill) && !skillsToAdd.includes(skill)) {
+      setSkillsToAdd([...skillsToAdd, skill]);
     }
   };
 
   const handleRemoveSkill = (skillToRemove) => {
-    setSkills(skills.filter((skill) => skill !== skillToRemove));
+    setProfile((prevProfile) => ({
+      ...prevProfile,
+      skills: prevProfile.skills.filter((skill) => skill !== skillToRemove),
+    }));
   };
 
   const handleSave = async () => {
     try {
-      const updatedProfile = { ...profile, skills: skills }; // No need to join with commas
+      if (!profile.email) {
+        throw new Error('User email is missing');
+      }
+      const updatedSkills = [...profile.skills.filter(skill => !skillsToRemove.includes(skill)), ...skillsToAdd];
+      const updatedProfile = { ...profile, skills: updatedSkills };
       await createUserProfile(profile.email, updatedProfile, token);
-      if (file) {
-        await uploadProfilePicture(userId, file, token);
+      if (croppedImage) {
+        await uploadProfilePicture(profile.email, croppedImage, token);
       }
       onSave(updatedProfile);
       onClose();
     } catch (error) {
-      setError(error.detail);
+      setError(error.detail || error.message);
     }
   };
+
+  
+    const [image, setImage] = useState(null);
+    const [croppedImage, setCroppedImage] = useState(profile.profilePicture || null);
+    const cropperRef = useRef(null);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -113,7 +120,12 @@ const EditProfile = ({ userId, token, isOpen, onClose, onSave}) => {
     }
   };
 
-
+  const handleCrop = () => {
+    if (cropperRef.current) {
+      setCroppedImage(cropperRef.current.cropper.getCroppedCanvas().toDataURL());
+      setImage(null);
+    }
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -160,6 +172,30 @@ const EditProfile = ({ userId, token, isOpen, onClose, onSave}) => {
             <FormLabel>Profile Picture</FormLabel>
             <Input type="file" accept="image/*" onChange={handleFileChange} />
             {profile.profilePicture && <Avatar src={profile.profilePicture} size="xl" mt={4} />}
+                  {image && (
+                    <div>
+                      <Cropper
+                        src={image}
+                        style={{ height: 400, width: '100%' }}
+                        aspectRatio={1}
+                        guides={false}
+                        ref={cropperRef}
+                        viewMode={1}
+                        dragMode="move"
+                        zoomable
+                        scalable
+                        cropBoxResizable
+                        cropBoxMovable
+                      />
+                      <Button mt={2} onClick={handleCrop}>Crop</Button>
+                    </div>
+                  )}
+                  {croppedImage && (
+                    <div>
+                      <Avatar src={croppedImage} size="2xl" mt={4} />
+                      <Button mt={2} onClick={handleSave}>Save</Button>
+                    </div>
+                  )}
           </FormControl>
           <FormControl mb={4}>
             <FormLabel>Skills</FormLabel>
@@ -174,15 +210,25 @@ const EditProfile = ({ userId, token, isOpen, onClose, onSave}) => {
                 Add
               </Button>
             </HStack>
-            <HStack wrap="wrap" spacing={2} mt={2}>
-              {skills.map((skill, index) => (
-                <Tag key={index} size="lg" colorScheme="teal" borderRadius="full">
-                  <TagLabel>{skill}</TagLabel>
+          </FormControl>
+          <FormControl mb={4}>
+            <FormLabel>Selected Skills</FormLabel>
+            <Box mb={2}>
+              {profile.skills.map((skill, index) => (
+                <Tag key={index} size="md" colorScheme="teal" borderRadius="full" mr={2}>
+                  {skill}
                   <TagCloseButton onClick={() => handleRemoveSkill(skill)} />
                 </Tag>
               ))}
-            </HStack>
+              {skillsToAdd.map((skill, index) => (
+                <Tag key={index} size="md" colorScheme="blue" borderRadius="full" mr={2}>
+                  {skill}
+                  <TagCloseButton onClick={() => handleRemoveSkill(skill)} />
+                </Tag>
+              ))}
+            </Box>
           </FormControl>
+
           <FormControl mb={4}>
             <FormLabel>Suggested Skills</FormLabel>
             <HStack wrap="wrap" spacing={2} mt={2}>
@@ -212,11 +258,14 @@ const EditProfile = ({ userId, token, isOpen, onClose, onSave}) => {
   );
 };
 
-const ProfileAndSkills = ({ profile, onUpdateProfile, handleLogout, handleDeactivate }) => {
+const ProfileAndSkills = ({ profile, onUpdateProfile, token }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
+
+  
 
   return (
-    <Box position="relative" className="bg-white shadow-lg rounded-lg p-6 max-w-xl mx-auto mt-8">
+    <Box position="relative" className="bg-gray-100 shadow-lg rounded-lg p-6 max-w-xl mx-auto mt-8">
       <Button
         position="absolute"
         top={4}
@@ -228,28 +277,27 @@ const ProfileAndSkills = ({ profile, onUpdateProfile, handleLogout, handleDeacti
         Edit Profile
       </Button>
 
-      <Box mb={8} className="text-center">
-        <Avatar size="2xl" name={profile.username} src={profile.profilePicture} className="mx-auto mb-4" />
+      <Box mt={10} className="text-center">
+        <Avatar size="2xl" name={profile.username} src={profile.profilePicture} className="mx-auto mb={4}" />
         <Heading as="h2" size="lg" mb={2}>
           {profile.username}
         </Heading>
         <Box mt={4} mb={4}>
-          <Text fontSize="sm" color="gray.600" mb={1}>
+          <Text fontSize="sm" color="gray.500" mb={1}>
             Email
           </Text>
-          <Text fontSize="md" color="gray.500">
+          <Text fontSize="md" color="gray.700">
             {profile.email}
           </Text>
         </Box>
         <Box mt={4} mb={4}>
-          <Text fontSize="sm" color="gray.600" mb={1}>
+          <Text fontSize="sm" color="gray.500" mb={1}>
             Role
           </Text>
-          <Button colorScheme="blue" size="md">
+          <Button colorScheme="blue" size="xs" mt={2} mb={2} variant="solid">
             {profile.role}
           </Button>
-        </Box>
-        <Box mt={4} mb={4}>
+          <Box mt={4} mb={4}>
           <Text fontSize="sm" color="gray.600" mb={1}>
             Organization
           </Text>
@@ -257,71 +305,41 @@ const ProfileAndSkills = ({ profile, onUpdateProfile, handleLogout, handleDeacti
             {profile.company}
           </Text>
         </Box>
-        <Divider borderColor="gray.300" mt={4} />
-      </Box>
-
-      <Box mb={8} className="text-center">
-        <Heading as="h2" size="lg" mb={4}>
-          Skills
-        </Heading>
-        <Box p="4">
-          <HStack spacing={4} flexWrap="wrap">
-            {profile.skills.map((skill, index) => (
-              <Tag key={index} size="lg" colorScheme="teal" borderRadius="full" mb={2}>
-                <TagLabel>{skill}</TagLabel>
-              </Tag>
-            ))}
-          </HStack>
         </Box>
-        <Divider borderColor="gray.300" mt={4} />
-
-        <Flex justify="space-between" p={4}>
-        <Button onClick={handleDeactivate} colorScheme="red" width="48%">
-          Deactivate
-        </Button>
-        <Button w="48%" variant="solid" colorScheme="blue" onClick={handleLogout}>
-          Log Out
-        </Button>
-      </Flex>
+        <Divider mt={4} mb={4} />
+        <Box mt={4} mb={4}>
+          <Text fontSize="sm" color="gray.600" mb={2}>
+            Skills
+          </Text>
+          <Box className="flex flex-wrap justify-center">
+            {profile.skills && profile.skills.length > 0 ? (
+              profile.skills.map((skill, index) => (
+                <Tag key={index} size="lg" colorScheme="teal" borderRadius="full" className="mx-2 my-1">
+                  {skill}
+                </Tag>
+              ))
+            ) : (
+              <Text>No skills found</Text>
+            )}
+          </Box>
+        </Box>
       </Box>
-
       
-
       <EditProfile
+        token={token}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={onUpdateProfile}
-        userId={profile.id}
-        token={profile.token}
-        handleLogout={handleLogout}
-        handleDeactivate={handleDeactivate}
       />
     </Box>
   );
 };
 
 const ProfilePage = () => {
-  const [profile, setProfile, token] = useState({
-    lastName: '',
-    firstName: '',
-    username: '',
-    email: '',
-    role: '',
-    company: '',
-    skills: [],
-    profilePicture: '',
-    profileStatus: 'active',
-  });
-
-  // const organization = {
-  //   name: 'Tech Company',
-  // };
-
+  const [profile, setProfile] = useState({});
+  const [error, setError] = useState(null);
+  const token = sessionStorage.getItem('token');
   const navigate = useNavigate();
-
-  const handleUpdateProfile = (updatedProfile) => {
-    setProfile(updatedProfile);
-  };
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -330,73 +348,32 @@ const ProfilePage = () => {
         const data = await getUserProfile(email, token);
         setProfile(data);
       } catch (error) {
-        console.error('Error fetching profile:', error);
+        setError(error.detail);
       }
     };
 
     fetchProfile();
   }, [token]);
 
-     // Handle Logout
-     const handleLogout = () => {
-      // Clear session storage
-      sessionStorage.clear();
-       // Navigate to the signin page
-      navigate('/si');
-    };
-  
-    const handleDeactivate = async () => {
-      if (profile.profileStatus === 'Active') {
-          // Update the profile status to "Suspend"
-          const updatedProfile = { ...profile, profileStatus: 'Suspend' };
-  
-          // Make an API call to update the profile status
-          try {
-              const response = await fetch('http://localhost:8000/api/update_profile_status', {
-                  method: 'PUT',
-                  headers: {
-                      'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify(updatedProfile),
-              });
-  
-              if (!response.ok) {
-                  throw new Error('Failed to update profile status');
-              }
-  
-              // Show success message
-              alert('Your account has been successfully deactivated. To reactivate your account login using your old email and password. You will be able to use the site like you used to. We hope you come back soon. Thank you!');
-  
-              // Navigate to /si
-              navigate('/si');
-  
-          } catch (error) {
-              console.error('Error updating profile status:', error);
-              // Handle error, show error message, etc.
-          }
-      }
+  const handleUpdateProfile = (updatedProfile) => {
+    setProfile(updatedProfile);
   };
+
   
-    
+
+  
+  
+
 
   return (
     <ChakraProvider>
-      <Box className="bg-gray-50 min-h-screen p-4">
-        <ProfileAndSkills
-          profile={profile}
-          onUpdateProfile={handleUpdateProfile}
-          handleLogout={handleLogout} 
-          handleDeactivate={handleDeactivate} 
-        />
-      </Box>
+      <ProfileAndSkills
+        profile={profile}
+        onUpdateProfile={handleUpdateProfile}
+        token={token}
+      />
     </ChakraProvider>
   );
 };
 
-
-
 export default ProfilePage;
-
-
-
-

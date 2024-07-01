@@ -175,8 +175,8 @@ const Hero = () => {
         </h1>
           </div>
           <p className="py-2 text-lg text-gray-600 w-4/5">
-          Welcome to DevInsight, the premier platform for code reviews. Our intuitive and collaborative environment empowers developers to refine their code, enhance performance, and ensure quality. Join a community of passionate coders and elevate your projects with insightful feedback and expert advice. 
-         
+          Welcome to DevInsight, the premier platform for code reviews. Our intuitive and collaborative environment empowers developers to refine their code, enhance performance, and ensure quality. Join a community of passionate coders and elevate your projects with insightful feedback and expert advice.
+
           </p>
           <div className="grid grid-cols-3 gap-4 py-6">
             <div>
@@ -258,13 +258,13 @@ const Hero = () => {
         </div>
       </section>
       </div>
-      <div id="contact-us" className='mx-auto w-4/5 py-24'>          
+      <div id="contact-us" className='mx-auto w-4/5 py-24'>
         <Box  className="bg-white p-8 rounded-lg shadow-lg mb-40">
           <Box className="md:px-0 my-4">
             <ContactUs/>
           </Box>
         </Box>
-        
+
       </div>
     </div>
   );

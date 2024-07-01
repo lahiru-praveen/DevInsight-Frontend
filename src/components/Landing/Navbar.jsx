@@ -28,7 +28,7 @@ export const Navbar = () => {
           Sign Up
         </Button>
         </Link>
-        <Link to ="si">
+        <Link to ="/login-both">
         <Button colorScheme='blue' variant='outline' size="sm">
           Log In
         </Button>
