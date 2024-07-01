@@ -33,6 +33,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
+import Devinsight from '../../assets/Devinsight.png';
 
 const Footer = () => {
   return (
@@ -41,25 +42,23 @@ const Footer = () => {
       <div className="mx-auto max-w-screen-3xl">
         <div className="md:flex md:justify-between">
           <div className="mb-6 md:mb-0">
-            <a href="https://flowbite.com" className="flex items-center">
+            <a href="#home" className="flex items-center">
               <img
-                src="https://flowbite.com/docs/images/logo.svg"
+                src={Devinsight}
                 className="mr-3 h-8"
                 alt="FlowBite Logo"
               />
-              <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-                Flowbite
-              </span>
+              
             </a>
           </div>
-          <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-4">
             <div>
               
               <ul className="text-gray-600 dark:text-gray-400">
                 
                 <li>
                   <a href="#" className="hover:underline">
-                    Tailwind CSS
+                    Home
                   </a>
                 </li>
               </ul>
@@ -70,7 +69,7 @@ const Footer = () => {
                 
                 <li>
                   <a href="#" className="hover:underline">
-                    Discord
+                   Features
                   </a>
                 </li>
               </ul>
@@ -81,7 +80,18 @@ const Footer = () => {
                 
                 <li>
                   <a href="#" className="hover:underline">
-                    Terms & Conditions
+                   About us
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              
+              <ul className="text-gray-600 dark:text-gray-400">
+                
+                <li>
+                  <a href="#" className="hover:underline">
+                    Contact Us
                   </a>
                 </li>
               </ul>
@@ -91,9 +101,9 @@ const Footer = () => {
         <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
         <div className="sm:flex sm:items-center sm:justify-between">
           <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">
-            © 2022{' '}
+            © 2024{' '}
             <a href="#" className="hover:underline">
-              Your website
+              DevInsight
             </a>
             . All Rights Reserved.
           </span>
