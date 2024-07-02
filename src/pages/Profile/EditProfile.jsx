@@ -12,8 +12,6 @@ import {
   Tag, TagLabel, TagCloseButton,
   Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter,
   Flex,
-  Alert, AlertIcon, AlertTitle,
-  Spinner,
   Box,
   VStack,
   Icon,
@@ -22,8 +20,7 @@ import { FiUpload } from 'react-icons/fi';
 
 import { useNavigate } from 'react-router-dom';
 import { getUserProfile, createUserProfile, uploadProfilePicture } from './api';
-import Cropper from 'react-cropper';
-import 'cropperjs/dist/cropper.css';
+
 
 const predefinedSkills = ['C', 'HTML', 'CSS', 'Python', 'Java', 'React', 'Node.js', 'FastAPI', 'Prolog'];
 
@@ -46,12 +43,12 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
   const [newSkill, setNewSkill] = useState('');
   const [skillsToAdd, setSkillsToAdd] = useState([]);
   const [skillsToRemove, setSkillsToRemove] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const email = sessionStorage.getItem('email');
+        const token = sessionStorage.getItem('access_token');
         const data = await getUserProfile(email, token);
         setProfile(data);
         setSkillsToAdd([]);
