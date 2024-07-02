@@ -99,7 +99,7 @@ export default function LoginManager() {
                     spacing={6}
                     w={'full'}
                     maxW={'md'}
-                    bg={useColorModeValue('white', 'gray.700')}>
+                   >
 
                     {showLoggingInAlert && (
                         <Alert status="info">

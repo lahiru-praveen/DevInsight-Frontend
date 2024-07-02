@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Webcam from 'react-webcam';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Input, Text, Heading, Center,Flex,Grid,Image, useColorModeValue, } from '@chakra-ui/react';
+import { Box, Button,Text, Heading,Flex, useColorModeValue, } from '@chakra-ui/react';
 import image from '../../assets/face.png';
 
 const RegisterFace = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const webcamRef = React.useRef(null);
-  ;
+
   const navigate = useNavigate();
 
   React.useEffect(() => {
