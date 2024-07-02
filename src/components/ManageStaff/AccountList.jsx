@@ -465,7 +465,7 @@ const MyComponent = () => {
     };
 
     return (
-        <div className='px-20 py-5 '>
+        <div className='px-20 py-5'>
             <Modal
                 isOpen={isRoleModalOpen}
                 onClose={onRoleModalClose}
@@ -538,9 +538,7 @@ const MyComponent = () => {
                     mb={4}
                 >
                     <AlertIcon boxSize="40px" mr={0} />
-                    <Text fontSize="lg" mt={2}>
-                        Action performed successfully!
-                    </Text>
+                    <Text fontSize="lg">Action performed successfully!</Text>
                     <Text
                         as="button"
                         onClick={closeSuccessAlert}
@@ -602,7 +600,8 @@ const MyComponent = () => {
                                         {member.role}
                                     </p>
                                     <div className="w-1/3 text-right">
-                                        <Button onClick={() => onOpenRoleModal(index)} colorScheme="blue" size="sm">
+                                        <Button onClick={() => onOpenRoleModal(index)} colorScheme="blue" size="sm"
+                                        isDisabled={member.profileStatus === 'Blocked'}>
                                             Change Role
                                         </Button>
                                         {member.profileStatus === 'Active' && (
