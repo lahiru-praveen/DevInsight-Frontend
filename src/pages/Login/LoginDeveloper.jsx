@@ -1,6 +1,6 @@
 
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
@@ -45,7 +45,7 @@ export default function LoginDeveloper() {
                 email,
                 password,
             });
-            console.log(response.data);;
+            console.log(response.data);
 
             
 
@@ -122,11 +122,12 @@ export default function LoginDeveloper() {
                         </Alert>
                     )}
                     <Text fontSize="4xl" fontWeight="bold">
-                         Welcome!
+                         Hello!
                     </Text>   
                  <Text fontSize="2xl" >  Login to your account.</Text>
-                    
-                    <Text>It's nice to see you again. Ready to code?</Text>
+
+
+                    <Text> It&apos;s nice to see you again. Ready to code?</Text>
                     <FormControl id="email">
                         <Input
                             placeholder="Enter Your Email"

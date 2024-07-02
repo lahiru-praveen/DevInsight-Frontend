@@ -11,6 +11,9 @@ import {
     useColorModeValue,
     Alert,
     AlertIcon,
+    Box,
+    Spacer,
+    Text,
 } from '@chakra-ui/react';
 
 import logo from '../../assets/devsign.png';
@@ -155,12 +158,32 @@ export default function SignUp() {
     };
 
     return (
-        <Flex minH={'100vh'} align={'center'} justify={'center'}>
+        <Flex minH={'100vh'}>
+               {/* Left Side */}
+               <Box
+                flex={1}
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                bg={useColorModeValue('white', 'gray.700')}
+                
+            >
+                <Box mt={20}>
+                    <img src={logo} height={200} width={200} alt={'DevInsightLOGO'} />
+                </Box>
+                <Spacer />
+                <Box>
+                    <img src={image} alt="Sample GIF"  height={600} width={600}/>
+                </Box>
+            </Box>
+
+            {/* Right Side */}
+        <Flex  align={'center'} justify={'center'} flex={1}  bg={useColorModeValue('gray.50')}>
             <Stack
                 spacing={6}
                 w={'full'}
                 maxW={'md'}
-                bg={useColorModeValue('white', 'gray.700')}
                 rounded={'xl'}
                 p={6}
                 my={12}
@@ -183,9 +206,9 @@ export default function SignUp() {
                         Signup successful! Your user ID is: {userId}
                     </Alert>
                 )}
-                <center>
-                    <img src={logo} height={200} width={200} alt={'DevInsightLOGO'} />
-                </center>
+                <Text fontSize="4xl" fontWeight="bold">
+                         Welcome to DevInsight!
+                    </Text>
                 <Flex>
                     <FormControl id="firstName" mr={3} flex={1}>
                         <Input
@@ -263,5 +286,6 @@ export default function SignUp() {
                 </Stack>
             </Stack>
         </Flex>
+    </Flex>   
     );
 }
