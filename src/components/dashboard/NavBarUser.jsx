@@ -1,6 +1,7 @@
 import logo from "../../assets/Devinsight.png";
 import React, { useState, useEffect } from 'react';
 import {
+    Flex,
     Avatar,
     Wrap,
     WrapItem,
@@ -119,11 +120,13 @@ export default function NavBarUser({ button1, button2, button3, button4 }) {
 
     return (
         <>
-            <div className="flex flex-row items-center px-4 justify-between bg-white text-black text-xl border-2 border-solid">
-                <div className='flex items-center mb-4  md:mb-0'>
-                    <img src={logo} className="w-24 h-auto md:w-32 md:h-auto" alt="Pic"/>
-                </div>
-                <div className="flex items-center p-5">
+            <Box bg="gray-800" px={4} className="shadow-md">
+            <Flex h={16} alignItems="center" justifyContent="space-between">
+                    <Box>
+                        <img src={logo}  alt="Logo" className="h-10"/>
+                    </Box>
+                
+                <Box textAlign="center" color="gray.600">
                     <Tabs index={tabIndex()} variant="soft-rounded" colorScheme='blue'>
                         <TabList>
                             <Tab as={Link} to="/db" isDisabled={button1}
@@ -136,9 +139,10 @@ export default function NavBarUser({ button1, button2, button3, button4 }) {
                                  colorScheme={location.pathname === '/cu' ? 'blue' : 'gray'}>Help</Tab>
                         </TabList>
                     </Tabs>
-                </div>
-                <div className="flex flex-row">
-                    <div className="flex-col">
+                    </Box>
+                
+                
+                    <Flex alignItems="center">
                         {profile && (
                             <Box textAlign="right" mr={3}>
                                 <Text fontWeight="bold" color="black">
@@ -149,19 +153,28 @@ export default function NavBarUser({ button1, button2, button3, button4 }) {
                                 </Text>
                             </Box>
                         )}
-                    </div>
-                    <div>
+                    
+                    
                         <Menu>
                             <MenuButton>
                                 <Wrap>
                                     <WrapItem className="mr-2">
-                                        <Avatar size="lg" name={profile.name} src={profile.profilePicture}>
-                                            <AvatarBadge boxSize='1.25em' bg='green.500'/>
+                                        <Avatar size="md" name={profile.name} src={profile.profilePicture}>
+                                            
                                         </Avatar>
                                     </WrapItem>
                                 </Wrap>
                             </MenuButton>
                             <MenuList>
+                                <Box px="4" py="2">
+                                    <Text fontWeight="bold" color="black">
+                                    {profile.username} 
+                                    </Text>
+                                    <Text fontSize="sm" color="gray.500">
+                                    {profile.email}
+                                    </Text>
+                                </Box>
+                                <MenuDivider />
                                 <MenuItem as={Link} to="/edit-profile">Profile</MenuItem>
                                 <MenuDivider/>
                                 <MenuItem as={Link} to="/settings">Settings</MenuItem>
@@ -169,9 +182,11 @@ export default function NavBarUser({ button1, button2, button3, button4 }) {
                                 <MenuItem onClick={handleLogout}>Log Out</MenuItem>
                             </MenuList>
                         </Menu>
-                    </div>
-                </div>
-            </div>
+                        </Flex>
+                    
+                
+                </Flex>
+            </Box>
             {isLoggingOut && (
                 <AlertDialog
                     isOpen={true}
