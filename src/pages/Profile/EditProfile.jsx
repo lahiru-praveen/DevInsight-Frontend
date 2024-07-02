@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   ChakraProvider,
   Button,
@@ -15,6 +15,7 @@ import {
   Box,
   VStack,
   Icon,
+  Image
 } from '@chakra-ui/react';
 import { FiUpload } from 'react-icons/fi';
 
@@ -581,12 +582,6 @@ const ProfilePage = () => {
   const handleUpdateProfile = (updatedProfile) => {
     setProfile(updatedProfile);
   };
-
-  
-
-  
-  
-
 
   return (
     <ChakraProvider>

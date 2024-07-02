@@ -1,24 +1,16 @@
-
-
-
 // SignUpDemo.jsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import {
     Button,
     FormControl,
     Flex,
-    Box,
-    Spacer,
     Input,
     Stack,
     useColorModeValue,
     Alert,
     AlertIcon,
-    InputGroup,
-    InputLeftElement,
-    Text,
 } from '@chakra-ui/react';
 
 import logo from '../../assets/devsign.png';
@@ -163,37 +155,14 @@ export default function SignUp() {
     };
 
     return (
-    <Flex>
-        {/* left box */}
-        
-        <Box
-                flex={1}
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-                bg={useColorModeValue('white', 'gray.700')}
-                
-            >
-                <Box mt={20}>
-                    <img src={logo} height={200} width={200} alt={'DevInsightLOGO'} />
-                </Box>
-                <Spacer />
-                <Box>
-                    <img src={image} alt="Sample GIF"  height={800} width={800}/>
-                </Box>
-            </Box> 
-        
-        {/* Right box */}
-
-        <Flex flex={1} minH={'100vh'} align={'center'} justify={'center'} bg={useColorModeValue('gray.50')}>
+        <Flex minH={'100vh'} align={'center'} justify={'center'}>
             <Stack
                 spacing={6}
                 w={'full'}
                 maxW={'md'}
-                bg={useColorModeValue('gray-200')}
+                bg={useColorModeValue('white', 'gray.700')}
                 rounded={'xl'}
-                mr={30}
+                p={6}
                 my={12}
             >
                 {passwordError && (
@@ -214,12 +183,9 @@ export default function SignUp() {
                         Signup successful! Your user ID is: {userId}
                     </Alert>
                 )}
-                {/* <center>
+                <center>
                     <img src={logo} height={200} width={200} alt={'DevInsightLOGO'} />
-                </center> */}
-                <Text fontSize="4xl" fontWeight="bold">
-                         Welcome to DevInsight
-                    </Text>
+                </center>
                 <Flex>
                     <FormControl id="firstName" mr={3} flex={1}>
                         <Input
@@ -297,6 +263,5 @@ export default function SignUp() {
                 </Stack>
             </Stack>
         </Flex>
-    </Flex>
     );
 }
