@@ -11,11 +11,16 @@ export default function CodeSubmissions() {
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOrder, setSortOrder] = useState("asc");
     const [error, setError] = useState(null);
+    const user = sessionStorage.getItem('email');
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const result = await axios.get('http://localhost:8000/pre-sub');
+                const result = await axios.get('http://localhost:8000/pre-sub', {
+                    params: {
+                        user: user
+                    }
+                });
                 console.log("Fetch Result: ", result); // Log the entire response
                 if (result.status === 200 && result.data) {
                     setSubmissions(result.data);

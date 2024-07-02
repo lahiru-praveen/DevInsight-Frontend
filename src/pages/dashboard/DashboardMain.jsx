@@ -47,6 +47,7 @@ export default function DashboardMain() {
     const [projectNames, setProjectNames] = useState([]);
     const [prName,setPrName] = useState('')
     const [availablePrName,setAvailablePrName] = useState('')
+    const email = sessionStorage.getItem("email");
 
     const handleLanguageChange = (language) => {
         setSelectedLanguage(language);
@@ -80,7 +81,11 @@ export default function DashboardMain() {
     useEffect(() => {
         const fetchProjectNames = async () => {
             try {
-                const response = await axios.get("http://localhost:8000/project-names");
+                const response = await axios.get("http://localhost:8000/project-names", {
+                    params: {
+                        user: email
+                    }
+                });
                 setProjectNames(response.data);
                 console.log(response.data);
             } catch (error) {
@@ -227,7 +232,7 @@ export default function DashboardMain() {
                         value2: ''
                     });
                     setSubmitEnabled(false);
-                    navigate("/cp", {state : {code: "No Code", mode: 2 , language: "", description: values.value0, projectName: prName}});
+                    navigate("/cp", {state : {code: "No Code", mode: 2 , language: "", description: values.value0, projectName: prName, user: email}});
                     console.log("File uploaded successfully!");
                 }
             }
@@ -236,7 +241,7 @@ export default function DashboardMain() {
             if (values.value2.trim() !== '') {
                 const response_code_upload = await axios.post("http://localhost:8000/upload-code");
                 console.log("Code uploaded successfully!",response_code_upload);
-                navigate('/cp', {state: {code: values.value2, mode: 1, language: selectedLanguage, description: values.value1,projectName: prName}});
+                navigate('/cp', {state: {code: values.value2, mode: 1, language: selectedLanguage, description: values.value1,projectName: prName, user: email}});
                 setSubmitEnabled(false);
             }
 
