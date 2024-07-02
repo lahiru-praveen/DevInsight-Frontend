@@ -99,8 +99,7 @@ const Settings = () => {
     }
   };
 
-  const handleDeactivate = async (email) => {
-    const token = sessionStorage.getItem('access_token');
+  const handleDeactivate = async (email, token) => {
     try {
       const response = await fetch(`http://127.0.0.1:8000/api/user_deactivate/${email}`, {
         method: 'POST',
