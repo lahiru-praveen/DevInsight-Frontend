@@ -11,11 +11,17 @@ import {Icon} from "@chakra-ui/icons";
 export default function SubmissionNav() {
     const [submissions, setSubmissions] = useState([]);
     const [selectedSubmission, setSelectedSubmission] = useState(null);
+    const user = sessionStorage.getItem("email");
 
-    useEffect(() => {
+
+        useEffect(() => {
         const fetchData = async () => {
             try {
-                const result = await axios.get('http://localhost:8000/pre-sub');
+                const result = await axios.get('http://localhost:8000/pre-sub', {
+                    params: {
+                        user: user
+                    }
+                });
                 if (result.status === 200) {
                     // Slice the last 10 submissions
                     const lastTenSubmissions = result.data.slice(-10);

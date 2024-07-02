@@ -26,8 +26,9 @@ export default function CodePreview() {
     const navigate = useNavigate();
     const location = useLocation();
     const { state } = location;
-    let { code, mode, language, description, projectName } = state || {};
+    let { code, mode, language, description, projectName, user } = state || {};
     const mode_value = mode;
+
 
     const prName = projectName
 
@@ -72,7 +73,7 @@ export default function CodePreview() {
 
     useEffect(() => {
         if (reviewContent !== '' && suggestionContent !== '' && referLinksContent !== '') {
-            navigate('/cr', { state: { reviewContent: reviewContent, selectedFileName: selectedFileName, suggestionContent: suggestionContent, referLinksContent: referLinksContent, projectName: prName, language: Language, description: description_value, pID: projectID } });
+            navigate('/cr', { state: { reviewContent: reviewContent, selectedFileName: selectedFileName, suggestionContent: suggestionContent, referLinksContent: referLinksContent, projectName: prName, language: Language, description: description_value, pID: projectID, user: user } });
         }
     }, [referLinksContent]);
 
@@ -85,6 +86,8 @@ export default function CodePreview() {
         }
     }, [prName,selectedFileContent]);
 
+
+
     const handleSubmit = async () => {
         setIsModalOpen(true); // Open the modal
         console.log("Selected file name in CodePreview:", selectedFileName);
@@ -94,6 +97,7 @@ export default function CodePreview() {
                 return;
             }
             const response1 = await axios.post("http://localhost:8000/get-review",{
+                user: user,
                 p_id: 0,
                 p_name: prName,
                 f_name: selectedFileName,
@@ -103,7 +107,11 @@ export default function CodePreview() {
                 mode: mode_value
             });
 
-            const new_p_id = await axios.get("http://localhost:8000/get-latest-p-id")
+            const new_p_id = await axios.get("http://localhost:8000/get-latest-p-id", {
+                params: {
+                    user: user
+                }
+            });
             setProjectID(new_p_id.data);
 
             const { review, suggestions, refer_link } = response1.data;
@@ -112,9 +120,10 @@ export default function CodePreview() {
             setReferLinksContent(refer_link);
 
             const response2 = await axios.post("http://localhost:8000/add-review",{
+                user: user,
                 p_id: new_p_id.data,
                 code: selectedFileContent,
-                review: review,
+                review: review, 
                 suggestions: suggestions,
                 reference_links: refer_link
             });
