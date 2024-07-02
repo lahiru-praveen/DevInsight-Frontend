@@ -15,14 +15,15 @@ import {
   Box,
   VStack,
   Icon,
-  Image
+  Image, Flex
 } from '@chakra-ui/react';
 import { FiUpload } from 'react-icons/fi';
 import { getUserProfile, createUserProfile, uploadProfilePicture } from './api';
+import 'cropperjs/dist/cropper.css';
 
 const predefinedSkills = ['C', 'HTML', 'CSS', 'Python', 'Java', 'React', 'Node.js', 'FastAPI', 'Prolog'];
 
-const EditProfile = ({ isOpen, onClose, onSave }) => {
+const EditProfile = ({ token, isOpen, onClose, onSave }) => {
   const [profile, setProfile] = useState({
     lastName: '',
     firstName: '',
@@ -42,7 +43,6 @@ const EditProfile = ({ isOpen, onClose, onSave }) => {
   const [skillsToAdd, setSkillsToAdd] = useState([]);
   const [skillsToRemove, setSkillsToRemove] = useState([]);
 
-
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -57,8 +57,8 @@ const EditProfile = ({ isOpen, onClose, onSave }) => {
       }
     };
 
-    fetchProfile()
-  }, []);
+    fetchProfile();
+  }, [token]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -92,9 +92,9 @@ const EditProfile = ({ isOpen, onClose, onSave }) => {
       }
       const updatedSkills = [...profile.skills.filter(skill => !skillsToRemove.includes(skill)), ...skillsToAdd];
       const updatedProfile = { ...profile, skills: updatedSkills };
-      await createUserProfile(profile.email, updatedProfile);
+      await createUserProfile(profile.email, updatedProfile, token);
       if (croppedImage) {
-        await uploadProfilePicture(profile.email, croppedImage);
+        await uploadProfilePicture(profile.email, croppedImage, token);
       }
       onSave(updatedProfile);
       onClose();
@@ -102,6 +102,11 @@ const EditProfile = ({ isOpen, onClose, onSave }) => {
       setError(error.detail || error.message);
     }
   };
+
+
+    const [image, setImage] = useState(null);
+    const [croppedImage, setCroppedImage] = useState(profile.profilePicture || null);
+    const cropperRef = useRef(null);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -115,197 +120,239 @@ const EditProfile = ({ isOpen, onClose, onSave }) => {
     }
   };
 
+  const handleCrop = () => {
+    if (cropperRef.current) {
+      setCroppedImage(cropperRef.current.cropper.getCroppedCanvas().toDataURL());
+      setImage(null);
+    }
+  };
+
 
 
   return (
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Edit Profile</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <VStack spacing={4}>
-              {error && <Text color="red.500" mb={4}>{typeof error === 'string' ? error : JSON.stringify(error)}</Text>}
-              <FormControl>
-                <FormLabel>First Name</FormLabel>
-                <Input
-                    name="firstName"
-                    value={profile.firstName}
-                    onChange={handleInputChange}
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Last Name</FormLabel>
-                <Input
-                    name="lastName"
-                    value={profile.lastName}
-                    onChange={handleInputChange}
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Username</FormLabel>
-                <Input
-                    name="username"
-                    value={profile.username}
-                    onChange={handleInputChange}
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Email</FormLabel>
-                <Input
-                    name="email"
-                    value={profile.email}
-                    onChange={handleInputChange}
-                    isReadOnly
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Profile Picture</FormLabel>
-                <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    hidden
-                    id="profile-picture-upload"
-                />
-                <Button
-                    as="label"
-                    htmlFor="profile-picture-upload"
-                    leftIcon={<Icon as={FiUpload} />}
-                    colorScheme="teal"
-                    variant="outline"
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Edit Profile</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <VStack spacing={4}>
+          {error && <Text color="red.500" mb={4}>{typeof error === 'string' ? error : JSON.stringify(error)}</Text>}
+          <FormControl >
+            <FormLabel>First Name</FormLabel>
+            <Input
+              name="firstName"
+              value={profile.firstName}
+              onChange={handleInputChange}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Last Name</FormLabel>
+            <Input
+              name="lastName"
+              value={profile.lastName}
+              onChange={handleInputChange}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Username</FormLabel>
+            <Input
+              name="username"
+              value={profile.username}
+              onChange={handleInputChange}
+            />
+          </FormControl>
+          <FormControl >
+            <FormLabel>Email</FormLabel>
+            <Input
+              name="email"
+              value={profile.email}
+              onChange={handleInputChange}
+              isReadOnly
+            />
+          </FormControl>
+          <FormControl>
+              <FormLabel>Profile Picture</FormLabel>
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                hidden
+                id="profile-picture-upload"
+              />
+              <Button
+                as="label"
+                htmlFor="profile-picture-upload"
+                leftIcon={<Icon as={FiUpload} />}
+                colorScheme="teal"
+                variant="outline"
+                width="100%"
+                cursor="pointer"
+              >
+                {file ? file.name : "Choose Image"}
+              </Button>
+              {profile.profilePicture && (
+                <Box mt={4} width="150px" height="150px" mx="auto">
+                  <Image
+                    src={profile.profilePicture}
+                    alt="Profile Picture Preview"
+                    objectFit="cover"
                     width="100%"
-                    cursor="pointer"
-                >
-                  {file ? file.name : "Choose Image"}
-                </Button>
-                {profile.profilePicture && (
-                    <Box mt={4} width="150px" height="150px" mx="auto">
-                      <Image
-                          src={profile.profilePicture}
-                          alt="Profile Picture Preview"
-                          objectFit="cover"
-                          width="100%"
-                          height="100%"
-                          borderRadius="full"
-                      />
-                    </Box>
-                )}
-              </FormControl>
-              <FormControl>
-                <FormLabel>Skills</FormLabel>
-                <HStack>
-                  <Input
-                      type="text"
-                      value={newSkill}
-                      onChange={(e) => setNewSkill(e.target.value)}
-                      placeholder="Add a new skill"
+                    height="100%"
+                    borderRadius="full"
                   />
-                  <Button onClick={handleAddSkill} colorScheme="blue">
-                    Add
-                  </Button>
-                </HStack>
-              </FormControl>
-              <Box>
-                <FormLabel>Selected Skills</FormLabel>
-                <Box mb={2}>
-                  {profile.skills.map((skill, index) => (
-                      <Tag key={index} size="md" colorScheme="teal" borderRadius="full" m={1}>
-                        <TagLabel>{skill}</TagLabel>
-                        <TagCloseButton onClick={() => handleRemoveSkill(skill)} />
-                      </Tag>
-                  ))}
-                  {skillsToAdd.map((skill, index) => (
-                      <Tag key={index} size="md" colorScheme="blue" borderRadius="full" m={1}>
-                        <TagLabel>{skill}</TagLabel>
-                        <TagCloseButton onClick={() => setSkillsToAdd(skillsToAdd.filter(s => s !== skill))} />
-                      </Tag>
-                  ))}
                 </Box>
+              )}
+            </FormControl>
+
+            <FormControl>
+              <FormLabel>Skills</FormLabel>
+              <HStack>
+                <Input
+                  type="text"
+                  value={newSkill}
+                  onChange={(e) => setNewSkill(e.target.value)}
+                  placeholder="Add a new skill"
+                />
+                <Button onClick={handleAddSkill} colorScheme="blue">
+                  Add
+                </Button>
+              </HStack>
+            </FormControl>
+
+            <Box>
+              <FormLabel>Selected Skills</FormLabel>
+              <Box mb={2}>
+                {profile.skills.map((skill, index) => (
+                  <Tag key={index} size="md" colorScheme="teal" borderRadius="full" m={1}>
+                    <TagLabel>{skill}</TagLabel>
+                    <TagCloseButton onClick={() => handleRemoveSkill(skill)} />
+                  </Tag>
+                ))}
+                {skillsToAdd.map((skill, index) => (
+                  <Tag key={index} size="md" colorScheme="blue" borderRadius="full" m={1}>
+                    <TagLabel>{skill}</TagLabel>
+                    <TagCloseButton onClick={() => setSkillsToAdd(skillsToAdd.filter(s => s !== skill))} />
+                  </Tag>
+                ))}
               </Box>
+            </Box>
+
+            <Box>
+              <FormLabel>Suggested Skills</FormLabel>
               <Box>
-                <FormLabel>Suggested Skills</FormLabel>
-                <Box>
-                  {predefinedSkills.map((skill, index) => (
-                      <Tag
-                          key={index}
-                          size="md"
-                          colorScheme="gray"
-                          borderRadius="full"
-                          m={1}
-                          cursor="pointer"
-                          onClick={() => handleAddPredefinedSkill(skill)}
-                      >
-                        <TagLabel>{skill}</TagLabel>
-                      </Tag>
-                  ))}
-                </Box>
+                {predefinedSkills.map((skill, index) => (
+                  <Tag
+                    key={index}
+                    size="md"
+                    colorScheme="gray"
+                    borderRadius="full"
+                    m={1}
+                    cursor="pointer"
+                    onClick={() => handleAddPredefinedSkill(skill)}
+                  >
+                    <TagLabel>{skill}</TagLabel>
+                  </Tag>
+                ))}
               </Box>
-            </VStack>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleSave}>
-              Save
-            </Button>
-            <Button variant="ghost" onClick={onClose}>Cancel</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+            </Box>
+          </VStack>
+        </ModalBody>
+        <ModalFooter>
+          <Button colorScheme="blue" mr={3} onClick={handleSave}>
+            Save
+          </Button>
+          <Button variant="ghost" onClick={onClose}>Cancel</Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };
 
-const ProfileAndSkills = ({ profile, onUpdateProfile }) => {
+const ProfileAndSkills = ({ profile, onUpdateProfile, token }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-      <Box
-          position="relative"
-          bg="gray.100"
-          shadow="lg"
-          borderRadius="lg"
-          p={6}
-          maxW="xl"
-          mx="auto"
-          minH="calc(100vh - 2rem)"
-          display="flex"
-          flexDirection="column"
+    <Box
+      position="relative"
+      bg="gray.100"
+      shadow="lg"
+      borderRadius="lg"
+      p={6}
+      maxW="xl"
+      mx="auto"
+      minH="calc(100vh - 2rem)"
+      display="flex"
+      flexDirection="column"
+    >
+      <Button
+        position="absolute"
+        top={4}
+        right={4}
+        variant="link"
+        colorScheme="teal"
+        onClick={() => setIsModalOpen(true)}
       >
-        <Button
-            position="absolute"
-            top={4}
-            right={4}
-            variant="link"
-            colorScheme="teal"
-            size="sm"
-            onClick={() => setIsModalOpen(true)}
-        >
-          Edit Profile
-        </Button>
-        <Box textAlign="center">
-          <Avatar size="xl" name={profile.firstName + ' ' + profile.lastName} src={profile.profilePicture} mb={4} />
-          <Heading as="h2" size="lg">{profile.username}</Heading>
-          <Text fontSize="lg">{profile.email}</Text>
-          <Text fontSize="lg">{profile.company}</Text>
-          <Text fontSize="lg">{profile.role}</Text>
-          <Divider my={4} />
-          <Text fontSize="lg" fontWeight="bold" mb={2}>Skills</Text>
-          <HStack justify="center" flexWrap="wrap">
-            {profile.skills.map((skill, index) => (
-                <Tag key={index} size="md" colorScheme="teal" borderRadius="full" m={1}>
-                  <TagLabel>{skill}</TagLabel>
+        Edit Profile
+      </Button>
+
+      <VStack spacing={6} align="center" flex={1} justifyContent="center">
+        <Avatar size="2xl" name={profile.username} src={profile.profilePicture} />
+        <Heading as="h2" size="lg" textAlign="center">
+          {profile.username}
+        </Heading>
+        <Divider w="100%" />
+        <VStack align="center" spacing={2}>
+          <Text fontSize="sm" color="gray.500">
+            Email
+          </Text>
+          <Text fontSize="md" color="gray.700">
+            {profile.email}
+          </Text>
+        </VStack>
+        <Divider w="100%" />
+        <VStack align="center" spacing={2}>
+          <Text fontSize="sm" color="gray.500">
+            Role
+          </Text>
+          <Button colorScheme="blue" size="xs" variant="solid">
+            {profile.role}
+          </Button>
+        </VStack>
+        <VStack align="center" spacing={2}>
+          <Text fontSize="sm" color="gray.500">
+            Organization
+          </Text>
+          <Text fontSize="md" color="gray.700">
+            {profile.company}
+          </Text>
+        </VStack>
+        <Divider w="100%" />
+        <VStack align="center" spacing={2}>
+          <Text fontSize="sm" color="gray.500">
+            Skills
+          </Text>
+          <Flex flexWrap="wrap" justifyContent="center">
+            {profile.skills && profile.skills.length > 0 ? (
+              profile.skills.map((skill, index) => (
+                <Tag key={index} size="lg" colorScheme="teal" borderRadius="full" m={1}>
+                  {skill}
                 </Tag>
-            ))}
-          </HStack>
-        </Box>
-        <EditProfile
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            onSave={(updatedProfile) => {
-              setIsModalOpen(false);
-              onUpdateProfile(updatedProfile);
-            }}
-        />
-      </Box>
+              ))
+            ) : (
+              <Text>No skills found</Text>
+            )}
+          </Flex>
+        </VStack>
+      </VStack>
+
+      <EditProfile
+        token={token}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={onUpdateProfile}
+      />
+    </Box>
   );
 };
 
@@ -313,6 +360,7 @@ const ProfilePage = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const token = sessionStorage.getItem('token');
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -329,7 +377,11 @@ const ProfilePage = () => {
     };
 
     fetchProfile();
-  }, []);
+  }, [token]);
+
+  const handleUpdateProfile = (updatedProfile) => {
+    setProfile(updatedProfile);
+  };
 
   if (loading) {
     return <Text>Loading...</Text>;
@@ -340,14 +392,13 @@ const ProfilePage = () => {
   }
 
   return (
-      <ChakraProvider>
-        {profile && (
-            <ProfileAndSkills
-                profile={profile}
-                onUpdateProfile={setProfile}
-            />
-        )}
-      </ChakraProvider>
+    <ChakraProvider>
+      <ProfileAndSkills
+        profile={profile}
+        onUpdateProfile={handleUpdateProfile}
+        token={token}
+      />
+    </ChakraProvider>
   );
 };
 
@@ -355,6 +406,7 @@ export default ProfilePage;
 
 // Prop validations for EditProfile component
 EditProfile.propTypes = {
+  token: PropTypes.string.isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
