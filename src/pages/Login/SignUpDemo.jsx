@@ -25,6 +25,7 @@ export default function SignUp() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [company, setCompany] = useState('');
+    const [companyEmail, setCompanyEmail] = useState('');
     const [password, setPassword] = useState('');
     const [reEnterPassword, setReEnterPassword] = useState('');
     const [isFilled, setIsFilled] = useState(false);
@@ -37,11 +38,15 @@ export default function SignUp() {
     useEffect(() => {
         const emailFromQuery = searchParams.get('email');
         const companyFromQuery = searchParams.get('company');
+        const company_email = searchParams.get('company_email');
         if (emailFromQuery) {
             setEmail(emailFromQuery);
         }
         if (companyFromQuery) {
             setCompany(companyFromQuery);
+        }
+        if (company_email) {
+            setCompanyEmail(company_email);
         }
     }, [searchParams]);
 
@@ -127,13 +132,13 @@ export default function SignUp() {
         if (isFilled && password === reEnterPassword) {
             try {
                 const response = await axios.post('http://localhost:8000/signup', {
-    
                     firstName,
                     lastName,
                     username,
                     email,
                     password,
                     company,
+                    companyEmail,
                     role: "Developer",
                     skills: [],
                     profileStatus: "Active",
