@@ -4,6 +4,9 @@ import {
     Button,
     Flex,
     Stack,
+    Box,
+    Spacer,
+    Text,
     useColorModeValue,
     FormControl,
     FormLabel,
@@ -25,6 +28,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import emailjs from 'emailjs-com';
 import logo from '../../assets/devsign.png';
+import image from '../../assets/email.png';
 
 const companyDomains = {
     '99x': '99x.com',
@@ -109,12 +113,29 @@ export default function VerifyEmail() {
     }, [searchParams, onOpen]);
 
     return (
-        <Flex minH={'100vh'} align={'center'} justify={'center'}>
+        <Flex  minH={'100vh'}>
+            <Box
+                flex={1}
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                bg={useColorModeValue('white', 'gray.700')}
+                
+            >
+                <Box mt={20}>
+                    <img src={logo} height={200} width={200} alt={'DevInsightLOGO'} />
+                </Box>
+                <Spacer />
+                <Box mb={150}>
+                    <img src={image} alt="Sample GIF"  height={800} width={800} />
+                </Box>
+            </Box>
+        <Flex flex={1} align={'center'} justify={'center'} bg={useColorModeValue('gray.50')}>
             <Stack
                 spacing={6}
                 w={'full'}
                 maxW={'md'}
-                bg={useColorModeValue('white', 'gray.700')}
                 rounded={'xl'}
                 p={6}
                 my={12}
@@ -126,16 +147,14 @@ export default function VerifyEmail() {
                         Please verify your email. If you don't see the email, please check spam.
                     </Alert>
                 )}
-                {/* {isError && (
+                {isError && (
                     <Alert status="error">
                         <AlertIcon />
                         Error verifying email. Please try again.
                     </Alert>
-                )} */}
+                )}
 
-                <center>
-                    <img src={logo} height={200} width={200} alt="Logo" />
-                </center>
+                <Text fontSize="2xl" fontWeight="bold">  Verify your E-mail address.</Text>
                 <FormControl>
                     <FormLabel>Company</FormLabel>
                     <Select placeholder="Select company" value={company} onChange={(e) => setCompany(e.target.value)}>
@@ -168,5 +187,6 @@ export default function VerifyEmail() {
                 </Button>
             </Stack>
         </Flex>
+    </Flex>
     );
 }

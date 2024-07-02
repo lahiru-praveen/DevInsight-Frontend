@@ -1,79 +1,288 @@
-import React from 'react'
-import  Devinsight  from '../../assets/Devinsight.png';
-import  { Input }  from '@chakra-ui/react'
-import  { Stack }  from '@chakra-ui/react'
-import { Heading } from '@chakra-ui/react'
-import { Button, ButtonGroup } from '@chakra-ui/react'
-import { ArrowForwardIcon } from '@chakra-ui/icons';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Input, InputGroup, InputRightElement, Button, Alert, AlertIcon, FormControl, FormLabel, Checkbox, Text, Progress, Spinner, Box, VStack, HStack, Image, Heading } from '@chakra-ui/react';
+import Devinsight from '../../assets/Devinsight.png';
+import axios from 'axios';
 
+function InteractiveForm() {
+    const [show, setShow] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
+    const handleClick = () => setShow(!show);
+    const handleConfirmClick = () => setShowConfirm(!showConfirm);
 
+    const [formData, setFormData] = useState({
+        company_name: '',
+        admin_email: '',
+        company_address: '',
+        phone_number: '',
+        has_custom_domain: false,
+        domain: '',
+        password: '',
+        confirmPassword: '',
+        logo_url: '', // Keeping this field to send as empty to the backend
+    });
 
-function Createorg1() {
-  return (
-    <div className='mx-auto  w-1/3  bg-white py-24'>
-      
-      <div className='flex flex-col space-y-20 h-full justify-between'>
-      
-      <div className='flex justify-center items-center'>
-            <img src={Devinsight} className="w-2/6 h-2/6" />
-      </div>
+    const [errors, setErrors] = useState({});
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [passwordStrength, setPasswordStrength] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
 
-      
-      <div>
-      <Stack spacing={4}>
-      <Heading as='h3' size='lg' className='mb-5'>
-       Create Company Account
-      </Heading>
-      <Input placeholder='Company Name' size='lg' />
-      <Input placeholder='Company username' size='lg' />
-      <Input placeholder='Company Email' size='lg' />
-      <Input placeholder='Backup Email' size='lg' />
-      <Input placeholder='Manager Email' size='lg' />
+    const handleChange = (event) => {
+        const { name, value, type, checked } = event.target;
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: type === 'checkbox' ? checked : value
+        }));
+        if (name === 'password') {
+            setPasswordStrength(calculatePasswordStrength(value));
+        }
+    };
 
-      </Stack>
-      </div>
-      
-      <div className="mb-3 h-1/4 " >
-      <Heading as='h3' size='md' className='mb-5'>
-       Upload Company Logo
-      </Heading>
-        <div className="flex items-center justify-center w-full">
-        <label for="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-            <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
-            </svg>
-            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
-        </div>
-        <input id="dropzone-file" type="file" className="hidden" />
-      </label>
-      </div> 
-      </div>
+    const checkEmailExists = async (email) => {
+        try {
+            const response = await axios.get('http://127.0.0.1:8000/check-company-email', { params: { email } });
+            return response.data.exists;
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
+    };
 
-      
+    const validateForm = () => {
+        const newErrors = {};
 
-      </div>
+        // Step 1 validations
+        if (!formData.company_name) newErrors.company_name = 'Company name is required';
+        if (!formData.admin_email) newErrors.admin_email = 'Admin email is required';
+        if (!formData.company_address) newErrors.company_address = 'Company address is required';
+        if (!formData.phone_number) newErrors.phone_number = 'Phone number is required';
 
-       
-       
-      <div className='py-6'>
-      <Link to="/co2">
-  <Button rightIcon={<ArrowForwardIcon />} colorScheme='blue' variant='solid' className='w-full'>
-    Next
-  </Button>
-</Link>
-        
-      </div>
-            
-           
+        if (formData.has_custom_domain) {
+            if (!formData.domain) {
+                newErrors.domain = 'Custom domain is required';
+            } else {
+                const emailDomain = formData.admin_email.split('@')[1];
+                if (emailDomain !== formData.domain) {
+                    newErrors.domain = 'Admin email domain does not match the custom domain';
+                }
+            }
+        }
 
+        // Step 2 validations
+        if (!formData.password) newErrors.password = 'Password is required';
+        if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
 
-       
+        return newErrors;
+    };
 
-    </div>
-  )
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        const newErrors = validateForm();
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            setIsLoading(false);
+            return;
+        }
+        // If all validations are OK, check the email availability
+        if (formData.admin_email) {
+            const emailExists = await checkEmailExists(formData.admin_email);
+            if (emailExists) {
+                setErrors({ admin_email: 'Admin email already exists' });
+                setIsLoading(false);
+                return;
+            }
+        }
+        try {
+            const { confirmPassword, ...dataToSubmit } = formData;
+            const response = await axios.post('http://127.0.0.1:8000/create-company', dataToSubmit);
+            setSuccessMessage('Registration successful! Please check your email for verification.');
+            setErrorMessage('');
+        } catch (error) {
+            console.error(error);
+            setErrorMessage('Registration failed! Please try again.');
+            setSuccessMessage('');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const calculatePasswordStrength = (password) => {
+        let score = 0;
+        if (password.length >= 8) score++;
+        if (/[A-Z]/.test(password)) score++;
+        if (/[a-z]/.test(password)) score++;
+        if (/\d/.test(password)) score++;
+        if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score++;
+        return score;
+    };
+
+    return (
+        <HStack className="h-screen" spacing={0}>
+            <Box w="50%" p={8} bg="white" className="flex justify-center items-center">
+                
+                <VStack spacing={4} align="center" w="full">
+                <Button variant="link" color="blue.500" fontSize="sm" mb={4}>
+                    Go to Home Page
+                </Button>
+                
+                    <Heading as="h2" size="lg" mb={4}>Organization Registration</Heading>
+                    <form onSubmit={handleSubmit} className="w-full">
+                        <VStack spacing={4} align="flex-start">
+                            <FormControl>
+                                <div className="flex"><FormLabel htmlFor="company_name">Organization Name</FormLabel> <Text className="text-sm text-gray-500">Required</Text></div>
+                                <Input
+                                    id="company_name"
+                                    type="text"
+                                    name="company_name"
+                                    value={formData.company_name}
+                                    onChange={handleChange}
+                                />
+                                {errors.company_name && <Alert status="error"><AlertIcon />{errors.company_name}</Alert>}
+                            </FormControl>
+
+                            <FormControl>
+                                <Checkbox
+                                    id="has_custom_domain"
+                                    name="has_custom_domain"
+                                    isChecked={formData.has_custom_domain}
+                                    onChange={handleChange}
+                                >
+                                    Do you have a custom domain?
+                                </Checkbox>
+                                <Text fontSize="sm" color="gray.500" p="4">
+                                    With the custom domain helps to verify users company when sign in, Otherwise admin need to accept sign in requests.
+                                </Text>
+                            </FormControl>
+
+                            <FormControl>
+                                <FormLabel htmlFor="domain">Custom Domain</FormLabel>
+                                <Input
+                                    id="domain"
+                                    name="domain"
+                                    type="text"
+                                    value={formData.domain}
+                                    onChange={handleChange}
+                                    disabled={!formData.has_custom_domain} // Disables the input when custom domain is not selected
+                                />
+                                {errors.domain && <Alert status="error"><AlertIcon />{errors.domain}</Alert>}
+                            </FormControl>
+
+                            <FormControl>
+                                <div className="flex"><FormLabel htmlFor="admin_email">Organization Email</FormLabel><Text className="text-sm text-gray-500">Required</Text></div>
+                                <Input
+                                    id="admin_email"
+                                    name="admin_email"
+                                    type="email"
+                                    value={formData.admin_email}
+                                    onChange={handleChange}
+                                />
+                                {errors.admin_email && <Alert status="error"><AlertIcon />{errors.admin_email}</Alert>}
+                            </FormControl>
+
+                            <FormControl>
+                                <div className="flex"><FormLabel htmlFor="company_address">Organization Address</FormLabel><Text className="text-sm text-gray-500">Required</Text></div>
+                                <Input
+                                    id="company_address"
+                                    name="company_address"
+                                    type="text"
+                                    value={formData.company_address}
+                                    onChange={handleChange}
+                                />
+                                {errors.company_address && <Alert status="error"><AlertIcon />{errors.company_address}</Alert>}
+                            </FormControl>
+
+                            <FormControl>
+                                <div className="flex"><FormLabel htmlFor="phone_number">Phone Number</FormLabel><Text className="text-sm text-gray-500">Required</Text></div>
+                                <Input
+                                    id="phone_number"
+                                    name="phone_number"
+                                    type="text"
+                                    value={formData.phone_number}
+                                    onChange={handleChange}
+                                />
+                                {errors.phone_number && <Alert status="error"><AlertIcon />{errors.phone_number}</Alert>}
+                            </FormControl>
+
+                            <FormControl>
+                                <FormLabel htmlFor="password">Password</FormLabel>
+                                <InputGroup size='md'>
+                                    <Input
+                                        pr='4.5rem'
+                                        id="password"
+                                        type={show ? 'text' : 'password'}
+                                        placeholder='Enter password'
+                                        name="password"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                    />
+                                    <InputRightElement width='4.5rem'>
+                                        <Button h='1.75rem' size='sm' onClick={handleClick}>
+                                            {show ? 'Hide' : 'Show'}
+                                        </Button>
+                                    </InputRightElement>
+                                </InputGroup>
+                                {errors.password && <Alert status="error"><AlertIcon />{errors.password}</Alert>}
+                                <Progress value={passwordStrength * 20} size="xs" colorScheme={passwordStrength >= 4 ? 'green' : passwordStrength >= 2 ? 'yellow' : 'red'} mt={2} />
+                                <Text fontSize="sm" color="gray.500">{passwordStrength < 2 ? 'Weak' : passwordStrength < 4 ? 'Medium' : 'Strong'}</Text>
+                            </FormControl>
+
+                            <FormControl>
+                                <FormLabel htmlFor="confirmPassword">Confirm Password</FormLabel>
+                                <InputGroup size='md'>
+                                    <Input
+                                        pr='4.5rem'
+                                        id="confirmPassword"
+                                        type={showConfirm ? 'text' : 'password'}
+                                        placeholder='Confirm password'
+                                        name="confirmPassword"
+                                        value={formData.confirmPassword}
+                                        onChange={handleChange}
+                                    />
+                                    <InputRightElement width='4.5rem'>
+                                        <Button h='1.75rem' size='sm' onClick={handleConfirmClick}>
+                                            {showConfirm ? 'Hide' : 'Show'}
+                                        </Button>
+                                    </InputRightElement>
+                                </InputGroup>
+                                {errors.confirmPassword && <Alert status="error"><AlertIcon />{errors.confirmPassword}</Alert>}
+                            </FormControl>
+
+                            <div className="flex justify-center">
+                                <Button type="submit" colorScheme="blue" isLoading={isLoading}>
+                                    Register
+                                </Button>
+                            </div>
+
+                            {successMessage && <Alert status="success"><AlertIcon />{successMessage}</Alert>}
+                            {errorMessage && <Alert status="error"><AlertIcon />{errorMessage}</Alert>}
+                        </VStack>
+                    </form>
+                </VStack>
+            </Box>
+            <Box w="50%" p={8} bg="gray.50" className="flex flex-col justify-center items-center h-screen">
+                <VStack spacing={4} align="center" w="full">
+                    <Box w="25%" h="auto" mb={4}>
+                        <Image src={Devinsight} alt="DevInsight" />
+                    </Box>
+                    <Text fontSize="3xl" fontWeight="bold">Welcome to DevInsight</Text>
+                    <Text fontSize="md" color="gray.600" textAlign="center">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras venenatis euismod malesuada. 
+                        Nullam ac erat ante. Proin ac consectetur nulla. Nulla vitae elit libero, a pharetra augue. Curabitur blandit tempus porttitor. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.
+                    </Text>
+                    <Text fontSize="md" color="gray.600" textAlign="center">
+                        Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. 
+                        Donec ullamcorper nulla non metus auctor fringilla. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
+                    </Text>
+                    <Text fontSize="md" color="gray.600" textAlign="center">
+                        Maecenas sed diam eget risus varius blandit sit amet non magna. Aenean lacinia bibendum nulla sed consectetur. 
+                        Nulla vitae elit libero, a pharetra augue. Curabitur blandit tempus porttitor. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.
+                    </Text>
+                </VStack>
+            </Box>
+        </HStack>
+    );
 }
 
-export default Createorg1
+export default InteractiveForm;
+

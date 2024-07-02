@@ -109,9 +109,9 @@ export default function LoginManager() {
                     )}
                     
                     <Text fontSize="4xl" fontWeight="bold">
-                         Welcome Back!
+                         Welcome!
                     </Text>   
-                 <Text fontSize="2xl" >  Login as a manager.</Text>
+                 <Text fontSize="2xl" >  Login as an Organization.</Text>
                      
                     <FormControl id="admin_email">
                         <Input

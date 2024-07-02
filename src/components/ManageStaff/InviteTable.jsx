@@ -5,9 +5,9 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
+  ModalFooter,
   FormControl,
   FormLabel,
   useDisclosure,
@@ -19,12 +19,14 @@ import {
   Alert,
   AlertIcon,
   Text,
+  Spinner // Import Spinner component for loading indication
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 
 export const InviteTable = () => {
   const { isOpen: isOpen1, onOpen: onOpen1, onClose: onClose1 } = useDisclosure();
   const { isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2 } = useDisclosure();
+  const [isLoadingModal, setLoadingModal] = useState(false); // State for loading modal
   const initialRef = useRef(null);
   const finalRef = useRef(null);
   const [invites, setInvites] = useState([]);
@@ -35,7 +37,7 @@ export const InviteTable = () => {
   const [query, setQuery] = useState("");
   const organization_email = 'devinsight@gmail.com';
   const [inputError, setInputError] = useState("");
-  
+
   const fetchInviteTable = async () => {
     try {
       const response = await axios.get(`http://127.0.0.1:8000/get-invitations?organization_email=${organization_email}`);
@@ -64,6 +66,7 @@ export const InviteTable = () => {
 
   const handleSendInvite = async () => {
     try {
+      setLoadingModal(true); // Show loading modal
       if (!email || !email.trim()) {
         setInputError("Email is required");
         return;
@@ -91,7 +94,6 @@ export const InviteTable = () => {
       };
       const response = await axios.post(`http://127.0.0.1:8000/send-invite`, newInvite);
       console.log(response.data);
-      console.log(response.status);
       
       if (response.data.message === "Invite sent successfully") {
         await fetchInviteTable();
@@ -104,11 +106,14 @@ export const InviteTable = () => {
     } catch (error) {
       console.error("Error sending invite:", error);
       setError("Error sending invite. Please try again later.");
+    } finally {
+      setLoadingModal(false); // Hide loading modal
     }
   };
 
   const handleResendInvite = async (inviteId) => {
     try {
+      setLoadingModal(true); // Show loading modal
       const response = await axios.post(`http://127.0.0.1:8000/resend-invite/${inviteId}`);
       console.log(response.data);
       if (response.data.message === "Invite resent successfully") {
@@ -120,6 +125,8 @@ export const InviteTable = () => {
     } catch (error) {
       console.error("Error resending invite:", error);
       setError("Error resending invite. Please try again later.");
+    } finally {
+      setLoadingModal(false); // Hide loading modal
     }
   };
 
@@ -187,20 +194,29 @@ export const InviteTable = () => {
         </ModalContent>
       </Modal>
 
+      {/* Loading Modal */}
+      <Modal isOpen={isLoadingModal} onClose={() => setLoadingModal(false)} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalBody textAlign="center">
+            <Spinner size="xl" />
+            <Text mt={4}>Sending invitation...</Text>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+
       <div>
         <h1 className="py-5 text-xl leading-tight font-bold text-gray-500">Invitations</h1>
       </div>
 
       <div className="flex flex-row space-x-5 py-5">
-        <div className="basis-2/4">
+        <div className="basis-3/4">
           <InputGroup>
             <InputLeftElement pointerEvents="none" children={<SearchIcon color="gray.600" />} />
             <Input placeholder="Search..." value={query} onChange={(e) => setQuery(e.target.value)} />
           </InputGroup>
         </div>
-        <div className="basis-1/4">
-          <Button className="w-full" colorScheme="blue" variant="outline">Search</Button>
-        </div>
+        
         <div className="basis-1/4">
           <Button onClick={onOpen2} className="w-full" colorScheme="blue">Send Invitation</Button>
         </div>
