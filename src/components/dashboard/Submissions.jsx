@@ -16,6 +16,7 @@ export default function Submissions({ submission, drop }) {
     const { _id, p_id, p_name, f_name, submission_date, language, description, code, mode } = submission;
     const [reqId, setReqId] = useState(""); // State to store req_id
     console.log(_id);
+
     const typeIcon = mode === 1 ?
         (<ToolTip tooltip='Code Upload'>
             <Icon as={FaCode} boxSize={25} color='blue.200' className="mr-2" />
@@ -70,7 +71,7 @@ export default function Submissions({ submission, drop }) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const result = await axios.get(`http://localhost:8000/get-request-id/${p_id}`); // Assuming p_id is the project id
+                const result = await axios.get(`http://localhost:8000/get-request-id/${p_id}`);
                 console.log("Fetch Result: ", result); // Log the entire response
                 if (result.data !== null) {
                     setReqId(result.data); // Set the req_id in state
