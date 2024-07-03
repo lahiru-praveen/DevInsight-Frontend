@@ -45,7 +45,8 @@ export const InviteTable = () => {
       try {
         const response = await axios.get(`http://127.0.0.1:8000/get-organization-name?organization_email=${adminEmail}`);
         setCompany(response.data);
-        sessionStorage.setItem('company', response);
+        console.log(response.data);
+        sessionStorage.setItem('company', response.data);
       } catch (error) {
         console.error("Error fetching company name:", error);
       }
@@ -53,6 +54,7 @@ export const InviteTable = () => {
 
     fetchCompanyName();
   }, [adminEmail]);
+  
 
 
   const fetchInviteTable = async () => {
