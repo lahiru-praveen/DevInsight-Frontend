@@ -342,10 +342,12 @@ export default function SignUp() {
 
     useEffect(() => {
         const token = searchParams.get('token');
+        const useremail = searchParams.get('email');
 
-        const fetchInvitationDetails = async (token) => {
+
+        const fetchInvitationDetails = async (token, useremail) => {
             try {
-                const response = await axios.get(`http://localhost:8000/get-invitation-details?token=${token}`);
+                const response = await axios.get(`http://localhost:8000/get-invitation-details?token=${token}&email=${useremail}`);
                 const { email, organization_email, organization_name, role } = response.data;
                 setEmail(email);
                 setCompanyEmail(organization_email);
