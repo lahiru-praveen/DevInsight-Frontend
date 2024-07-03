@@ -36,6 +36,7 @@ export const InviteTable = () => {
   const [role, setRole] = useState("");
   const [query, setQuery] = useState("");
   const organization_email = 'devinsight@gmail.com';
+  const organization_name = 'devinsight'
   const [inputError, setInputError] = useState("");
 
   const fetchInviteTable = async () => {
@@ -88,6 +89,7 @@ export const InviteTable = () => {
       const newInvite = {
         invite_accepted: invite_accepted,
         organization_email: organization_email,
+        organization_name: organization_name,
         user_email: email,
         role,
         sent_date: new Date().toISOString()
