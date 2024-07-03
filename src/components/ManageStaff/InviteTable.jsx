@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import axios from "axios";
 import {
   Modal,
@@ -30,20 +30,37 @@ export const InviteTable = () => {
   const initialRef = useRef(null);
   const finalRef = useRef(null);
   const [invites, setInvites] = useState([]);
+  const [company,setCompany] = useState('');
   const [error, setError] = useState(null);
   const [index, setIndex] = useState(null);
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
   const [query, setQuery] = useState("");
-  const organization_email = 'devinsight@gmail.com';
   const [inputError, setInputError] = useState("");
+  const adminEmail = sessionStorage.getItem('email');
+
+  
+  useEffect(() => {
+    const fetchCompanyName = async () => {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/get-organization-name?organization_email=${adminEmail}`);
+        setCompany(response.data);
+        sessionStorage.setItem('company', response);
+      } catch (error) {
+        console.error("Error fetching company name:", error);
+      }
+    };
+
+    fetchCompanyName();
+  }, [adminEmail]);
+
 
   const fetchInviteTable = async () => {
     try {
-      const response = await axios.get(`http://127.0.0.1:8000/get-invitations?organization_email=${organization_email}`);
+      const response = await axios.get(`http://127.0.0.1:8000/get-invitations?organization_email=${adminEmail}`);
       console.log("Fetched data:", response.data.invitations);
-      setInvites(response.data.invitations);
-    } catch (error) {
+      setInvites(response.data.invitations);}
+    catch (error) {
       console.error("Error fetching invite table:", error);
       setError("Error fetching invite table. Please try again later.");
     }
@@ -87,11 +104,13 @@ export const InviteTable = () => {
       const invite_accepted = false;
       const newInvite = {
         invite_accepted: invite_accepted,
-        organization_email: organization_email,
+        organization_email: adminEmail,
+        organization_name: company,
         user_email: email,
-        role,
+        role: role,
         sent_date: new Date().toISOString()
       };
+      console.log(newInvite);
       const response = await axios.post(`http://127.0.0.1:8000/send-invite`, newInvite);
       console.log(response.data);
       

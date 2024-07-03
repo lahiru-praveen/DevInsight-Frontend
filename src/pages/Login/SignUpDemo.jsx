@@ -39,7 +39,7 @@ export default function SignUp() {
         const emailFromQuery = searchParams.get('email');
         const companyFromQuery = searchParams.get('company');
         const company_email = searchParams.get('company_email');
-        if (emailFromQuery) {
+        if (emailFromQuery) {                           
             setEmail(emailFromQuery);
         }
         if (companyFromQuery) {
@@ -141,8 +141,10 @@ export default function SignUp() {
                     companyEmail,
                     role: "Developer",
                     skills: [],
-                    profileStatus: "Active",
                     face_encoding: [],
+                    profileStatus: "Active",
+                    profilePicture:  " ",
+
                 });
 
                 const { access_token, user_id, verificationCode } = response.data;
