@@ -8,11 +8,16 @@ const SubmissionModal = ({ isOpen, onClose, p_name, code , des , entity_id}) => 
     const [reviewContent, setReviewContent] = useState('');
     const [suggestionContent, setSuggestionContent] = useState('');
     const [referLinksContent, setReferLinksContent] = useState('');
+    const user = sessionStorage.getItem('email');
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const result = await axios.get(`http://localhost:8000/get-review/${entity_id}`);
+                const result = await axios.get(`http://localhost:8000/get-review/${entity_id}`, {
+                    params: {
+                        user: user
+                    }
+                });
                 console.log("Fetch Result: ", result); // Log the entire response
                 const { review, suggestions, reference_links } = result.data;
                 setReviewContent(review);
@@ -33,7 +38,7 @@ const SubmissionModal = ({ isOpen, onClose, p_name, code , des , entity_id}) => 
         setIsDeleting(true);
         try {
             if (confirmed) {
-                const response = await axios.delete("http://localhost:8000/delete-sub", {data: { entity_id }});
+                const response = await axios.delete("http://localhost:8000/delete-sub", {data: { entity_id, user }});
                 if (response.status === 200) {
                     alert("Submission Deleted Successfully");
                     onClose(); // Close the modal after deletion

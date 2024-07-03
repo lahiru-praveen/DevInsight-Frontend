@@ -1,6 +1,6 @@
 
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
@@ -20,7 +20,7 @@ import logo from '../../assets/devsign.png';
 import gif from '../../assets/T.gif';
 
 export default function LoginManager() {
-    const [admin_email, setadminEmail] = useState('');
+    const [adminEmail, setAdminEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isFilled, setIsFilled] = useState(false);
     const [showLoggingInAlert, setShowLoggingInAlert] = useState(false);
@@ -28,20 +28,20 @@ export default function LoginManager() {
     const navigate = useNavigate();
 
     const handleAdminEmailChange = (event) => {
-        setadminEmail(event.target.value);
+        setAdminEmail(event.target.value);
         setIsFilled(event.target.value !== '' && password !== '');
     };
 
     const handlePasswordChange = (event) => {
         setPassword(event.target.value);
-        setIsFilled(admin_email !== '' && event.target.value !== '');
+        setIsFilled(adminEmail !== '' && event.target.value !== '');
     };
 
     const handleLogin = async () => {
         setShowLoggingInAlert(true);
         try {
-            const response = await axios.post('http://localhost:8000/login', {
-                email: admin_email,
+            const response = await axios.post('http://localhost:8000/login-organization', {
+                email: adminEmail,
                 password,
             });
             console.log(response.data);
@@ -49,11 +49,9 @@ export default function LoginManager() {
             // Save token to sessionStorage
             sessionStorage.setItem('access_token', response.data.access_token);
 
-           
-
             setLoginMessage('Login successful');
             sessionStorage.setItem('email', response.data.email);
-            navigate('/db');
+            navigate('/ms');
 
         } catch (error) {
             setShowLoggingInAlert(false);
@@ -99,7 +97,7 @@ export default function LoginManager() {
                     spacing={6}
                     w={'full'}
                     maxW={'md'}
-                    bg={useColorModeValue('white', 'gray.700')}>
+                   >
 
                     {showLoggingInAlert && (
                         <Alert status="info">
@@ -118,7 +116,7 @@ export default function LoginManager() {
                             placeholder="Enter Company Email"
                             _placeholder={{ color: 'gray.500' }}
                             type="email"
-                            value={admin_email}
+                            value={adminEmail}
                             onChange={handleAdminEmailChange}
                         />
                     </FormControl>

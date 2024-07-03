@@ -1,23 +1,18 @@
-
-
-
 // SignUpDemo.jsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import {
     Button,
     FormControl,
     Flex,
-    Box,
-    Spacer,
     Input,
     Stack,
     useColorModeValue,
     Alert,
     AlertIcon,
-    InputGroup,
-    InputLeftElement,
+    Box,
+    Spacer,
     Text,
 } from '@chakra-ui/react';
 
@@ -30,6 +25,7 @@ export default function SignUp() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [company, setCompany] = useState('');
+    const [companyEmail, setCompanyEmail] = useState('');
     const [password, setPassword] = useState('');
     const [reEnterPassword, setReEnterPassword] = useState('');
     const [isFilled, setIsFilled] = useState(false);
@@ -42,11 +38,15 @@ export default function SignUp() {
     useEffect(() => {
         const emailFromQuery = searchParams.get('email');
         const companyFromQuery = searchParams.get('company');
+        const company_email = searchParams.get('company_email');
         if (emailFromQuery) {
             setEmail(emailFromQuery);
         }
         if (companyFromQuery) {
             setCompany(companyFromQuery);
+        }
+        if (company_email) {
+            setCompanyEmail(company_email);
         }
     }, [searchParams]);
 
@@ -132,13 +132,13 @@ export default function SignUp() {
         if (isFilled && password === reEnterPassword) {
             try {
                 const response = await axios.post('http://localhost:8000/signup', {
-    
                     firstName,
                     lastName,
                     username,
                     email,
                     password,
                     company,
+                    companyEmail,
                     role: "Developer",
                     skills: [],
                     profileStatus: "Active",
@@ -163,10 +163,9 @@ export default function SignUp() {
     };
 
     return (
-    <Flex>
-        {/* left box */}
-        
-        <Box
+        <Flex minH={'100vh'}>
+               {/* Left Side */}
+               <Box
                 flex={1}
                 display="flex"
                 flexDirection="column"
@@ -180,20 +179,18 @@ export default function SignUp() {
                 </Box>
                 <Spacer />
                 <Box>
-                    <img src={image} alt="Sample GIF"  height={800} width={800}/>
+                    <img src={image} alt="Sample GIF"  height={600} width={600}/>
                 </Box>
-            </Box> 
-        
-        {/* Right box */}
+            </Box>
 
-        <Flex flex={1} minH={'100vh'} align={'center'} justify={'center'} bg={useColorModeValue('gray.50')}>
+            {/* Right Side */}
+        <Flex  align={'center'} justify={'center'} flex={1}  bg={useColorModeValue('gray.50')}>
             <Stack
                 spacing={6}
                 w={'full'}
                 maxW={'md'}
-                bg={useColorModeValue('gray-200')}
                 rounded={'xl'}
-                mr={30}
+                p={6}
                 my={12}
             >
                 {passwordError && (
@@ -214,11 +211,8 @@ export default function SignUp() {
                         Signup successful! Your user ID is: {userId}
                     </Alert>
                 )}
-                {/* <center>
-                    <img src={logo} height={200} width={200} alt={'DevInsightLOGO'} />
-                </center> */}
                 <Text fontSize="4xl" fontWeight="bold">
-                         Welcome to DevInsight
+                         Welcome to DevInsight!
                     </Text>
                 <Flex>
                     <FormControl id="firstName" mr={3} flex={1}>
@@ -297,6 +291,6 @@ export default function SignUp() {
                 </Stack>
             </Stack>
         </Flex>
-    </Flex>
+    </Flex>   
     );
 }

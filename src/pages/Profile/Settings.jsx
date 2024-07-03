@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import{ useState } from 'react';
 import {
   Box,
   Button,
@@ -31,22 +31,17 @@ import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 
 const Settings = () => {
-  const [profile, setProfile] = useState({
+  const [profile] = useState({
     email: sessionStorage.getItem('email') || '',
   });
   const [password, setPassword] = useState('');
-  const [isPasswordConfirmed, setIsPasswordConfirmed] = useState(false);
-  const { isOpen: isPasswordModalOpen, onOpen: onPasswordModalOpen, onClose: onPasswordModalClose } = useDisclosure();
-  const { isOpen: isChangePasswordModalOpen, onOpen: onChangePasswordModalOpen, onClose: onChangePasswordModalClose } = useDisclosure();
-  const navigate = useNavigate();
-  const [email, setEmail] = useState('');
 
-  // useEffect(() => {
-  //   const storedEmail = sessionStorage.getItem('email');
-  //   if (storedEmail) {
-  //     setEmail(storedEmail);
-  //   }
-  // }, []);
+  const { isOpen: isPasswordModalOpen, onOpen: onPasswordModalOpen, onClose: onPasswordModalClose } = useDisclosure();
+
+  const navigate = useNavigate();
+
+
+
 
 
   const handleRemoveFaceData = async () => {
@@ -70,7 +65,7 @@ const Settings = () => {
   const handlePasswordConfirmation = () => {
     const storedPassword = sessionStorage.getItem('password');
     if (password === storedPassword) {
-      setIsPasswordConfirmed(true);
+
       onPasswordModalClose();
   
      
@@ -99,8 +94,7 @@ const Settings = () => {
     }
   };
 
-  const handleDeactivate = async (email) => {
-    const token = sessionStorage.getItem('access_token');
+  const handleDeactivate = async (email, token) => {
     try {
       const response = await fetch(`http://127.0.0.1:8000/api/user_deactivate/${email}`, {
         method: 'POST',
