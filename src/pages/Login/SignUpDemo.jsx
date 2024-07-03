@@ -144,6 +144,7 @@ export default function SignUp() {
                     face_encoding: [],
                     profileStatus: "Active",
                     profilePicture:  " ",
+
                 });
 
                 const { access_token, user_id, verificationCode } = response.data;
