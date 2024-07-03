@@ -290,29 +290,9 @@
 
 // export default MyComponent;
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import {
-    Select,
-    Input,
-    InputGroup,
-    InputLeftElement,
-    Button,
-    Alert,
-    AlertIcon,
-    Spinner,
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    ModalBody,
-    ModalCloseButton,
-    FormControl,
-    FormLabel,
-    useDisclosure,
-    Text
-} from '@chakra-ui/react';
+import {Select, Input, InputGroup, InputLeftElement, Button, Alert, AlertIcon, Spinner, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, FormControl, FormLabel, useDisclosure, Text} from '@chakra-ui/react';
 import { Search2Icon } from "@chakra-ui/icons";
 import pp from '../../assets/pp.jpeg';
 
@@ -330,11 +310,11 @@ const MyComponent = () => {
     const [roleError, setRoleError] = useState("");
     const [isRoleChanged, setIsRoleChanged] = useState(false);
     const [successAlert, setSuccessAlert] = useState(false);
+    const organization_email = sessionStorage.getItem('email');
 
     useEffect(() => {
         const fetchActiveMembers = async () => {
             try {
-                const organization_email = "devinsight@gmail.com"; // Hardcoded organization email
                 const response = await axios.get(`http://127.0.0.1:8000/get-members-by-organization-email/${organization_email}`);
                 console.log(response.data);
                 const activeMembers = response.data.filter(member => member.profileStatus !== 'Deactive');
@@ -354,8 +334,7 @@ const MyComponent = () => {
 
             if (query) {
                 filteredData = filteredData.filter((item) =>
-                    item.first_name.toLowerCase().includes(query.toLowerCase()) ||
-                    item.last_name.toLowerCase().includes(query.toLowerCase()) ||
+                    item.username.toLowerCase().includes(query.toLowerCase()) ||
                     item.email.toLowerCase().includes(query.toLowerCase())
                 );
             }
@@ -466,10 +445,7 @@ const MyComponent = () => {
 
     return (
         <div className='px-20 py-5'>
-            <Modal
-                isOpen={isRoleModalOpen}
-                onClose={onRoleModalClose}
-            >
+            <Modal isOpen={isRoleModalOpen} onClose={onRoleModalClose}>
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader>Change Role</ModalHeader>
@@ -506,7 +482,7 @@ const MyComponent = () => {
                     <ModalHeader>Confirm Role Change</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        <Text>Are you sure you want to change the role of {activeMembers[index]?.first_name} {activeMembers[index]?.last_name} to {role}?</Text>
+                        <Text>Are you sure you want to change the role of {activeMembers[index]?.username} to {role}?</Text>
                     </ModalBody>
                     <ModalFooter>
                         <Button colorScheme="blue" mr={3} onClick={handleRoleUpdate}>
@@ -585,11 +561,11 @@ const MyComponent = () => {
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center w-1/3">
                                         <div className="flex-shrink-0">
-                                            <img className="w-8 h-8 rounded-full" src={pp} alt={`${member.first_name} ${member.last_name}`} />
+                                            <img className="w-8 h-8 rounded-full" src={member.profilePicture !== " " ? member.profilePicture : pp } alt={`${member.username} `} />
                                         </div>
                                         <div className="flex-1 min-w-0 ms-4">
                                             <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                                {`${member.first_name} ${member.last_name}`}
+                                                {`${member.username}`}
                                             </p>
                                             <p className="text-sm text-gray-500 truncate dark:text-gray-400">
                                                 {member.email}

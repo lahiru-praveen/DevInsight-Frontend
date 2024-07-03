@@ -74,7 +74,7 @@ const ManagerNavBar = () => {
             Are you sure you want to logout?
           </ModalBody>
           <ModalFooter>
-            <Link to="/si">
+            <Link to="/">
               <Button colorScheme="red" mr={3}>
                 Yes
               </Button>
