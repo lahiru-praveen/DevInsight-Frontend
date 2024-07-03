@@ -30,14 +30,8 @@ import emailjs from 'emailjs-com';
 import logo from '../../assets/devsign.png';
 import image from '../../assets/email.png';
 
-const companyDomains = {
-    '99x': '99x.com',
-    'IFS': 'ifs.com',
-    'Zone 24/7': 'zone24/7.com',
-    'WSO2': 'wso2.com',
-    'virtusa': 'virtusa.com',
-    'Google': 'gmail.com',
-};
+const companyDomains = await axios.get(`http://localhost:8000/get-organizations-with-custom-domain`);
+console.log(companyDomains);
 
 export default function VerifyEmail() {
     const [isVerified, setIsVerified] = useState(false);
@@ -51,10 +45,10 @@ export default function VerifyEmail() {
     const cancelRef = React.useRef();
 
     const sendVerificationEmail = async () => {
-        const domain = companyDomains[company];
+        const domain = selectedCompany.domain;
         const email = `${emailName}@${domain}`;
         const verificationCode = Math.random().toString(36).substring(2, 15); // Generate a unique code here
-        const verificationUrl = `${window.location.origin}/su?email=${encodeURIComponent(email)}&code=${verificationCode}&company=${company}`;
+        const verificationUrl = `${window.location.origin}/su?email=${encodeURIComponent(email)}&code=${verificationCode}&company=${company}&company_email=${selectedCompany.admin_email}`;
 
         //setVerificationLink(verificationUrl);
 
@@ -80,7 +74,7 @@ export default function VerifyEmail() {
 
     const handleSubmit = async (event) => {
             event.preventDefault();
-            const domain = companyDomains[company];
+            const domain = selectedCompany.domain;
             if (domain) {
                 await sendVerificationEmail();
             }
@@ -106,11 +100,15 @@ export default function VerifyEmail() {
                 setIsError(true);
             }
         };
-   
+
         if (emailFromQuery && verificationCodeFromQuery) {
             verifyEmail();
         }
     }, [searchParams, onOpen]);
+
+    const selectedCompany = companyDomains.data.data.find(
+        (companyData) => companyData.company_name === company
+    );
 
     return (
         <Flex  minH={'100vh'}>
@@ -121,7 +119,7 @@ export default function VerifyEmail() {
                 alignItems="center"
                 justifyContent="center"
                 bg={useColorModeValue('white', 'gray.700')}
-                
+
             >
                 <Box mt={20}>
                     <img src={logo} height={200} width={200} alt={'DevInsightLOGO'} />
@@ -144,7 +142,7 @@ export default function VerifyEmail() {
                 {isVerified && (
                     <Alert status="success">
                         <AlertIcon />
-                        Please verify your email. If you don't see the email, please check spam.
+                        Please verify your email. If you don&apos;t see the email, please check spam.
                     </Alert>
                 )}
                 {isError && (
@@ -158,9 +156,9 @@ export default function VerifyEmail() {
                 <FormControl>
                     <FormLabel>Company</FormLabel>
                     <Select placeholder="Select company" value={company} onChange={(e) => setCompany(e.target.value)}>
-                        {Object.keys(companyDomains).map((companyName) => (
-                            <option key={companyName} value={companyName}>
-                                {companyName}
+                        {companyDomains.data.data.map((companyData, index) => (
+                            <option key={index} value={companyData.company_name}>
+                                {companyData.company_name}
                             </option>
                         ))}
                     </Select>
@@ -175,9 +173,9 @@ export default function VerifyEmail() {
                             onChange={(e) => setEmailName(e.target.value)}
                             isDisabled={!company}
                         />
-                        {company && (
+                        {selectedCompany && (
                             <InputRightElement width="auto" pointerEvents="none">
-                                <small>{`@${companyDomains[company]}`}</small>
+                                <small>{`@${selectedCompany.domain}`}</small>
                             </InputRightElement>
                         )}
                     </InputGroup>
