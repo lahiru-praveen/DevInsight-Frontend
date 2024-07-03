@@ -38,7 +38,7 @@ import Profilenew from "./pages/Profile_2/Profile_page.jsx";
 import AdminProfilenew from "./pages/Profile_2/adminProfile_page.jsx";
 import Profilepage from "./pages/Profile_2/profilepage.jsx";
 import Orgnizationpage from "./pages/Organization_2/organizationpage.jsx";
-
+import SignUpInvite from "./pages/Login/SignUpInvitaion.jsx";
 
 
 export default function App() {
@@ -85,6 +85,7 @@ export default function App() {
                     <Route path="/appnew" element={<AdminProfilenew/>}/>
                     <Route path="/ppage" element={<Profilepage/>}/>
                     <Route path="/opage" element={<Orgnizationpage/>}/>
+                    <Route path="/SignUpInvite" element={<SignUpInvite/>}/>
                 </Routes>
                 </AuthProvider>
             </CodeProvider>

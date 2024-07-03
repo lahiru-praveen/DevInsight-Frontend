@@ -158,7 +158,7 @@ export default function LoginDeveloper() {
                     </Stack>
                     <Text color="red">{loginMessage}</Text>
                     <Text textAlign="center">
-                        <Link to="/verify-developer">
+                        <Link to="/verify-email">
                             <Button variant="link" color="black">
                                 Create a new account
                             </Button>

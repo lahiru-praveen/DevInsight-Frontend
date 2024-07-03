@@ -180,7 +180,7 @@ const Hero = () => {
           </p>
           <div className="grid grid-cols-3 gap-4 py-6">
             <div>
-              <Link to="/co3">
+              <Link to="/co2">
                 <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">
                   Get for Your Organization
                 </button>
