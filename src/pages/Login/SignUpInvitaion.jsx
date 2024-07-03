@@ -331,6 +331,7 @@ export default function SignUp() {
     const [company, setCompany] = useState('');
     const [companyEmail, setCompanyEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [role, setRole] = useState('');
     const [reEnterPassword, setReEnterPassword] = useState('');
     const [isFilled, setIsFilled] = useState(false);
     const [passwordError, setPasswordError] = useState('');
@@ -345,9 +346,11 @@ export default function SignUp() {
         const fetchInvitationDetails = async (token) => {
             try {
                 const response = await axios.get(`http://localhost:8000/get-invitation-details?token=${token}`);
-                const { email, organization_email, role } = response.data;
+                const { email, organization_email, organization_name, role } = response.data;
                 setEmail(email);
-                setCompany(organization_email);
+                setCompanyEmail(organization_email);
+                setCompany(organization_name);
+                setRole(role);
                 // If needed, set role or other state variables
             } catch (error) {
                 console.error("Error fetching invitation details:", error);
@@ -378,11 +381,6 @@ export default function SignUp() {
         checkIsFilled(firstName, lastName, event.target.value, email, password, reEnterPassword, company);
     };
 
-    const handleEmailChange = (event) => {
-        const email = event.target.value;
-        setEmail(email);
-        checkIsFilled(firstName, lastName, username, email, password, reEnterPassword, company);
-    };
 
     const handlePasswordChange = (event) => {
         setPassword(event.target.value);
@@ -396,10 +394,7 @@ export default function SignUp() {
         validatePassword(password, event.target.value);
     };
 
-    const handleCompanyChange = (event) => {
-        setCompany(event.target.value);
-        checkIsFilled(firstName, lastName, username, email, password, reEnterPassword, event.target.value);
-    };
+
 
     const checkIsFilled = (firstName, lastName, username, email, password, reEnterPassword, company) => {
         setIsFilled(
@@ -447,9 +442,11 @@ export default function SignUp() {
                     password,
                     company,
                     companyEmail,
-                    role: "Developer",
+                    role,
                     skills: [],
+                    face_encoding: [],
                     profileStatus: "Active",
+                    profilePicture:  " ",
                 });
 
                 const { access_token, user_id, verificationCode } = response.data;
@@ -555,7 +552,6 @@ export default function SignUp() {
                                 _placeholder={{ color: 'gray.500' }}
                                 type="email"
                                 value={email}
-                                onChange={handleEmailChange}
                                 isReadOnly
                             />
                         </FormControl>
@@ -565,7 +561,6 @@ export default function SignUp() {
                                 _placeholder={{ color: 'gray.500' }}
                                 type="text"
                                 value={company}
-                                onChange={handleCompanyChange}
                                 isReadOnly
                             />
                         </FormControl>
