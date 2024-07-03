@@ -30,6 +30,7 @@ export default function CodePreview() {
     const mode_value = mode;
 
 
+
     const prName = projectName
 
     if (language === ""){
@@ -96,7 +97,10 @@ export default function CodePreview() {
                 console.error("Selected file content is empty.");
                 return;
             }
-            const response1 = await axios.post("http://localhost:8000/get-review",{
+            const llm = sessionStorage.getItem('llm');
+            const url = llm === 'gemini' ? "http://localhost:8000/get-review-by-gemini" : "http://localhost:8000/get-review-by-openai";
+
+            const response1 = await axios.post(url, {
                 user: user,
                 p_id: 0,
                 p_name: prName,

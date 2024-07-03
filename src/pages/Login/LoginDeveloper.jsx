@@ -67,6 +67,7 @@ export default function LoginDeveloper() {
             sessionStorage.setItem('email', email);
             sessionStorage.setItem('password', password);
             sessionStorage.setItem('email', response.data.email, 'password', response.data.password);
+            sessionStorage.setItem('llm', "gemini");
             
             navigate('/db');
         } catch (error) {
