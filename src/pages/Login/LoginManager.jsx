@@ -48,7 +48,6 @@ export default function LoginManager() {
 
             // Save token to sessionStorage
             sessionStorage.setItem('access_token', response.data.access_token);
-
             setLoginMessage('Login successful');
             sessionStorage.setItem('email', response.data.email);
             navigate('/ms');
