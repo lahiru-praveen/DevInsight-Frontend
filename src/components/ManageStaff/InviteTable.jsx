@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import axios from "axios";
 import {
   Modal,
@@ -35,13 +35,12 @@ export const InviteTable = () => {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
   const [query, setQuery] = useState("");
-  const organization_email = 'devinsight@gmail.com';
-  const organization_name = 'devinsight'
   const [inputError, setInputError] = useState("");
+  const adminEmail = sessionStorage.getItem('email')
 
   const fetchInviteTable = async () => {
     try {
-      const response = await axios.get(`http://127.0.0.1:8000/get-invitations?organization_email=${organization_email}`);
+      const response = await axios.get(`http://127.0.0.1:8000/get-invitations?organization_email=${adminEmail}`);
       console.log("Fetched data:", response.data.invitations);
       setInvites(response.data.invitations);
     } catch (error) {
@@ -88,8 +87,7 @@ export const InviteTable = () => {
       const invite_accepted = false;
       const newInvite = {
         invite_accepted: invite_accepted,
-        organization_email: organization_email,
-        organization_name: organization_name,
+        organization_email: adminEmail,
         user_email: email,
         role,
         sent_date: new Date().toISOString()

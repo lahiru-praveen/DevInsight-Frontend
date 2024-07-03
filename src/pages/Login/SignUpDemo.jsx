@@ -141,7 +141,9 @@ export default function SignUp() {
                     companyEmail,
                     role: "Developer",
                     skills: [],
+                    face_encoding: [],
                     profileStatus: "Active",
+                    profilePicture:  " ",
                 });
 
                 const { access_token, user_id, verificationCode } = response.data;
