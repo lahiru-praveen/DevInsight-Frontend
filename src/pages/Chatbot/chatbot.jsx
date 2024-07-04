@@ -162,7 +162,7 @@ const Chatbot = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/chat', { message: input, user_id });
+      const response = await axios.post('http://127.0.0.1:8000/chat', { message: input, user_id });
       const botMessage = { role: "bot", content: response.data.reply };
       setMessages((prevMessages) => [...prevMessages, botMessage]);
     } catch (error) {
@@ -217,25 +217,27 @@ const Chatbot = () => {
             <VStack spacing={4} w="100%" flex="1" overflowY="auto">
               <Box
                 w="100%"
-                bg="gray.100"
+                bg="white"
                 p={4}
                 borderRadius="md"
-                boxShadow="md"
+                
                 flex="1"
                 overflowY="auto"
+                border="1px"
+                borderColor="gray.100"
               >
-                <VStack align="start" spacing={3}>
+                <VStack spacing={3}>
                   {messages.map((msg, index) => (
                     <Box
                       key={index}
-                      alignSelf={msg.role === 'user' ? 'flex-end' : 'flex-start'}
+                      style={{display: 'flex', justifyContent: msg.role === 'user' ? 'end' : 'start'}}
                       w="100%"
                     >
                       <Text
-                        bg={msg.role === 'user' ? 'blue.200' : 'green.200'}
+                        bg={msg.role === 'user' ? 'gray.100' : 'white'}
                         borderRadius="md"
                         p={2}
-                        maxW="80%"
+                        maxW={msg.role === 'user' ? '90%' : '100%'}
                         whiteSpace="pre-wrap"
                         wordBreak="break-word"
                       >
