@@ -22,6 +22,7 @@ import {Link, useLocation, useNavigate} from "react-router-dom";
 import FileList from "../../components/dashboard/FileList.jsx";
 import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
 import {ChevronRightIcon} from "@chakra-ui/icons";
+import { BiFingerprint } from 'react-icons/bi';
 
 export default function CodeReview() {
     const { selectedFileContent } = useCode();
@@ -164,6 +165,13 @@ export default function CodeReview() {
                                                 <IoMdDownload className="mr-2"/> Download
                                             </Button>
                                         </Tooltip>
+                                        <RxDividerVertical className="mt-3"/>
+                                        <Tooltip hasArrow label='Download review in pdf format' bg='blue.200' placement='bottom'>
+                                            <Button colorScheme="teal" border='2px' size="md" className="w-64"
+                                                    onClick={handleDownloadPdf}>
+                                                <IoMdDownload className="mr-2"/> Ask From DevChat
+                                            </Button>
+                                        </Tooltip>
                                     </div>
                                     <div>
                                         <Text className="text-xl font-bold mr-2">Review - </Text>
@@ -198,6 +206,16 @@ export default function CodeReview() {
                         </TabPanels>
                     </Tabs>
                 </div>
+                <Box position="absolute" bottom="10px" right="10px">
+                    <Button
+                        colorScheme="teal"
+                        leftIcon={<BiFingerprint />}
+                        variant="solid"
+                        // onClick={handleBiometricsLogin}
+                    >
+                        ChatBot
+                    </Button>
+                </Box>
             </div>
             <style>
                 {`

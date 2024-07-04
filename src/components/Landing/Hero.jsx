@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import l1 from '../../assets/l1.png';
 import l2 from '../../assets/l2.svg';
 import l3 from '../../assets/l3.svg';
+import l4 from '../../assets/l4.svg';
 import Devinsight from '../../assets/Devinsight.png';
 import prallex from '../../assets/prallex.jpg';
 import { Link } from 'react-router-dom';
@@ -70,7 +71,7 @@ const Hero = () => {
         <Box id="features" className="bg-white p-8 rounded-lg shadow-lg mb-40">
           <Box className="md:max-w-[1480px] mx-auto grid md:grid-cols-2 max-w-[600px] px-4 md:px-0 my-40">
             <Box className="flex justify-center items-center mx-5">
-              <Image src={l2} alt="Image 1" />
+              <Image src={l2} alt="Image 1" boxSize="80%" />
             </Box>
             <Box className="flex flex-col justify-start gap-8 mx-5 justify-center h-full mx-5">
             <h1 className="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-5xl dark:text-white">
@@ -78,50 +79,55 @@ const Hero = () => {
         </h1>
               
               <Text className="py-2 text-lg text-gray-600 text" lineHeight="taller">
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.
+              Our advanced AI-powered suggestion system offers comprehensive code reviews. Utilizing cutting-edge language models, it provides detailed feedback to enhance your code quality. With this tool, you can achieve optimal performance and maintain best practices effortlessly.
               </Text>
             </Box>
           </Box>
 
           <Box className="md:max-w-[1480px] mx-auto grid md:grid-cols-2 max-w-[600px] px-4 md:px-0 my-40">
+            <Box className="flex justify-center items-center mx-5">
+              <Image src={l4} alt="Image 2" boxSize="80%" />
+            </Box>
             <Box className="flex flex-col justify-start gap-8 mx-5 justify-center h-full mx-5">
               
               <h1 className="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-5xl dark:text-white">
               Easy to use <span className="text-[#5b9ef7]">interface </span> 
-        </h1>
-              <Text className="py-2 text-lg text-gray-600">
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.
+            </h1>
+              <Text className="py-2 text-lg text-gray-600 text" lineHeight="taller">
+                Our user-friendly interface is designed for seamless navigation and effortless interaction. Whether you're a beginner or an expert, you'll find it intuitive and straightforward, making your experience smooth and enjoyable.
               </Text>
             </Box>
-            <Box className="flex justify-center items-center mx-5">
-              <Image src={l3} alt="Image 2" />
-            </Box>
+            
           </Box>
 
           <Box className="md:max-w-[1480px] mx-auto grid md:grid-cols-2 max-w-[600px] px-4 md:px-0 my-40">
             <Box className="flex justify-center items-center mx-5">
-              <Image src={l3} alt="Image 3" />
+              <Image src={l3} alt="Image 3" boxSize="80%"/>
             </Box>
             <Box className="flex flex-col justify-start gap-8 mx-5 justify-center h-full mx-5">
-              <Heading className="md:leading-[72px] py-2 md:text-6xl text-5xl font-semibold">Support from Experts</Heading>
-              <Text className="py-2 text-lg text-gray-600">
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.
+              
+              <h1 className="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-5xl dark:text-white">
+              Support from <span className="text-[#5b9ef7]">Experts</span> 
+            </h1>
+              <Text className="py-2 text-lg text-gray-600 text" lineHeight="taller">
+              Our platform offers dedicated support for both developers and Quality Assurance (QA) professionals. Developers receive supervision and detailed code reviews from QA experts, ensuring high standards and best practices. Additionally, QA professionals can seek guidance and oversight from fellow QA experts, fostering a collaborative and high-quality development environment.
               </Text>
             </Box>
           </Box>
         </Box>
         </div>
         <div id = "about-us">
-        <section class="bg-gray-50 dark:bg-gray-900 dark:bg-gray-800 w-full">
+        <section class="bg-blue-500 w-full">
         <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
-            <div className="max-w-screen-lg text-gray-500 sm:text-lg dark:text-gray-400">
-                <h2 className="mb-4 text-4xl font-bold text-gray-900 dark:text-white">Powering innovation at <span class="font-extrabold">200,000+</span> companies worldwide</h2>
-                <p className="mb-4 font-light">Track work across the enterprise through an open, collaborative platform. Link issues across Jira and ingest data from other software development tools, so your IT support and operations teams have richer contextual information to rapidly respond to requests, incidents, and changes.</p>
-                <p className="mb-4 font-medium">Deliver great service experiences fast - without the complexity of traditional ITSM solutions.Accelerate critical development work, eliminate toil, and deploy changes with ease.</p>
-                <a href="#" class="inline-flex items-center font-medium text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-700">
-                    Learn more
-                    <svg class="ml-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-                </a>
+            <div className="max-w-screen-lg text-white sm:text-lg ">
+                <h2 className="mb-4 text-4xl font-bold text-white">We Are <span class="font-extrabold">Team Lemon</span></h2>
+                <p className="mb-4 font-light">
+                  Welcome to Team Lemon! We are a dynamic and rapidly growing development team dedicated to delivering innovative solutions and exceptional results. Our talented and passionate members bring a diverse range of skills and expertise, ensuring we tackle every challenge with creativity and precision.
+                </p>
+                <p className="mb-4 font-medium">
+                  Deliver great service experiences fast - without the complexity of traditional ITSM solutions. Accelerate critical development work, eliminate toil, and deploy changes with ease.
+                </p>
+                
             </div>
         </div>
       </section>

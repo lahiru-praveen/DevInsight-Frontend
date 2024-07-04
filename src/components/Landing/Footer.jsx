@@ -57,7 +57,7 @@ const Footer = () => {
               <ul className="text-gray-600 dark:text-gray-400">
                 
                 <li>
-                  <a href="#" className="hover:underline">
+                  <a href="#home" className="hover:underline">
                     Home
                   </a>
                 </li>
@@ -68,7 +68,7 @@ const Footer = () => {
               <ul className="text-gray-600 dark:text-gray-400">
                 
                 <li>
-                  <a href="#" className="hover:underline">
+                  <a href="#features" className="hover:underline">
                    Features
                   </a>
                 </li>
@@ -79,7 +79,7 @@ const Footer = () => {
               <ul className="text-gray-600 dark:text-gray-400">
                 
                 <li>
-                  <a href="#" className="hover:underline">
+                  <a href="#about-us" className="hover:underline">
                    About us
                   </a>
                 </li>
@@ -90,7 +90,7 @@ const Footer = () => {
               <ul className="text-gray-600 dark:text-gray-400">
                 
                 <li>
-                  <a href="#" className="hover:underline">
+                  <a href="#contact-us" className="hover:underline">
                     Contact Us
                   </a>
                 </li>
@@ -109,7 +109,7 @@ const Footer = () => {
           </span>
           <div className="flex mt-4 space-x-6 sm:justify-center sm:mt-0">
             <a
-              href="#"
+              href="https://www.facebook.com/devinsight/"
               className="text-gray-500 hover:text-gray-900 dark:hover:text-white"
             >
               <svg
@@ -126,7 +126,7 @@ const Footer = () => {
               </svg>
             </a>
             <a
-              href="#"
+              href="https://www.instagram.com"
               className="text-gray-500 hover:text-gray-900 dark:hover:text-white"
             >
               <svg
@@ -143,7 +143,7 @@ const Footer = () => {
               </svg>
             </a>
             <a
-              href="#"
+              href="https://www.linkedin.com"
               className="text-gray-500 hover:text-gray-900 dark:hover:text-white"
             >
               <svg

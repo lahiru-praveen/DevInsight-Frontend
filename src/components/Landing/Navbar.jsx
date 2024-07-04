@@ -1,7 +1,7 @@
 import { Tabs, TabList, Tab } from '@chakra-ui/react';
 import { Button } from '@chakra-ui/react';
 import Devinsight from '../../assets/Devinsight.png';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 export const Navbar = () => {
   return (
