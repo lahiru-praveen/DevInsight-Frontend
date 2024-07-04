@@ -53,6 +53,13 @@ export default function VerifyEmail() {
         //setVerificationLink(verificationUrl);
 
         try {
+            // Check if the email already exists in the database
+            const emailCheckResponse = await axios.post('http://localhost:8000/api/check-email', { email });
+            if (emailCheckResponse.data.detail === "User already exists") {
+                alert('Email already exists. Please use another email.');
+                return;
+            }
+
             const templateParams = {
                 to_email: email,
                 verification_link: verificationUrl,
