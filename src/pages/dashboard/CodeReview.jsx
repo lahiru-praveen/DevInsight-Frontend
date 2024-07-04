@@ -9,7 +9,7 @@ import {
     Tabs,
     Text,
     CircularProgress,
-    Breadcrumb, BreadcrumbItem, BreadcrumbLink, Tooltip
+    Breadcrumb, BreadcrumbItem, BreadcrumbLink, Tooltip, useDisclosure
 } from "@chakra-ui/react";
 import { RxDividerVertical } from "react-icons/rx";
 import {IoMdDownload} from "react-icons/io";
@@ -23,10 +23,13 @@ import FileList from "../../components/dashboard/FileList.jsx";
 import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
 import {ChevronRightIcon} from "@chakra-ui/icons";
 import { BiFingerprint } from 'react-icons/bi';
+import Chatbot from "../Chatbot/chatbot.jsx";
+import { TiSocialGithubCircular } from "react-icons/ti";
 
 export default function CodeReview() {
     const { selectedFileContent } = useCode();
     const [selectedLine, setSelectedLine] = useState(null);
+    const { isOpen, onOpen, onClose } = useDisclosure();
     const location = useLocation();
     const navigate = useNavigate();
     const { state } = location;
@@ -167,9 +170,8 @@ export default function CodeReview() {
                                         </Tooltip>
                                         <RxDividerVertical className="mt-3"/>
                                         <Tooltip hasArrow label='Download review in pdf format' bg='blue.200' placement='bottom'>
-                                            <Button colorScheme="teal" border='2px' size="md" className="w-64"
-                                                    onClick={handleDownloadPdf}>
-                                                <IoMdDownload className="mr-2"/> Ask From DevChat
+                                            <Button colorScheme="teal" border='2px' size="md" className="w-64" onClick={onOpen}>
+                                                <TiSocialGithubCircular className="mr-2"/> Ask From DevChat
                                             </Button>
                                         </Tooltip>
                                     </div>
@@ -206,16 +208,7 @@ export default function CodeReview() {
                         </TabPanels>
                     </Tabs>
                 </div>
-                <Box position="absolute" bottom="10px" right="10px">
-                    <Button
-                        colorScheme="teal"
-                        leftIcon={<BiFingerprint />}
-                        variant="solid"
-                        // onClick={handleBiometricsLogin}
-                    >
-                        ChatBot
-                    </Button>
-                </Box>
+                <Chatbot isOpen={isOpen} onClose={onClose} />
             </div>
             <style>
                 {`
