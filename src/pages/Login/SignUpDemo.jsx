@@ -39,6 +39,11 @@ export default function SignUp() {
         const emailFromQuery = searchParams.get('email');
         const companyFromQuery = searchParams.get('company');
         const company_email = searchParams.get('company_email');
+        const verificationCode = searchParams.get('code');
+        
+        if (!verificationCode) {
+            navigate('/verify-email');
+        } 
         if (emailFromQuery) {                           
             setEmail(emailFromQuery);
         }
