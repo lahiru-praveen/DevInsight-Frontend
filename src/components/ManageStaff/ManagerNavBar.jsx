@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from "axios";
 import {
-  Box, Flex, Avatar, Text, Menu, MenuButton, MenuList, MenuItem, MenuDivider, Button,
+  Box, Flex, Avatar, Text, Menu, MenuButton, MenuList, MenuItem, MenuDivider,Image, Button,
   Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton,
   useDisclosure
 } from '@chakra-ui/react';
@@ -15,6 +16,29 @@ const ManagerNavBar = () => {
     email: 'admin@bethesda.com',
     photo:'Bethesda',
   };
+  
+  const adminEmail = sessionStorage.getItem('email');
+  const company = sessionStorage.getItem('company');
+  const image = sessionStorage.getItem('image')
+  // const [company,setCompany] = useState('');
+  
+  useEffect(() => {
+    
+    const fetchCompanyImage = async () => {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/get-organization-image?organization_email=${adminEmail}`);
+        // setCompany(response.data);
+        console.log(response.data)
+        sessionStorage.setItem('image', response.data);
+      } catch (error) {
+        console.error("Error fetching company image:", error);
+      }
+    };
+    fetchCompanyImage();
+  }, [adminEmail]);
+
+ 
+
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [logoutConfirmed, setLogoutConfirmed] = useState(false);
@@ -37,23 +61,32 @@ const ManagerNavBar = () => {
         <Flex alignItems="center">
           <Box textAlign="right" mr={3}>
             <Text fontWeight="bold" color="black">
-              {user.Organizaltion_name} 
+            {company} 
             </Text>
             <Text fontSize="sm" color="gray.300">
-              {user.email}
+            {adminEmail}
             </Text>
           </Box>
           <Menu>
             <MenuButton as={Button} rounded={'full'} variant={'link'} cursor={'pointer'} minW={0}>
-              <Avatar size="md" name={`${user.firstName} ${user.lastName}`} src={Bethesda} />
+            <Box  width="50px" height="50px" mx="auto">
+                  <Image
+                    src={image}
+                    alt="Logo Preview"
+                    objectFit="cover"
+                    width="100%"
+                    height="100%"
+                    borderRadius="md"
+                  />
+                </Box>
             </MenuButton>
             <MenuList>
               <Box px="4" py="2">
                 <Text fontWeight="bold" color="black">
-                  {user.Organizaltion_name} 
+                  {company}
                 </Text>
                 <Text fontSize="sm" color="gray.500">
-                  {user.email}
+                  {adminEmail}
                 </Text>
               </Box>
               <MenuDivider />

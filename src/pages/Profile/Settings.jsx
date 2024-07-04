@@ -1,4 +1,4 @@
-import{ useState } from 'react';
+import {useEffect, useState} from 'react';
 import {
   Box,
   Button,
@@ -22,13 +22,16 @@ import {
   PopoverBody,
   PopoverArrow,
   PopoverCloseButton,
-  Portal,
+  Portal, Switch, SimpleGrid, Image,
 } from '@chakra-ui/react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { TbFaceId } from 'react-icons/tb';
 import { IoPersonRemove, IoPersonAddSharp, IoSettingsOutline } from 'react-icons/io5';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import * as assert from "assert";
+import gemini from '../../assets/Gemini.png';
+import gpt from '../../assets/Gpt.png'
 
 const Settings = () => {
   const [profile] = useState({
@@ -40,9 +43,11 @@ const Settings = () => {
 
   const navigate = useNavigate();
 
+  const [llm, setLlm] = useState(sessionStorage.getItem('llm') || 'gemini');
 
-
-
+  useEffect(() => {
+    sessionStorage.setItem('llm', llm);
+  }, [llm]);
 
   const handleRemoveFaceData = async () => {
     const storedEmail = sessionStorage.getItem('email');
@@ -136,6 +141,10 @@ const Settings = () => {
     }
   };
 
+  const handleSwitchChange = (value) => {
+    setLlm(value);
+  };
+
   return (
     <Box position="relative" className="bg-gray-100 shadow-lg rounded-lg p-6 max-w-xl mx-auto mt-8">
       <Stack spacing={6}>
@@ -175,6 +184,29 @@ const Settings = () => {
           </Flex>
         </Box>
         <Box>
+
+          <FormControl as={SimpleGrid} columns={{ base: 1, md: 2 }} spacing={4} className='mb-4'>
+            <Box textAlign="center">
+              <Image src={gemini} alt="Gemini Logo" height="40px" width="100px" objectFit="contain" mb={2} />
+              <FormLabel htmlFor="Gemini">Gemini:</FormLabel>
+              <Switch
+                  id="Gemini"
+                  size="lg"
+                  isChecked={llm === 'gemini'}
+                  onChange={() => handleSwitchChange('gemini')}
+              />
+            </Box>
+            <Box textAlign="center">
+              <Image src={gpt} alt="Gpt-3.5-Turbo Logo" height="60px" width="60px" objectFit="contain" mb={2} />
+              <FormLabel htmlFor="Gpt-3.5">Gpt-3.5-Turbo:</FormLabel>
+              <Switch
+                  id="Gpt-3.5"
+                  size="lg"
+                  isChecked={llm === 'openai'}
+                  onChange={() => handleSwitchChange('openai')}
+              />
+            </Box>
+          </FormControl>
        
         <Text fontSize="md" fontWeight="bold" mb={4}>Password settings</Text>
         <Button size="sm" colorScheme="teal" variant="outline" onClick={onPasswordModalOpen} >

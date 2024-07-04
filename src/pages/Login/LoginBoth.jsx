@@ -3,6 +3,7 @@ import React from 'react';
 import { Box, Button, Text, VStack, useColorModeValue, Link } from '@chakra-ui/react';
 import logo from '../../assets/devsign.png';
 
+
 const LoginBoth = () => {
   return (
     <>
@@ -30,7 +31,7 @@ const LoginBoth = () => {
         <Button colorScheme="green" variant="solid" mt={4}>Login</Button>
       </Link>
       <Text mt={2}>
-        Don't have an account? <Link href="#" className="text-blue-500">Get Account</Link> or <Link href="#" className="text-blue-500">Contact Us</Link>.
+        Don't have an account? <Link href="/co2" className="text-blue-500">Get Account</Link> or <Link href="/#contact-us" className="text-blue-500">Contact Us</Link>.
       </Text>
     </Box>
 

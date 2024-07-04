@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Input, InputGroup, InputRightElement, Button, Alert, AlertIcon, FormControl, FormLabel, Checkbox, Text, Progress, Box, VStack, HStack, Image, Heading } from '@chakra-ui/react';
+import { Input, InputGroup, InputRightElement, Button, Alert, AlertIcon, FormControl, Center, FormLabel, Checkbox, Text, Progress, Box, VStack, HStack, Image, Divider, Heading } from '@chakra-ui/react';
 import Devinsight from '../../assets/Devinsight.png';
 import axios from 'axios';
+import OrgReg from '../../assets/orgreg.svg';
 
 function InteractiveForm() {
     const [show, setShow] = useState(false);
@@ -128,34 +129,35 @@ function InteractiveForm() {
     };
 
     return (
-        <HStack className="h-full" >
+        <Box flex="1" display="flex" flexDirection="column" bg="white" maxH="100vh" >
+        <HStack flex="1"  className="h-full " alignItems="center" justifyContent="center" >
             
     
-            <Box w="50%" p={8} bg="gray.50" rounded="lg" className=" flex flex-col justify-center items-center">
-                <VStack spacing={6} align="center" w="full">
+        <Box w="50%" p={8} bg="white" rounded="lg" className="flex flex-col justify-center items-center">
+            <VStack spacing={8} align="center" w="50%" h="full">
+
+                <Box paddingBottom={52}>
                     <Image src={Devinsight} alt="DevInsight" maxW="200px" maxH="200px" />
-                    <Heading as="h3" size="lg" textAlign="center">
-                        Welcome to DevInsight
-                    </Heading>
-                    <Text fontSize="md" color="gray.600" textAlign="center">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras venenatis euismod malesuada.
-                        Nullam ac erat ante. Proin ac consectetur nulla. Nulla vitae elit libero, a pharetra augue. Curabitur blandit tempus porttitor. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.
-                    </Text>
-                    <Text fontSize="md" color="gray.600" textAlign="center">
-                        Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.
-                        Donec ullamcorper nulla non metus auctor fringilla. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
-                    </Text>
-                    <Text fontSize="md" color="gray.600" textAlign="center">
-                        Maecenas sed diam eget risus varius blandit sit amet non magna. Aenean lacinia bibendum nulla sed consectetur.
-                        Nulla vitae elit libero, a pharetra augue. Curabitur blandit tempus porttitor. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.
-                    </Text>
-                </VStack>
-            </Box>
-            <Box w="50%" p={12} bg="white"  rounded="lg" className="flex justify-center items-center">
-                <VStack spacing={6} align="stretch" w="75%">
-                    <Button variant="link" color="blue.500" fontSize="sm">
-                        Go to Home Page
-                    </Button>
+                </Box>
+                
+                <Image src={OrgReg} alt="regorgimage" maxW="200px" maxH="200px" />
+                
+                <Text fontSize="md" color="gray.600" textAlign="center" mt={-4}>
+                Welcome to DevInsight! Our platform streamlines code reviews within your organization. Register your organization to empower Quality Assurance and developer teams for effective collaboration.
+                </Text>
+                
+                <Text fontSize="sm" color="gray.600" textAlign="center" fontWeight="bold">
+                    In DevInsight, organizations with dedicated email domains enable Quality Assurance and developers to sign up seamlessly. Simply select your organization's name and enter your email address using the dedicated domain. Our verification process ensures swift registration, making it effortless to join and collaborate within your organization.
+                </Text>
+                
+            </VStack>
+        </Box>
+        <Center height='90vh'>
+        <Divider orientation='vertical' />
+        </Center>
+            <Box w="50%" p={12} bg="white" rounded="lg" className="flex justify-center items-center" overflowY="auto" h="100vh">
+                <VStack spacing={6} align="stretch" w="75%" py={4}>
+                    
                     <Heading as="h2" size="lg">
                         Organization Registration
                     </Heading>
@@ -343,6 +345,7 @@ function InteractiveForm() {
                 </VStack>
             </Box>
         </HStack>
+        </Box>
     );
     
 }

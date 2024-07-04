@@ -60,10 +60,11 @@ export default function Submissions({ submission, drop }) {
             </ToolTip>
         </div>
         : language;
+
     const des = description === "Not given" || description === "" ?
         <div className="ml-5">
             <ToolTip tooltip='No any description given'>
-                <Icon as={FcDisapprove} title="This is" boxSize={25} className="mr-2" />
+                <Icon as={FcDisapprove} boxSize={25} className="mr-2" />
             </ToolTip>
         </div>
         : description;
@@ -107,7 +108,7 @@ export default function Submissions({ submission, drop }) {
                             <Text className="font-bold" fontSize="16px">{lan}</Text>
                         </CardHeader>
                         <CardHeader className="mr-4 w-[600px]">
-                            <Text className="font-bold w-[600px]" fontSize="16px" isTruncated  >{des}</Text>
+                            <Text className="font-bold w-[600px]" fontSize="16px" isTruncated>{des}</Text>
                         </CardHeader>
                         <CardHeader>
                             {helpType}
