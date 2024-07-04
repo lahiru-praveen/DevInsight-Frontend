@@ -15,7 +15,7 @@ import {
   Box,
   VStack,
   Icon,
-  Image, Flex
+  Flex
 } from '@chakra-ui/react';
 import { FiUpload } from 'react-icons/fi';
 import { getUserProfile, createUserProfile, uploadProfilePicture } from './api';
@@ -193,14 +193,14 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
               </Button>
               {profile.profilePicture && (
                 <Box mt={4} width="150px" height="150px" mx="auto">
-                  <Image
-                    src={profile.profilePicture}
-                    alt="Profile Picture Preview"
-                    objectFit="cover"
-                    width="100%"
-                    height="100%"
-                    borderRadius="full"
-                  />
+                <Avatar
+                  src={profile.profilePicture} // Assuming profilePicture is a valid image URL
+                  alt="Profile Picture Preview"
+                  size="xl" // Set a default size (adjust as needed)
+                  borderRadius="full"
+                  width="100%"
+                  height="100%"
+                />
                 </Box>
               )}
             </FormControl>

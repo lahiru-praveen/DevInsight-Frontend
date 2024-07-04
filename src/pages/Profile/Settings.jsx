@@ -24,8 +24,8 @@ import {
   PopoverCloseButton,
   Portal,
 } from '@chakra-ui/react';
-import { FaGithub, FaLinkedin, FaFingerprint } from 'react-icons/fa';
-import { TbFaceId, TbFingerprintScan } from 'react-icons/tb';
+import { FaGithub, FaLinkedin } from 'react-icons/fa';
+import { TbFaceId } from 'react-icons/tb';
 import { IoPersonRemove, IoPersonAddSharp, IoSettingsOutline } from 'react-icons/io5';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
@@ -171,26 +171,7 @@ const Settings = () => {
                 </PopoverContent>
               </Portal>
             </Popover>
-            <Popover>
-              <PopoverTrigger>
-                <Button leftIcon={<TbFingerprintScan />} size="md" width="45%" colorScheme="yellow" variant="outline">
-                  Fingerprint
-                </Button>
-              </PopoverTrigger>
-              <Portal>
-                <PopoverContent>
-                  <PopoverArrow />
-                  <PopoverCloseButton />
-                  <PopoverBody>
-                    <Link to="/face-register">
-                      <Button leftIcon={<FaFingerprint />} colorScheme="green" variant="outline">
-                        Register Your Fingerprint
-                      </Button>
-                    </Link>
-                  </PopoverBody>
-                </PopoverContent>
-              </Portal>
-            </Popover>
+
           </Flex>
         </Box>
         <Box>

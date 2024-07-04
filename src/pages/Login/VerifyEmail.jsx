@@ -36,6 +36,7 @@ console.log(companyDomains);
 export default function VerifyEmail() {
     const [isVerified, setIsVerified] = useState(false);
     const [isError, setIsError] = useState(false);
+    const [error, setError] = useState("Error verifying email. Please try again.");
     const [emailName, setEmailName] = useState('');
     const [company, setCompany] = useState('');
     const [verificationUrl, setVerificationLink] = useState('');
@@ -55,8 +56,11 @@ export default function VerifyEmail() {
         try {
             // Check if the email already exists in the database
             const emailCheckResponse = await axios.post('http://localhost:8000/api/check-email', { email });
+            console.log(emailCheckResponse);
             if (emailCheckResponse.data.detail === "User already exists") {
-                alert('Email already exists. Please use another email.');
+                console.log("Ok");
+                setIsError(true);
+                setError('Email already exists. Please use another email.');
                 return;
             }
 
@@ -155,7 +159,7 @@ export default function VerifyEmail() {
                 {isError && (
                     <Alert status="error">
                         <AlertIcon />
-                        Error verifying email. Please try again.
+                        {error}
                     </Alert>
                 )}
 
