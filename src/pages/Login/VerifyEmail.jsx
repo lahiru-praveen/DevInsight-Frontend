@@ -202,7 +202,6 @@ export default function VerifyEmail() {
 
         </Flex>
 
-    </Flex>
 
     );
 }
