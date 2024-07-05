@@ -35,6 +35,7 @@ export default function VerifyEmail() {
     const navigate = useNavigate();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const cancelRef = React.useRef();
+    
 
     useEffect(() => {
         const fetchCompanyDomains = async () => {
@@ -197,6 +198,7 @@ export default function VerifyEmail() {
                     Verify Your Email
                 </Button>
             </Stack>
+        </Flex>
         </Flex>
     );
 }

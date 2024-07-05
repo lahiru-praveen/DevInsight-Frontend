@@ -30,6 +30,7 @@ const OrganizationModal = ({ isOpen, onClose, onSave, organization }) => {
   const [phone, setPhone] = useState(organization.phone_number);
   const [logoUrl, setLogoUrl] = useState(organization.logo_url);
   const [selectedFile, setSelectedFile] = useState(null);
+  
 
   useEffect(() => {
     setName(organization.company_name);
@@ -260,11 +261,12 @@ const App = () => {
     phone_number: '',
     logo_url: '',
   });
+  const orgemail = sessionStorage.getItem("email");
 
   useEffect(() => {
     const fetchOrganizationData = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/get-organization-data?admin_email=buwanekamara@gmail.com`);
+        const response = await fetch(`http://127.0.0.1:8000/get-organization-data?admin_email=${orgemail}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

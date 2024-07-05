@@ -57,20 +57,21 @@ export const InviteTable = () => {
   
 
 
-  const fetchInviteTable = async () => {
-    try {
-      const response = await axios.get(`http://127.0.0.1:8000/get-invitations?organization_email=${adminEmail}`);
-      console.log("Fetched data:", response.data.invitations);
-      setInvites(response.data.invitations);}
-    catch (error) {
-      console.error("Error fetching invite table:", error);
-      setError("Error fetching invite table. Please try again later.");
-    }
-  };
-
+  
   useEffect(() => {
+    const fetchInviteTable = async () => {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/get-invitations?organization_email=${adminEmail}`);
+        console.log("Fetched data:", response.data.invitations);
+        setInvites(response.data.invitations);}
+      catch (error) {
+        console.error("Error fetching invite table:", error);
+        setError("Error fetching invite table. Please try again later.");
+      }
+    };
+  
     fetchInviteTable();
-  }, []);
+  }, [adminEmail]);
 
   const handleDelete = async () => {
     try {
