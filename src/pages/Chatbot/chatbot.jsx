@@ -248,7 +248,7 @@ const Chatbot = ({ isOpen, onClose }) => {
                       whiteSpace="pre-wrap"
                       wordBreak="break-word"
                     >
-                      {msg.role === 'user' ? <b>User: </b> : <b>Bot: </b>}
+                      {/* {msg.role === 'user' ? <b>User: </b> : <b>Bot: </b>} */}
                       {renderMessageContent(msg.content)}
                     </Text>
                   </Box>

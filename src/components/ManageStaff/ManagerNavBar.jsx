@@ -37,6 +37,12 @@ const ManagerNavBar = () => {
     fetchCompanyImage();
   }, [adminEmail]);
 
+  const handleLogoutConfirm = () => {
+   
+    sessionStorage.clear(); // Clear session storage
+    window.location.href = '/login-both'; // Redirect to the signin page
+  };
+
  
 
 
@@ -107,11 +113,11 @@ const ManagerNavBar = () => {
             Are you sure you want to logout?
           </ModalBody>
           <ModalFooter>
-            <Link to="/">
-              <Button colorScheme="red" mr={3}>
+            
+              <Button colorScheme="red" mr={3} onClick={handleLogoutConfirm}>
                 Yes
               </Button>
-            </Link>
+           
             <Button variant="ghost" onClick={onClose}>No</Button>
           </ModalFooter>
         </ModalContent>
