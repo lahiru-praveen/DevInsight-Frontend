@@ -15,7 +15,11 @@ import {
   Box,
   VStack,
   Icon,
-  Flex
+  Flex,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
 } from '@chakra-ui/react';
 import { FiUpload } from 'react-icons/fi';
 import { getUserProfile, createUserProfile, uploadProfilePicture } from './api';
@@ -42,6 +46,7 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
   const [newSkill, setNewSkill] = useState('');
   const [skillsToAdd, setSkillsToAdd] = useState([]);
   const [skillsToRemove, setSkillsToRemove] = useState([]);
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -96,6 +101,7 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
       if (croppedImage) {
         await uploadProfilePicture(profile.email, croppedImage, token);
       }
+      setSuccessMessage('Profile updated successfully');
       onSave(updatedProfile);
       onClose();
     } catch (error) {
@@ -104,21 +110,28 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
   };
 
 
+    const handleFileChange = (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        if (file.size > 1048576) { // Check if file size exceeds 1MB
+          setError('Image size should be less than 1MB');
+          return;
+        }
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setProfile((prevProfile) => ({ ...prevProfile, profilePicture: reader.result }));
+        };
+        reader.readAsDataURL(file);
+        setFile(file);
+        setError(null); // Clear any previous error
+      }
+    };
+
+    
+
     const [image, setImage] = useState(null);
     const [croppedImage, setCroppedImage] = useState(profile.profilePicture || null);
     const cropperRef = useRef(null);
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfile((prevProfile) => ({ ...prevProfile, profilePicture: reader.result }));
-      };
-      reader.readAsDataURL(file);
-      setFile(file);
-    }
-  };
 
   const handleCrop = () => {
     if (cropperRef.current) {
@@ -137,7 +150,20 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing={4}>
-          {error && <Text color="red.500" mb={4}>{typeof error === 'string' ? error : JSON.stringify(error)}</Text>}
+          {error && (
+              <Alert status="error">
+                <AlertIcon />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{typeof error === 'string' ? error : JSON.stringify(error)}</AlertDescription>
+              </Alert>
+            )}
+            {successMessage && (
+              <Alert status="success">
+                <AlertIcon />
+                <AlertTitle>Success</AlertTitle>
+                <AlertDescription>{successMessage}</AlertDescription>
+              </Alert>
+            )}
           <FormControl >
             <FormLabel>First Name</FormLabel>
             <Input
@@ -194,9 +220,9 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
               {profile.profilePicture && (
                 <Box mt={4} width="150px" height="150px" mx="auto">
                 <Avatar
-                  src={profile.profilePicture} // Assuming profilePicture is a valid image URL
+                  src={profile.profilePicture} 
                   alt="Profile Picture Preview"
-                  size="xl" // Set a default size (adjust as needed)
+                  size="xl" 
                   borderRadius="full"
                   width="100%"
                   height="100%"
@@ -230,7 +256,7 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
                   </Tag>
                 ))}
                 {skillsToAdd.map((skill, index) => (
-                  <Tag key={index} size="md" colorScheme="blue" borderRadius="full" m={1}>
+                  <Tag key={index} size="md" colorScheme="blue" borderRadius="full" m={2}>
                     <TagLabel>{skill}</TagLabel>
                     <TagCloseButton onClick={() => setSkillsToAdd(skillsToAdd.filter(s => s !== skill))} />
                   </Tag>
@@ -427,3 +453,5 @@ ProfileAndSkills.propTypes = {
   onUpdateProfile: PropTypes.func.isRequired,
   token: PropTypes.string, // Remove if not used
 };
+
+

@@ -199,6 +199,10 @@ export default function VerifyEmail() {
                 </Button>
             </Stack>
         </Flex>
+
         </Flex>
+
+    </Flex>
+
     );
 }
