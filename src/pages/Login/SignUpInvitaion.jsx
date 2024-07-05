@@ -321,7 +321,7 @@ import {
 } from '@chakra-ui/react';
 
 import logo from '../../assets/devsign.png';
-import image from '../../assets/su.png';
+import image from '../../assets/su.jpg';
 
 export default function SignUp() {
     const [firstName, setFirstName] = useState('');
@@ -483,7 +483,7 @@ export default function SignUp() {
                 </Box>
                 <Spacer />
                 <Box>
-                    <img src={image} alt="Sample GIF" height={600} width={600} />
+                    <img src={image} height={600} width={600} />
                 </Box>
             </Box>
 
@@ -548,16 +548,8 @@ export default function SignUp() {
                                 onChange={handleUsernameChange}
                             />
                         </FormControl>
-                        <FormControl id="email" mt={4}>
-                            <Input
-                                placeholder="Email"
-                                _placeholder={{ color: 'gray.500' }}
-                                type="email"
-                                value={email}
-                                isReadOnly
-                            />
-                        </FormControl>
-                        <FormControl id="company" mt={4}>
+                        <Flex>
+                        <FormControl id="company" mt={4} flex={1} mr={2}>
                             <Input
                                 placeholder="Company"
                                 _placeholder={{ color: 'gray.500' }}
@@ -566,6 +558,17 @@ export default function SignUp() {
                                 isReadOnly
                             />
                         </FormControl>
+                        <FormControl id="email" mt={4} flex={2} >
+                            <Input
+                                placeholder="Email"
+                                _placeholder={{ color: 'gray.500' }}
+                                type="email"
+                                value={email}
+                                isReadOnly
+                            />
+                        </FormControl>
+                       
+                        </Flex>
                         <FormControl id="password" mt={4}>
                             <Input
                                 placeholder="Password"
@@ -584,8 +587,10 @@ export default function SignUp() {
                                 onChange={handleReEnterPasswordChange}
                             />
                         </FormControl>
-                        <Stack spacing={6} direction={['column', 'row']} mt={6}>
+                        <Stack spacing={6}  mt={6}>
+                            <center>
                             <Button
+                            size="md" width="100%" 
                                 bg={'blue.400'}
                                 color={'white'}
                                 _hover={{
@@ -595,6 +600,8 @@ export default function SignUp() {
                             >
                                 Sign Up
                             </Button>
+                            </center>
+                            
                         </Stack>
                     </form>
                 </Stack>

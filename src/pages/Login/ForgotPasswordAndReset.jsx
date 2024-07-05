@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Flex, FormControl, FormLabel, Input, Stack, Text, useColorModeValue, Alert, AlertIcon } from '@chakra-ui/react';
 import logo from '../../assets/devsign.png';
 
-export default function ForgetPasswordAndReset() {
+export default function ForgotPasswordAndReset() {
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const location = useLocation();
@@ -49,6 +49,7 @@ export default function ForgetPasswordAndReset() {
     };
 
     return (
+        
         <Flex minH={'100vh'} align={'center'} justify={'center'}>
             <Stack spacing={6} w={'full'} maxW={'md'} bg={useColorModeValue('white', 'gray.700')} rounded={'xl'} p={6} my={12}>
                 <center><img src={logo} height={200} width={200} alt="Logo" /></center>
@@ -93,5 +94,6 @@ export default function ForgetPasswordAndReset() {
                 )}
             </Stack>
         </Flex>
+    
     );
 }

@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react';
 
 import logo from '../../assets/devsign.png';
-import image from '../../assets/su.png';
+import image from '../../assets/su.jpg';
 
 export default function SignUp() {
     const [firstName, setFirstName] = useState('');
