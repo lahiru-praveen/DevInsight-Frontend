@@ -1,6 +1,4 @@
 
-
-
 import { useState } from 'react';
 import emailjs from "emailjs-com";
 import {
@@ -15,7 +13,6 @@ import {
   Select,
   Box,
 } from '@chakra-ui/react';
-// import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
 
 import MailSentImg from '../../assets/email.gif';
 
@@ -68,9 +65,7 @@ const ContactUs = () => {
 
   return (
       <section className="bg-white">
-        {/* <div>
-          <NavBarUser button1={false} button2={false} button3={false} button4={false}/>
-        </div> */}
+       
         <div className="flex flex-col lg:flex-row mx-auto max-w-screen-md py-8 lg:py-16 px-4">
           <div className="flex-1 bg-gray-000 text-black p-8 rounded-lg">
             <Box textAlign="left">

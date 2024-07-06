@@ -23,7 +23,7 @@ import FileList from "../../components/dashboard/FileList.jsx";
 import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
 import {ChevronRightIcon} from "@chakra-ui/icons";
 import { BiFingerprint } from 'react-icons/bi';
-import Chatbot from "../Chatbot/chatbot.jsx";
+import Chatbot from "../../components/Chatbot/chatbot.jsx";
 import { TiSocialGithubCircular } from "react-icons/ti";
 
 export default function CodeReview() {

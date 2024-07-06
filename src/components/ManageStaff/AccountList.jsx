@@ -287,7 +287,7 @@ const MyComponent = () => {
                                     </p>
                                     <div className="w-1/3 text-right">
                                         <Button onClick={() => onOpenRoleModal(index)} colorScheme="blue" size="sm"
-                                        isDisabled={member.profileStatus === 'Blocked'}>
+                                        isDisabled={member.profileStatus === 'Suspend'}>
                                             Change Role
                                         </Button>
                                         {member.profileStatus === 'Active' && (
@@ -295,7 +295,7 @@ const MyComponent = () => {
                                                 Block
                                             </Button>
                                         )}
-                                        {member.profileStatus === 'Blocked' && (
+                                        {member.profileStatus === 'Suspend' && (
                                             <Button onClick={() => handleBlockOrUnblock(member, 'unblock')} colorScheme="green" size="sm" ml={2}>
                                                 Unblock
                                             </Button>

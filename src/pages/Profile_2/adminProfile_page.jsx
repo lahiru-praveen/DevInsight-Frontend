@@ -12,7 +12,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import ProfileCard from '../../components/Profile_page/user_profile.jsx';
-import SkillCard from '../../components/Profile_page/skillCard.jsx'; // Adjust the import path as necessary
+import SkillCard from '../../components/Profile_page/skillCard.jsx'; 
 import CompanyCard from '../../components/Profile_page/companyCard.jsx';
 import ProfileForm from '../../components/Profile_page/profileForm.jsx';
 import CompanyForm from '../../components/Profile_page/companyForm.jsx';
