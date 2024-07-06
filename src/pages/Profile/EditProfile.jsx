@@ -38,7 +38,7 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
     skills: [],
     profilePicture: '',
     user_Id: '',
-    profileStatus: 'active',
+    profileStatus: 'Active',
   });
 
   const [file, setFile] = useState(null);
