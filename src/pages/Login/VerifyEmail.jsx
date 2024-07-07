@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import {
     Button,
@@ -36,7 +37,6 @@ export default function VerifyEmail() {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const cancelRef = React.useRef();
     
-
     useEffect(() => {
         const fetchCompanyDomains = async () => {
             try {
@@ -59,9 +59,7 @@ export default function VerifyEmail() {
         try {
             // Check if the email already exists in the database
             const emailCheckResponse = await axios.post('http://localhost:8000/api/check-email', { email });
-            console.log(emailCheckResponse);
             if (emailCheckResponse.data.detail === "User already exists") {
-                console.log("Ok");
                 setIsError(true);
                 setError('Email already exists. Please use another email.');
                 return;
@@ -127,6 +125,7 @@ export default function VerifyEmail() {
 
     return (
         <Flex minH={'100vh'}>
+            {/* left box */}
             <Box
                 flex={1}
                 display="flex"
@@ -139,10 +138,11 @@ export default function VerifyEmail() {
                     <img src={logo} height={200} width={200} alt={'DevInsightLOGO'} />
                 </Box>
                 <Spacer />
-                <Box mb={150}>
-                    <img src={image} alt="Sample GIF" height={800} width={800} />
+                <Box >
+                    <img src={image} alt="Sample GIF" height={600} width={600} />
                 </Box>
             </Box>
+            {/* Right box */}
         <Flex flex={1} align={'center'} justify={'center'} bg={useColorModeValue('gray.50')}>
             <Stack
                 spacing={6}
@@ -170,11 +170,15 @@ export default function VerifyEmail() {
                 <FormControl>
                     <FormLabel>Company</FormLabel>
                     <Select placeholder="Select company" value={company} onChange={(e) => setCompany(e.target.value)}>
-                        {companyDomains.data.data.map((companyData, index) => (
-                            <option key={index} value={companyData.company_name}>
-                                {companyData.company_name}
-                            </option>
-                        ))}
+                        {companyDomains.data.length > 0 ? (
+                            companyDomains.data.map((companyData, index) => (
+                                <option key={index} value={companyData.company_name}>
+                                    {companyData.company_name}
+                                </option>
+                            ))
+                        ) : (
+                            <option disabled>No companies available</option>
+                        )}
                     </Select>
                 </FormControl>
                 <FormControl>

@@ -12,7 +12,7 @@ import QAEHelpRequests from "./pages/HelpDesk/QAEHelpRequests.jsx";
 import Landing from "./pages/Landing/Landing.jsx";
 import QAECodePreview from "./pages/./HelpDesk/QAECodePreview.jsx";
 import UserHelpRequests from "./pages/HelpDesk/UserHelpRequests.jsx";
-import ForgetPassword from "./pages/Login/ForgetPassword.jsx";
+import ForgotPassword from "./pages/Login/ForgotPassword.jsx";
 import CreateOrg from "./pages/Login/OrganizationCreateAccount.jsx";
 import EditProfile from "./pages/Profile/EditProfile.jsx";
 import Createorg2 from "./pages/CreateOrg/Createorg2.jsx";
@@ -20,7 +20,7 @@ import ManageStaff from "./pages/ManageStaff/ManageStaff.jsx";
 import CodeReview from "./pages/dashboard/CodeReview.jsx";
 import ContactUs from "./pages/Profile/ContactUs.jsx";
 import CodeSubmissions from "./pages/dashboard/CodeSubmissions.jsx";
-import ForgetPasswordAndReset from "./pages/Login/ForgetPasswordAndReset.jsx";
+import ForgotPasswordAndReset from "./pages/Login/ForgotPasswordAndReset.jsx";
 import VerifyEmail from "./pages/Login/VerifyEmail.jsx";
 import AskHelp from "./pages/HelpDesk/AskHelp.jsx";
 import UserResponsePreview from "./pages/HelpDesk/UserResponsePreview.jsx";
@@ -65,7 +65,7 @@ export default function App() {
                     <Route path="/urp" element={<UserResponsePreview/>}/>
                     <Route path="/mp" element={<ManagerProfile/>}/> 
                     <Route path="/as" element={<AccSuccess/>}/>
-                    <Route path="/fpr" element={<ForgetPasswordAndReset/>}/>
+                    <Route path="/fpr" element={<ForgotPasswordAndReset/>}/>
                     <Route path="/settings" element={<Settings/>}/>
                     <Route path="/face-login" element={<LoginFace/>}/>
                     <Route path="/face-register" element={<RegisterFace/>}/>

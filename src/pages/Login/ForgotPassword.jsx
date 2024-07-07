@@ -13,14 +13,17 @@ import {
   Alert,
   AlertIcon,
   AlertTitle,
+  Spacer,
+  Box,
   AlertDescription,
   CloseButton
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import emailjs from 'emailjs-com';
 import logo from '../../assets/devsign.png';
+import image from '../../assets/fp.jpg';
 
-export default function ForgetPassword() {
+export default function ForgotPassword() {
   const navigate = useNavigate();
   const [isEmailFilled, setIsEmailFilled] = useState(false);
   const [isCodeFilled, setIsCodeFilled] = useState(false);
@@ -109,20 +112,39 @@ export default function ForgetPassword() {
   };
 
   return (
-    <Flex minH={'100vh'} align={'center'} justify={'center'}>
+    <Flex minH={'100vh'}>
+     {/* Left Side */}
+     <Box
+     flex={1}
+     display="flex"
+     flexDirection="column"
+     alignItems="center"
+     justifyContent="center"
+     bg={useColorModeValue('white', 'gray.700')}
+     
+ >
+     <Box mt={20}>
+         <img src={logo} height={200} width={200} alt={'DevInsightLOGO'} />
+     </Box>
+     <Spacer />
+     <Box>
+         <img src={image}  height={600} width={600}/>
+     </Box>
+ </Box>
+
+ {/* Right Side */}
+    <Flex  flex={1} align={'center'} justify={'center'} bg={useColorModeValue('gray.50')}>
+    
       <Stack
         spacing={6}
         w={'full'}
-        maxW={'md'}
-        bg={useColorModeValue('white', 'gray.700')}
+        maxW={'md'} 
         rounded={'xl'}
         p={6}
         my={12}
       >
-        <center>
-          <img src={logo} height={200} width={200} alt="Devsign Logo" />
-        </center>
-        <p>Enter your email address to receive a verification code</p>
+       <Text fontSize="2xl" >  Forgot your password?.</Text>
+        <p>Enter your email</p>
 
         <FormControl>
           <Input
@@ -146,7 +168,7 @@ export default function ForgetPassword() {
           </Button>
         </Stack>
 
-        <p>Enter the 6-digit verification code</p>
+        <p>Enter the 6-digit otp</p>
 
         <FormControl>
           <Stack direction="row" spacing={2}>
@@ -211,6 +233,7 @@ export default function ForgetPassword() {
         </div>
       </Stack>
     </Flex>
+    </Flex>  
   );
 
 

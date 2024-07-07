@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Webcam from 'react-webcam';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button,Text, Heading,Flex, useColorModeValue, } from '@chakra-ui/react';
+import { Box, Button,Text, Heading,Flex, useColorModeValue,Spacer } from '@chakra-ui/react';
+import logo from '../../assets/devsign.png';
 import image from '../../assets/face.png';
 
 const RegisterFace = () => {
@@ -55,11 +56,7 @@ const RegisterFace = () => {
     return new File([u8arr], filename, { type: mime });
   };
 
-  const handleCancel = () => {
   
-    navigate('/settings');
-  };
-
   return (
     <Flex minH={'100vh'}>
       {/* Left Box */}
@@ -71,21 +68,31 @@ const RegisterFace = () => {
         justifyContent="center"
         bg={useColorModeValue('white.700')}
       >
-        <Heading as="h2" size="xl" mb="4">Register Face</Heading>
-        <img src={image}  />
+         <Box mt={50} pl={-10} position="relative" zIndex="1">
+        <img src={logo} height={200} width={200} alt="DevInsightLOGO" />
       </Box>
+
+      <Box position="relative" zIndex="0">
+        <img src={image} height={500} width={500}  />
+      </Box>
+       
+
+      </Box>
+
       {/* Right Box */}
-      <Flex flex={1} align="center" justify="center" bg="white" minHeight="100vh">
+      <Box flex={1} align="center" justify="center" bg={useColorModeValue('gray.100')} >
+      
         <Box
-          bg="white"
           p={6}
           rounded="lg"
-          
+          mt={40}
           maxWidth="600px"
           width="100%"
           textAlign="left"
           position="relative"
         >
+          <center><Text fontSize="3xl" fontWeight="bold" mb={10}>Register Face</Text></center>
+          
           <Box
             className="phone-frame"
             position="relative"
@@ -107,16 +114,13 @@ const RegisterFace = () => {
           </Box>
 
           <Flex
-            justifyContent="space-between"
+            justifyContent="center"
             mt="4"
-           
             bottom="-20px"
-            left="0"
-            right="0"
             zIndex={1}
           >
-            <Button onClick={capture} colorScheme="blue" size="md" width="45%">Register</Button>
-            <Button onClick={handleCancel} colorScheme="gray" size="md" width="45%">Cancel</Button>
+            <Button onClick={capture} colorScheme="blue" variant="outline"  size="md" width="45%">Register</Button>
+            
           </Flex>
           <Box align="center" justify="center">
           {typeof message === 'string' ? (
@@ -126,7 +130,7 @@ const RegisterFace = () => {
           )}
           </Box>
         </Box>
-      </Flex>
+      </Box>
     </Flex>
   );
 }
