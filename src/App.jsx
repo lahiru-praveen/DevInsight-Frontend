@@ -12,7 +12,6 @@ import QAEHelpRequests from "./pages/HelpDesk/QAEHelpRequests.jsx";
 import Landing from "./pages/Landing/Landing.jsx";
 import QAECodePreview from "./pages/./HelpDesk/QAECodePreview.jsx";
 import UserHelpRequests from "./pages/HelpDesk/UserHelpRequests.jsx";
-import ForgotPassword from "./pages/Login/ForgotPassword.jsx";
 import CreateOrg from "./pages/Login/OrganizationCreateAccount.jsx";
 import EditProfile from "./pages/Profile/EditProfile.jsx";
 import Createorg2 from "./pages/CreateOrg/Createorg2.jsx";
@@ -33,7 +32,7 @@ import FingerprintLogin from "./pages/Login/FingerprintLogin.jsx";
 import ChangePassword from "./pages/Profile/ChangePassword.jsx";
 import Orgnizationpage from "./pages/Organization_2/organizationpage.jsx";
 import SignUpInvite from "./pages/Login/SignUpInvitaion.jsx";
-
+import ForgotPassword from "./pages/Login/ForgotPassword.jsx";
 
 export default function App() {
     return (
@@ -52,7 +51,7 @@ export default function App() {
                     <Route path="/login-manager" element={<LoginManager/>}/>
                     <Route path="/login-both" element={<LoginBoth/>}/>
                     <Route path="/su" element={<SignUpDemo/>}/>
-                    <Route path="/fp" element={<ForgetPassword/>}/>
+                    <Route path="/fp" element={<ForgotPassword/>}/>
                     <Route path="/oa" element={<CreateOrg/>}/>
                     <Route path="/verify-email" element={<VerifyEmail/>}/>
                     <Route path="/edit-profile" element={<EditProfile userId="123"/>}/>

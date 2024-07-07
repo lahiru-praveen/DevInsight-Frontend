@@ -808,28 +808,132 @@
 // }
 //
 // export default UserHelpRequests;
+// import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
+// import { Tooltip } from '@chakra-ui/react'
+// import {SearchIcon} from "@chakra-ui/icons";
+//
+// function UserHelpRequests(){
+//     return(
+//         <div>
+//             <NavBarUser button4={false} button2={false} button3={false} button1={false}/>
+//             <div className="mt-10 ml-8 text-2xl">
+//                 <Tooltip isDisabled>
+//                     <SearchIcon />
+//                 </Tooltip>
+//                 <input
+//                     className="shadow appearance-none border rounded w-50 h-10 ml-5 py-2 px-3 text-gray-700 leading-tight
+//                                         focus:outline-none focus:shadow-outline"
+//                     id="request"
+//                     type="text"
+//                     placeholder="Search the requests"
+//                 />
+//             </div>
+//
+//                          <div className="p-3 mx-10 text-2xl mt-20 font-inter">
+//                              <div className="flex w-full text-2xl items-center justify-between">
+//                                  <div className="w-1/4 text-left pl-10"><p>Project Name</p></div>
+//                                  <div className="w-1/4 text-left"><p>File Name</p></div>
+//                                  {/*<div className="w-1/6 text-left"><p>Title</p></div>*/}
+//                                  <div className="w-1/4 text-left"><p>File Name</p></div>
+//                                  <div className="w-1/4 text-left"><p>Status</p></div>
+//                                  <div className="w-1/6 text-left"><p></p></div>
+//                                  <div className="w-1/4 text-left flex relative">
+//                                      <p>Date</p>
+//                                      {/*<button onClick={() => setShowDropdown(!showDropdown)} className="ml-2 bg-gray-300 p-1 rounded">*/}
+//                                      {/*    ▼*/}
+//                                      {/*</button>*/}
+//                                      {/*//              {showDropdown && (*/}
+//                                      {/*//                             <div className="absolute bg-white border rounded mt-2">*/}
+//                                      {/*//                                 <button onClick={() => handleSort('asc')} className="block px-4 py-2 text-left">Ascending</button>*/}
+//                                      {/*//                                 <button onClick={() => handleSort('desc')} className="block px-4 py-2 text-left">Descending</button>*/}
+//                                      {/*//                             </div>*/}
+//                                      {/*//                         )}*/}
+//                                      {/*//                     </div>*/}
+//                                      <div className="text-white"><p>Delete</p></div>
+//                                      <div className="px-5"></div>
+//                                      <div className="text-white"><p><a href="/qcp">View</a></p></div>
+//                                  </div>
+//                              </div>
+//                          </div>
+//         </div>
+//     )
+// }
+//
+// export default UserHelpRequests;
+import { useState, useEffect } from 'react';
 import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
 import { Tooltip } from '@chakra-ui/react'
-import {SearchIcon} from "@chakra-ui/icons";
+import { SearchIcon } from "@chakra-ui/icons";
 
-function UserHelpRequests(){
-    return(
+function UserHelpRequests() {
+    const [requests, setRequests] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+
+    useEffect(() => {
+        fetch('/api/responses')
+            .then(response => response.json())
+            .then(setRequests)  // Directly set the state without using an intermediary variable
+            .catch(error => console.error('Error fetching responses:', error));
+    }, []);
+
+    const filteredRequests = requests.filter(request =>
+        request.projectName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    return (
         <div>
-            <NavBarUser/>
+            <NavBarUser button4={false} button2={false} button3={false} button1={false} />
             <div className="mt-10 ml-8 text-2xl">
                 <Tooltip isDisabled>
                     <SearchIcon />
                 </Tooltip>
                 <input
                     className="shadow appearance-none border rounded w-50 h-10 ml-5 py-2 px-3 text-gray-700 leading-tight
-                                        focus:outline-none focus:shadow-outline"
+                               focus:outline-none focus:shadow-outline"
                     id="request"
                     type="text"
                     placeholder="Search the requests"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                 />
             </div>
+            <div className="p-3 mx-10 text-2xl mt-20 font-inter">
+                <div className="flex w-full text-2xl items-center justify-between">
+                    <div className="w-1/4 text-left pl-10"><p>Project Name</p></div>
+                    <div className="w-1/4 text-left"><p>File Name</p></div>
+                    <div className="w-1/4 text-left"><p>Status</p></div>
+                    <div className="w-1/4 text-left flex relative">
+                        <p>Date</p>
+                    </div>
+                    <div className="w-1/4 text-left"><p>Actions</p></div>
+                </div>
+                {filteredRequests.map((request, index) => (
+                    <div key={index} className="flex w-full items-center justify-between mt-5">
+                        <div className="w-1/4 text-left pl-10"><p>{request.projectName}</p></div>
+                        <div className="w-1/4 text-left"><p>{request.fileName}</p></div>
+                        <div className="w-1/4 text-left"><p>{request.status}</p></div>
+                        <div className="w-1/4 text-left"><p>{new Date(request.date).toLocaleDateString()}</p></div>
+                        <div className="w-1/4 text-left">
+                            <button className="text-white bg-red-500 px-2 py-1 rounded" onClick={() => handleDelete(request.id)}>Delete</button>
+                            <button className="text-white bg-blue-500 px-2 py-1 rounded ml-2"><a href="/qcp">View</a></button>
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
-    )
+    );
+
+    function handleDelete(id) {
+        fetch(`/responses/${id}`, {
+            method: 'DELETE',
+        })
+            .then(response => response.json())
+            .then(() => {
+                // Update the UI after deletion
+                setRequests(requests.filter(request => request.id !== id));
+            })
+            .catch(error => console.error('Error deleting response:', error));
+    }
 }
 
 export default UserHelpRequests;
