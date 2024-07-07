@@ -37,7 +37,7 @@ export default function DashboardMain() {
     const [files, setFiles] = useState([]);
     const [submitEnabled, setSubmitEnabled] = useState(false);
     const [selectedLanguage, setSelectedLanguage] = useState('not mentioned');
-    const allowedExtensions = ['.txt', '.py','.java','.html','.php','.rb','.cs','.cpp','.css','.go','.rs','.swift','.js'];
+    const allowedExtensions = ['.txt', '.py','.java','.html','.php','.rb','.cs','.cpp','.css','.go','.rs','.swift','.js','.jsx','.c','.ts'];
     const WORD_LIMIT = 150;
     const [fileAlerts, setFileAlerts] = useState([]);
     const [alertLanguageMessage, setAlertLanguageMessage] = useState('');
