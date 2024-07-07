@@ -1,6 +1,7 @@
-import {useEffect, useState} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   Box,
+  Divider,
   Button,
   Stack,
   Text,
@@ -22,25 +23,44 @@ import {
   PopoverBody,
   PopoverArrow,
   PopoverCloseButton,
-  Portal, Switch, SimpleGrid, Image,
+  Portal,
+  Switch,
+  SimpleGrid,
+  Image,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
 } from '@chakra-ui/react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { TbFaceId } from 'react-icons/tb';
 import { IoPersonRemove, IoPersonAddSharp, IoSettingsOutline } from 'react-icons/io5';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-import * as assert from "assert";
 import gemini from '../../assets/Gemini.png';
-import gpt from '../../assets/Gpt.png'
+import gpt from '../../assets/Gpt.png';
 
 const Settings = () => {
-  const [profile] = useState({
+  const [profile, setProfile] = useState({
     email: sessionStorage.getItem('email') || '',
   });
+  
   const [password, setPassword] = useState('');
-
   const { isOpen: isPasswordModalOpen, onOpen: onPasswordModalOpen, onClose: onPasswordModalClose } = useDisclosure();
+  const {
+    isOpen: isDeactivateAlertOpen,
+    onOpen: onDeactivateAlertOpen,
+    onClose: onDeactivateAlertClose
+  } = useDisclosure();
+  const {
+    isOpen: isDeleteAlertOpen,
+    onOpen: onDeleteAlertOpen,
+    onClose: onDeleteAlertClose
+  } = useDisclosure();
 
+  const cancelRef = useRef();
   const navigate = useNavigate();
 
   const [llm, setLlm] = useState(sessionStorage.getItem('llm') || 'gemini');
@@ -49,16 +69,9 @@ const Settings = () => {
     sessionStorage.setItem('llm', llm);
   }, [llm]);
 
-  const handleRemoveFaceData = async () => {
-    const storedEmail = sessionStorage.getItem('email');
-    if (!storedEmail) {
-      alert('User not logged in');
-      return;
-    }
+  const handleRemoveFaceData = async (email) => {
     try {
-      const response = await axios.post('http://localhost:8000/api/remove-face-data', {
-        email: storedEmail,
-      });
+      const response = await axios.post('http://localhost:8000/api/remove_face_data', { email });
       console.log(response.data);
       alert('Face data removed successfully!');
     } catch (error) {
@@ -70,15 +83,13 @@ const Settings = () => {
   const handlePasswordConfirmation = () => {
     const storedPassword = sessionStorage.getItem('password');
     if (password === storedPassword) {
-
       onPasswordModalClose();
-  
-     
       navigate(`/change-password`);
     } else {
       alert('Password is incorrect');
     }
   };
+
   const handleConnectLinkedIn = async () => {
     try {
       const linkedinUrl = 'https://www.linkedin.com/feed/';
@@ -173,46 +184,48 @@ const Settings = () => {
                       </Button>
                     </Link>
                     <br />
-                    <Button leftIcon={<IoPersonRemove />} mt={5} onClick={handleRemoveFaceData} colorScheme="green" variant="outline">
+                    <Button leftIcon={<IoPersonRemove />} mt={5} onClick={() => handleRemoveFaceData(profile.email)} colorScheme="green" variant="outline">
                       Remove Face Data
                     </Button>
                   </PopoverBody>
                 </PopoverContent>
               </Portal>
             </Popover>
-
           </Flex>
         </Box>
         <Box>
-
-          <FormControl as={SimpleGrid} columns={{ base: 1, md: 2 }} spacing={4} className='mb-4'>
+          <Text fontSize="md" fontWeight="bold" mb={4}>Password settings</Text>
+          <Button size="md" width="45%" colorScheme="teal" variant="outline" onClick={onPasswordModalOpen}>
+            Change Password
+          </Button>
+        </Box>
+        <Divider borderColor="gray" borderWidth="1px" />
+        <Box>
+          <Text fontSize="md" fontWeight="bold" mb={4}>LLM Settings</Text>
+          <FormControl as={SimpleGrid} columns={{ base: 1, md: 2 }} spacing={4}>
             <Box textAlign="center">
-              <Image src={gemini} alt="Gemini Logo" height="40px" width="100px" objectFit="contain" mb={2} />
+              <Image src={gemini} alt="Gemini Logo" height="40px" width="100px" objectFit="contain" mb={8} />
               <FormLabel htmlFor="Gemini">Gemini:</FormLabel>
               <Switch
-                  id="Gemini"
-                  size="lg"
-                  isChecked={llm === 'gemini'}
-                  onChange={() => handleSwitchChange('gemini')}
+                id="Gemini"
+                size="lg"
+                isChecked={llm === 'gemini'}
+                onChange={() => handleSwitchChange('gemini')}
               />
             </Box>
             <Box textAlign="center">
               <Image src={gpt} alt="Gpt-3.5-Turbo Logo" height="60px" width="60px" objectFit="contain" mb={2} />
               <FormLabel htmlFor="Gpt-3.5">Gpt-3.5-Turbo:</FormLabel>
               <Switch
-                  id="Gpt-3.5"
-                  size="lg"
-                  isChecked={llm === 'openai'}
-                  onChange={() => handleSwitchChange('openai')}
+                id="Gpt-3.5"
+                size="lg"
+                isChecked={llm === 'openai'}
+                onChange={() => handleSwitchChange('openai')}
               />
             </Box>
           </FormControl>
-       
-        <Text fontSize="md" fontWeight="bold" mb={4}>Password settings</Text>
-        <Button size="sm" colorScheme="teal" variant="outline" onClick={onPasswordModalOpen} >
-              Change Password
-          </Button>
         </Box>
+        <Divider borderColor="gray" borderWidth="1px" />
         <Box>
           <Text fontSize="xl" fontWeight="bold" mb={4}>Links</Text>
           <Stack spacing={4}>
@@ -224,46 +237,95 @@ const Settings = () => {
             </Button>
           </Stack>
         </Box>
+        <Divider borderColor="gray" borderWidth="1px" />
         <Box>
           <Text fontSize="xl" fontWeight="bold" mb={4}>Account Settings</Text>
           <Stack spacing={4}>
-            <Button colorScheme="teal" size="sm" variant="outline" onClick={() => {
-              if (window.confirm('Are you sure you want to deactivate your profile?')) {
-                handleDeactivate(profile.email, sessionStorage.getItem('token'));
-              }
-            }}>
-              Deactivate
+            <Button colorScheme="teal" size="sm" variant="outline" onClick={onDeactivateAlertOpen}>
+              Deactivate Account
             </Button>
-            <Button size="sm" colorScheme="teal" variant="outline" onClick={() => {
-              if (window.confirm('Are you sure you want to delete your profile? Your account will be erased from our system.')) {
-                handleDelete(profile.email);
-              }
-            }}>
+            <Button colorScheme="red" size="sm" variant="outline" onClick={onDeleteAlertOpen}>
               Delete Account
             </Button>
-            
           </Stack>
         </Box>
       </Stack>
-      <Modal isCentered isOpen={isPasswordModalOpen} onClose={onPasswordModalClose} size="md">
-        <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(10px) hue-rotate(90deg)" />
+      {/* Change Password Modal */}
+      <Modal isOpen={isPasswordModalOpen} onClose={onPasswordModalClose}>
+        <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Confirm Password</ModalHeader>
+          <ModalHeader>Enter your password</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl>
               <FormLabel>Password</FormLabel>
-              <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </FormControl>
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={handlePasswordConfirmation}>
               Confirm
             </Button>
-            <Button variant="ghost" onClick={onPasswordModalClose}>Close</Button>
+            <Button variant="ghost" onClick={onPasswordModalClose}>
+              Cancel
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
+      {/* Deactivate Account Alert */}
+      <AlertDialog
+        isOpen={isDeactivateAlertOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onDeactivateAlertClose}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Deactivate Account
+            </AlertDialogHeader>
+            <AlertDialogBody>
+              Are you sure? You can't undo this action afterwards.
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onDeactivateAlertClose}>
+                Cancel
+              </Button>
+              <Button colorScheme="red" onClick={() => handleDeactivate(profile.email, sessionStorage.getItem('access_token'))} ml={3}>
+                Deactivate
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+      {/* Delete Account Alert */}
+      <AlertDialog
+        isOpen={isDeleteAlertOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onDeleteAlertClose}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Delete Account
+            </AlertDialogHeader>
+            <AlertDialogBody>
+              Are you sure? You can't undo this action afterwards.
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onDeleteAlertClose}>
+                Cancel
+              </Button>
+              <Button colorScheme="red" onClick={() => handleDelete(profile.email)} ml={3}>
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </Box>
   );
 };

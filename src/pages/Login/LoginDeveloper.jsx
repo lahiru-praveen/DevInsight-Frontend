@@ -167,7 +167,7 @@ export default function LoginDeveloper() {
                         <br />
                         <Link to="/fp">
                             <Button variant="link" as="span" color="black">
-                                Forgot password
+                                Forgot your password
                             </Button>
                         </Link>
                     </Text>
