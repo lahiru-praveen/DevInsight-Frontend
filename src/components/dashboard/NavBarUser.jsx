@@ -64,7 +64,7 @@ export default function NavBarUser({ button1, button2, button3, button4 }) {
         // Fetch user data from the database
         const fetchProfile = async () => {
             try {
-                const token = sessionStorage.getItem('access_token'); // Assuming you're storing the token in sessionStorage
+                const token = sessionStorage.getItem('access_token'); 
                 if (!token) {
                     throw new Error('No token found');
                 }
@@ -73,7 +73,7 @@ export default function NavBarUser({ button1, button2, button3, button4 }) {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+                        'Authorization': `Bearer ${token}`, 
                     },
                 });
 
