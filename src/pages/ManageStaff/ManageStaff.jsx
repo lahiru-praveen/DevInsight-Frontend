@@ -10,14 +10,12 @@ function ManageStaff() {
     // Fetch user data from the database
     const fetchProfile = async () => {
         try {
-            const token = sessionStorage.getItem('access_token'); // Assuming you're storing the token in sessionStorage
+            const token = sessionStorage.getItem('access_token'); 
             if (!token) {
                 throw new Error('No token found');
             }
         } catch (error) {
             console.error('Error fetching profile data:', error);
-            // Handle error, show error message, etc.
-            // Redirect to the sign-in page if no token is found
             if (error.message === 'No token found') {
                 window.location.href = '/login-both';
             }

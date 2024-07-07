@@ -11,7 +11,9 @@ export default function LanguageSelectMenu({ onLanguageChange, selectedLanguage 
 
     return (
         <div className="w-[250px]">
-            <Select placeholder={selectedLanguage === 'Not given' ? ('Select Language') : (selectedLanguage)} onChange={handleChange} style={{marginBottom: '1rem'}} size='md' variant='filled' icon={<MdArrowDropDown />} >
+            <Select placeholder={selectedLanguage === 'Not given' ? ('Select Language') : (selectedLanguage)}
+                    onChange={handleChange} style={{marginBottom: '1rem'}} size='md' variant='filled'
+                    icon={<MdArrowDropDown/>}>
                 <option value="Python">Python</option>
                 <option value="JavaScript">JavaScript</option>
                 <option value="Java">Java</option>
@@ -24,6 +26,7 @@ export default function LanguageSelectMenu({ onLanguageChange, selectedLanguage 
                 <option value="Swift">Swift</option>
                 <option value="Go">Go</option>
                 <option value="TypeScript">TypeScript</option>
+                <option value="CSS">CSS</option>
                 <option value="Other">Other</option>
             </Select>
         </div>

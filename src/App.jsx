@@ -10,14 +10,12 @@ import LoginBoth from "./pages/Login/LoginBoth.jsx";
 import SignUpDemo from "./pages/Login/SignUpDemo.jsx";
 import QAEHelpRequests from "./pages/HelpDesk/QAEHelpRequests.jsx";
 import Landing from "./pages/Landing/Landing.jsx";
-import Createorg1 from "./pages/CreateOrg/Createorg1.jsx";
 import QAECodePreview from "./pages/./HelpDesk/QAECodePreview.jsx";
 import UserHelpRequests from "./pages/HelpDesk/UserHelpRequests.jsx";
 import ForgotPassword from "./pages/Login/ForgotPassword.jsx";
 import CreateOrg from "./pages/Login/OrganizationCreateAccount.jsx";
 import EditProfile from "./pages/Profile/EditProfile.jsx";
 import Createorg2 from "./pages/CreateOrg/Createorg2.jsx";
-import Createorg3 from "./pages/CreateOrg/Createorg3.jsx";
 import ManageStaff from "./pages/ManageStaff/ManageStaff.jsx";
 import CodeReview from "./pages/dashboard/CodeReview.jsx";
 import ContactUs from "./pages/Profile/ContactUs.jsx";
@@ -27,16 +25,12 @@ import VerifyEmail from "./pages/Login/VerifyEmail.jsx";
 import AskHelp from "./pages/HelpDesk/AskHelp.jsx";
 import UserResponsePreview from "./pages/HelpDesk/UserResponsePreview.jsx";
 import ManagerProfile from "./pages/MangerProfile/ManagerProfile.jsx";
-import Chatbot from "./pages/Chatbot/chatbot.jsx";
 import AccSuccess from "./pages/CreateOrg/AccSuccess.jsx";
 import Settings from "./pages/Profile/Settings.jsx";
 import LoginFace from "./pages/Login/FaceLogin.jsx";
 import RegisterFace from "./pages/Login/FaceRegister.jsx";
 import FingerprintLogin from "./pages/Login/FingerprintLogin.jsx";
 import ChangePassword from "./pages/Profile/ChangePassword.jsx";
-import Profilenew from "./pages/Profile_2/Profile_page.jsx";
-import AdminProfilenew from "./pages/Profile_2/adminProfile_page.jsx";
-import Profilepage from "./pages/Profile_2/profilepage.jsx";
 import Orgnizationpage from "./pages/Organization_2/organizationpage.jsx";
 import SignUpInvite from "./pages/Login/SignUpInvitaion.jsx";
 
@@ -58,32 +52,25 @@ export default function App() {
                     <Route path="/login-manager" element={<LoginManager/>}/>
                     <Route path="/login-both" element={<LoginBoth/>}/>
                     <Route path="/su" element={<SignUpDemo/>}/>
-                    <Route path="/co" element={<Createorg1/>}/>
-                    <Route path="/fp" element={<ForgotPassword/>}/>
+                    <Route path="/fp" element={<ForgetPassword/>}/>
                     <Route path="/oa" element={<CreateOrg/>}/>
                     <Route path="/verify-email" element={<VerifyEmail/>}/>
                     <Route path="/edit-profile" element={<EditProfile userId="123"/>}/>
-                    <Route path="/co1" element={<Createorg1/>}/>
-                    <Route path="/co2" element={<Createorg2/>}/>
-                    <Route path="/co3" element={<Createorg3/>}/>
+                    <Route path="/co2" element={<Createorg2/>}/>               
                     <Route path="/ms" element={<ManageStaff/>}/>
                     <Route path="/cr" element={<CodeReview/>}/>
                     <Route path="/cu" element={<ContactUs/>}/>
                     <Route path="/cs" element={<CodeSubmissions/>}/>
                     <Route path="/ah" element={<AskHelp/>}/>
                     <Route path="/urp" element={<UserResponsePreview/>}/>
-                    <Route path="/mp" element={<ManagerProfile/>}/>
-                    <Route path="/cb" element={<Chatbot/>}/>
+                    <Route path="/mp" element={<ManagerProfile/>}/> 
                     <Route path="/as" element={<AccSuccess/>}/>
                     <Route path="/fpr" element={<ForgotPasswordAndReset/>}/>
                     <Route path="/settings" element={<Settings/>}/>
                     <Route path="/face-login" element={<LoginFace/>}/>
                     <Route path="/face-register" element={<RegisterFace/>}/>
                     <Route path="/fingerprint-register" element={<FingerprintLogin/>}/>
-                    <Route path="/change-password" element={<ChangePassword />}/>
-                    <Route path="/ppnew" element={<Profilenew/>}/>
-                    <Route path="/appnew" element={<AdminProfilenew/>}/>
-                    <Route path="/ppage" element={<Profilepage/>}/>
+                    <Route path="/change-password" element={<ChangePassword />}/>                    
                     <Route path="/opage" element={<Orgnizationpage/>}/>
                     <Route path="/SignUpInvite" element={<SignUpInvite/>}/>
                 </Routes>
