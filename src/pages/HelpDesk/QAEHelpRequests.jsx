@@ -1,149 +1,139 @@
-// // // import { useState } from 'react';
-// // // import PropTypes from 'prop-types';
-// // // import { items } from "../../components/HelpDesk/QAERequestsData.jsx";
-// // // import NavBar from "../../components/HelpDesk/NavBar.jsx";
-// // //
-// // // function QAEHelpRequests() {
-// // //     const [expandedRow, setExpandedRow] = useState(null);
-// // //
-// // //     const handleRowClick = (index) => {
-// // //         setExpandedRow(expandedRow === index ? null : index);
-// // //     };
-// // //
-// // //     return (
-// // //         <div>
-// // //             <NavBar/>
-// // //             <div className="text-5xl font-bold mr-10 pl-10 pt-10"><p>Help Desk</p></div>
-// // //             <div className="p-3 mx-10 mt-20 font-inter">
-// // //                 <div className="flex w-full items-center justify-between">
-// // //                     <div className="w-1/4 text-left pl-10"><p>Request</p></div>
-// // //                     <div className="w-1/4 text-left">Request</div>
-// // //                     <div className="w-1/6 text-left">Request</div>
-// // //                     <div className="w-1/4 text-left">Request</div>
-// // //
-// // //                 </div>
-// // //             </div>
-// // //             <div>
-// // //                 {items.map((item, index) => (
-// // //                     <div key={index}
-// // //                          className={`bg-gray-200 mx-10 my-10 py-5 rounded-lg text-left ${expandedRow === index ?
-// // //                              'bg-blue-200 text-black border-y-15 border-x-15 rounded-lg' : ''}`}
-// // //                          onClick={() => handleRowClick(index)}>
-// // //
-// // //                         <div className="flex w-full items-center justify-between">
-// // //                             <div className="w-1/4 text-left pl-10"><p>{item.id}</p></div>
-// // //                             <div className="w-1/4 text-left"><p>{item.description}</p></div>
-// // //                             <div className="w-1/6 text-left"><p>{item.title}</p></div>
-// // //                             <div className="w-1/4 text-left"><p>{item.status}</p></div>
-// // //                             <div className=" text-left border bg-red-500 rounded-lg px-2 py-1 text-white"><p>Delete</p>
-// // //                             </div>
-// // //                             <div className=" text-left border bg-blue-500 rounded-lg px-2 py-1 text-white"><p><a
-// // //                                 href="/qcp">Open</a></p>
-// // //                             </div>
-// // //                         </div>
-// // //
-// // //                     </div>
-// // //                 ))}
-// // //         </div>
-// // //         </div>
-// // //     );
-// // // }
-// // //
-// // // QAEHelpRequests.propTypes = {
-// // //     items: PropTypes.arrayOf(
-// // //         PropTypes.shape({
-// // //             id: PropTypes.string.isRequired,
-// // //             title: PropTypes.string.isRequired,
-// // //             description: PropTypes.string.isRequired,
-// // //             status: PropTypes.string.isRequired,
-// // //         })
-// // //     ).isRequired,
-// // // };
-// // //
-// // // export default QAEHelpRequests;
-// // //
-// // // import { useState, useEffect } from 'react';
-// // // import PropTypes from 'prop-types';
-// // // import NavBar from "../../components/HelpDesk/NavBar.jsx";
-// // // import { items } from "../../components/HelpDesk/QAERequestsData.jsx";
-// // //
-// // // function QAEHelpRequests() {
-// // //     const [sortedItems, setSortedItems] = useState([]);
-// // //
-// // //     useEffect(() => {
-// // //         // Sort items by date and type
-// // //         const sorted = items.sort((a, b) => {
-// // //             // Convert dates to Date objects for comparison
-// // //             const dateA = new Date(a.date);
-// // //             const dateB = new Date(b.date);
-// // //
-// // //             // If dates are not equal, sort by date
-// // //             if (dateA.getTime() !== dateB.getTime()) {
-// // //                 return dateA.getTime() - dateB.getTime();
-// // //             }
-// // //             // If dates are equal, sort by type
-// // //             return a.type.localeCompare(b.type);
-// // //         });
-// // //         setSortedItems(sorted);
-// // //     }, []);
-// // //
-// // //     // const [expandedRow, setExpandedRow] = useState(null);
-// // //     //
-// // //     // const handleRowClick = (index) => {
-// // //     //     setExpandedRow(expandedRow === index ? null : index);
-// // //     // };
-// // //
-// // //     return (
-// // //         <div>
-// // //             <NavBar />
-// // //             <div className="text-5xl font-bold mr-10 pl-10 pt-10"><p>Help Desk</p></div>
-// // //             <div className="p-3 mx-10 mt-20 font-inter">
-// // //                 <div className="flex w-full items-center justify-between">
-// // //                     <div className="w-1/4 text-left pl-10"><p>Request</p></div>
-// // //                     <div className="w-1/4 text-left">Request</div>
-// // //                     <div className="w-1/6 text-left">Request</div>
-// // //                     <div className="w-1/4 text-left">Request</div>
-// // //                 </div>
-// // //             </div>
-// // //             <div>
-// // //                 {sortedItems.map((item, index) => (
-// // //                     <div key={index}
-// // //                          className={`bg-gray-200 mx-10 my-10 py-5 rounded-lg text-left`}
-// // //                       >
-// // //
-// // //                         <div className="flex w-full items-center justify-between">
-// // //                             <div className="w-1/4 text-left pl-10"><p>{item.id}</p></div>
-// // //                             <div className="w-1/4 text-left"><p>{item.description}</p></div>
-// // //                             <div className="w-1/6 text-left"><p>{item.title}</p></div>
-// // //                             <div className="w-1/4 text-left"><p>{item.status}</p></div>
-// // //                             <div className=" text-left border bg-red-500 rounded-lg px-2 py-1 text-white"><p>Delete</p>
-// // //                             </div>
-// // //                             <div className=" text-left border bg-blue-500 rounded-lg px-2 py-1 text-white"><p><a
-// // //                                 href="/qcp">Open</a></p>
-// // //                             </div>
-// // //                         </div>
-// // //
-// // //                     </div>
-// // //                 ))}
-// // //             </div>
-// // //         </div>
-// // //     );
-// // // }
-// // //
-// // // QAEHelpRequests.propTypes = {
-// // //     items: PropTypes.arrayOf(
-// // //         PropTypes.shape({
-// // //             id: PropTypes.string.isRequired,
-// // //             title: PropTypes.string.isRequired,
-// // //             description: PropTypes.string.isRequired,
-// // //             status: PropTypes.string.isRequired,
-// // //             date: PropTypes.string.isRequired,
-// // //             type: PropTypes.string.isRequired,
-// // //         })
-// // //     ).isRequired,
-// // // };
-// //
-// // // /export default QAEHelpRequests;import React, { useState } from 'react';
+import { useState } from 'react';
+import NavBarQAE from "../../components/dashboard/NavBarQAE.jsx";
+
+function QAEHelpRequests() {
+    const [expandedRow, setExpandedRow] = useState(null);
+
+    const handleRowClick = (index) => {
+        setExpandedRow(expandedRow === index ? null : index);
+    };
+
+    return (
+        <div>
+            <NavBarQAE/>
+            <div className="text-5xl font-bold mr-10 pl-10 pt-10"><p>Help Desk</p></div>
+            <div className="p-3 mx-10 mt-20 font-inter">
+                <div className="flex w-full items-center justify-between">
+                    <div className="w-1/4 text-left pl-10"><p>Request</p></div>
+                    <div className="w-1/4 text-left">Request</div>
+                    <div className="w-1/6 text-left">Request</div>
+                    <div className="w-1/4 text-left">Request</div>
+
+                </div>
+            </div>
+            <div>
+                {items.map((item, index) => (
+                    <div key={index}
+                         className={`bg-gray-200 mx-10 my-10 py-5 rounded-lg text-left ${expandedRow === index ?
+                             'bg-blue-200 text-black border-y-15 border-x-15 rounded-lg' : ''}`}
+                         onClick={() => handleRowClick(index)}>
+
+                        <div className="flex w-full items-center justify-between">
+                            <div className="w-1/4 text-left pl-10"><p>nkams</p></div>
+                            <div className="w-1/4 text-left"><p>adfs</p></div>
+                            <div className="w-1/6 text-left"><p>asf</p></div>
+                            <div className="w-1/4 text-left"><p>afs</p></div>
+                            <div className=" text-left border bg-red-500 rounded-lg px-2 py-1 text-white"><p>Delete</p>
+                            </div>
+                            <div className=" text-left border bg-blue-500 rounded-lg px-2 py-1 text-white"><p><a
+                                href="/qcp">Open</a></p>
+                            </div>
+                        </div>
+
+                    </div>
+                ))}
+        </div>
+        </div>
+    );
+}
+
+
+
+export default QAEHelpRequests;
+//
+// import { useState, useEffect } from 'react';
+// import PropTypes from 'prop-types';
+// import NavBar from "../../components/HelpDesk/NavBar.jsx";
+// import { items } from "../../components/HelpDesk/QAERequestsData.jsx";
+//
+// function QAEHelpRequests() {
+//     const [sortedItems, setSortedItems] = useState([]);
+//
+//     useEffect(() => {
+//         // Sort items by date and type
+//         const sorted = items.sort((a, b) => {
+//             // Convert dates to Date objects for comparison
+//             const dateA = new Date(a.date);
+//             const dateB = new Date(b.date);
+//
+//             // If dates are not equal, sort by date
+//             if (dateA.getTime() !== dateB.getTime()) {
+//                 return dateA.getTime() - dateB.getTime();
+//             }
+//             // If dates are equal, sort by type
+//             return a.type.localeCompare(b.type);
+//         });
+//         setSortedItems(sorted);
+//     }, []);
+//
+//     // const [expandedRow, setExpandedRow] = useState(null);
+//     //
+//     // const handleRowClick = (index) => {
+//     //     setExpandedRow(expandedRow === index ? null : index);
+//     // };
+//
+//     return (
+//         <div>
+//             <NavBar />
+//             <div className="text-5xl font-bold mr-10 pl-10 pt-10"><p>Help Desk</p></div>
+//             <div className="p-3 mx-10 mt-20 font-inter">
+//                 <div className="flex w-full items-center justify-between">
+//                     <div className="w-1/4 text-left pl-10"><p>Request</p></div>
+//                     <div className="w-1/4 text-left">Request</div>
+//                     <div className="w-1/6 text-left">Request</div>
+//                     <div className="w-1/4 text-left">Request</div>
+//                 </div>
+//             </div>
+//             <div>
+//                 {sortedItems.map((item, index) => (
+//                     <div key={index}
+//                          className={`bg-gray-200 mx-10 my-10 py-5 rounded-lg text-left`}
+//                       >
+//
+//                         <div className="flex w-full items-center justify-between">
+//                             <div className="w-1/4 text-left pl-10"><p>{item.id}</p></div>
+//                             <div className="w-1/4 text-left"><p>{item.description}</p></div>
+//                             <div className="w-1/6 text-left"><p>{item.title}</p></div>
+//                             <div className="w-1/4 text-left"><p>{item.status}</p></div>
+//                             <div className=" text-left border bg-red-500 rounded-lg px-2 py-1 text-white"><p>Delete</p>
+//                             </div>
+//                             <div className=" text-left border bg-blue-500 rounded-lg px-2 py-1 text-white"><p><a
+//                                 href="/qcp">Open</a></p>
+//                             </div>
+//                         </div>
+//
+//                     </div>
+//                 ))}
+//             </div>
+//         </div>
+//     );
+// }
+//
+// QAEHelpRequests.propTypes = {
+//     items: PropTypes.arrayOf(
+//         PropTypes.shape({
+//             id: PropTypes.string.isRequired,
+//             title: PropTypes.string.isRequired,
+//             description: PropTypes.string.isRequired,
+//             status: PropTypes.string.isRequired,
+//             date: PropTypes.string.isRequired,
+//             type: PropTypes.string.isRequired,
+//         })
+//     ).isRequired,
+// };
+
+// export default QAEHelpRequests;
+// import React, { useState } from 'react';
 // // // import PropTypes from 'prop-types';
 // // // import { items } from "../../components/QAE/QAERequestsData.jsx";
 // // // import NavBar from "../../components/QAE/NavBar.jsx";
@@ -863,28 +853,28 @@
 //
 // export default QAEHelpRequests;
 
-import NavBarQAE from "../../components/dashboard/NavBarQAE.jsx";
-import { Tooltip } from '@chakra-ui/react'
-import {SearchIcon} from "@chakra-ui/icons";
-
-function QAEHelpRequests(){
-    return(
-        <div>
-            <NavBarQAE/>
-            <div className="mt-10 ml-8 text-3xl">
-                <Tooltip isDisabled>
-                    <SearchIcon />
-                </Tooltip>
-                <input
-                    className="shadow appearance-none border rounded w-50 h-10 ml-5 py-2 px-3 text-gray-700 leading-tight
-                                        focus:outline-none focus:shadow-outline"
-                    id="request"
-                    type="text"
-                    placeholder="Search the requests"
-                />
-            </div>
-        </div>
-    )
-}
-
-export default QAEHelpRequests;
+// import NavBarQAE from "../../components/dashboard/NavBarQAE.jsx";
+// import { Tooltip } from '@chakra-ui/react'
+// import {SearchIcon} from "@chakra-ui/icons";
+//
+// function QAEHelpRequests(){
+//     return(
+//         <div>
+//             <NavBarQAE/>
+//             <div className="mt-10 ml-8 text-3xl">
+//                 <Tooltip isDisabled>
+//                     <SearchIcon />
+//                 </Tooltip>
+//                 <input
+//                     className="shadow appearance-none border rounded w-50 h-10 ml-5 py-2 px-3 text-gray-700 leading-tight
+//                                         focus:outline-none focus:shadow-outline"
+//                     id="request"
+//                     type="text"
+//                     placeholder="Search the requests"
+//                 />
+//             </div>
+//         </div>
+//     )
+// }
+//
+// export default QAEHelpRequests;

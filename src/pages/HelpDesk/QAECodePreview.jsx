@@ -976,6 +976,8 @@ function QAECodePreview() {
                     </Tabs>
                 </div>
                 <div className="px-4 bg-gray-200 rounded-lg mx-4 py-4">
+                    <p>Subject: About functions </p>
+
                     <p>Request: How to add a variable inside the function</p>
                     {isTextBoxVisible ? (
                         <form className="w-full" onSubmit={handleSubmit}>
@@ -991,7 +993,9 @@ function QAECodePreview() {
                                 />
                             </div>
                             <div className="flex items-center justify-between">
-                                <Tooltip hasArrow label={!responseText ? 'Response text cannot be empty.' : 'Submit the codes/files'} bg={!responseText ? 'red.200' : 'blue.200'} placement='bottom'>
+                                <Tooltip hasArrow
+                                         label={!responseText ? 'Response text cannot be empty.' : 'Submit the codes/files'}
+                                         bg={!responseText ? 'red.200' : 'blue.200'} placement='bottom'>
                                     <Button
                                         isDisabled={!responseText}
                                         border='2px'
@@ -1000,7 +1004,7 @@ function QAECodePreview() {
                                         className="w-64"
                                         type={"submit"}
                                     >
-                                        <Icon as={MdDriveFolderUpload} boxSize={6} color='white' className="mr-2" />Submit
+                                        <Icon as={MdDriveFolderUpload} boxSize={6} color='white' className="mr-2"/>Submit
                                     </Button>
                                 </Tooltip>
                             </div>
