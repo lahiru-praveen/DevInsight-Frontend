@@ -22,6 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import emailjs from 'emailjs-com';
 import logo from '../../assets/devsign.png';
 import image from '../../assets/fp.jpg';
+import image2 from '../../assets/fpm.svg';
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
@@ -96,7 +97,7 @@ export default function ForgotPassword() {
         });
   
         if (response.ok) {
-          navigate('/fpr', { state: { email, code: code.join('') } });
+          navigate('/fprm', { state: { email, code: code.join('') } });
           setErrorMessage('');
         } else {
           const errorData = await response.json();
@@ -128,7 +129,7 @@ export default function ForgotPassword() {
      </Box>
      <Spacer />
      <Box>
-         <img src={image}  height={600} width={600}/>
+         <img src={image2}  height={600} width={600}/>
      </Box>
  </Box>
 
@@ -144,7 +145,7 @@ export default function ForgotPassword() {
         my={12}
       >
        <Text fontSize="2xl" >  Forgot your password?.</Text>
-        <p>Enter your email</p>
+        <p>Enter your organization email</p>
 
         <FormControl>
           <Input
@@ -171,13 +172,15 @@ export default function ForgotPassword() {
         <p>Enter the 6-digit otp</p>
 
         <FormControl>
-          <Stack direction="row" spacing={4} justify="center">
-            <PinInput>
+          
+          <Stack direction="row" spacing={4} justify="center"  >
+            <PinInput >
               {code.map((digit, index) => (
                 <PinInputField
                   key={index}
                   value={digit}
                   onChange={(e) => handleCodeChange(e.target.value, index)}
+                  
                 />
               ))}
             </PinInput>
