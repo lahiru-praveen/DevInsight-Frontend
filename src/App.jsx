@@ -33,6 +33,9 @@ import ChangePassword from "./pages/Profile/ChangePassword.jsx";
 import Orgnizationpage from "./pages/Organization_2/organizationpage.jsx";
 import SignUpInvite from "./pages/Login/SignUpInvitaion.jsx";
 import ForgotPassword from "./pages/Login/ForgotPassword.jsx";
+import ForgotPasswordmanager from "./pages/Login/ForgotPasswordmanager.jsx";
+import ForgotPasswordAndResentmanager from "./pages/Login/ForgotPasswordAndResetmanager.jsx";
+
 
 export default function App() {
     return (
@@ -52,6 +55,7 @@ export default function App() {
                     <Route path="/login-both" element={<LoginBoth/>}/>
                     <Route path="/su" element={<SignUpDemo/>}/>
                     <Route path="/fp" element={<ForgotPassword/>}/>
+                    <Route path="/fpm" element={<ForgotPasswordmanager/>}/>
                     <Route path="/oa" element={<CreateOrg/>}/>
                     <Route path="/verify-email" element={<VerifyEmail/>}/>
                     <Route path="/edit-profile" element={<EditProfile userId="123"/>}/>
@@ -65,6 +69,7 @@ export default function App() {
                     <Route path="/mp" element={<ManagerProfile/>}/> 
                     <Route path="/as" element={<AccSuccess/>}/>
                     <Route path="/fpr" element={<ForgotPasswordAndReset/>}/>
+                    <Route path="/fprm" element={<ForgotPasswordAndResentmanager/>}/>
                     <Route path="/settings" element={<Settings/>}/>
                     <Route path="/face-login" element={<LoginFace/>}/>
                     <Route path="/face-register" element={<RegisterFace/>}/>
