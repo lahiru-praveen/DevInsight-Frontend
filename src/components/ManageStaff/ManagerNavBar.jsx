@@ -1,26 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import {
-  Box, Flex, Avatar, Text, Menu, MenuButton, MenuList, MenuItem, MenuDivider,Image, Button,
+  Box, Flex, Text, Menu, MenuButton, MenuList, MenuItem, MenuDivider,Image, Button,
   Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton,
   useDisclosure
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import Devinsight from '../../assets/Devinsight.png';
-import Bethesda from '../../assets/bethesda.svg';  // Ensure you have a logo image in this path
+
 
 const ManagerNavBar = () => {
-  const user = {
-    Organizaltion_name: 'Bethesda',
-    
-    email: 'admin@bethesda.com',
-    photo:'Bethesda',
-  };
-  
   const adminEmail = sessionStorage.getItem('email');
   const company = sessionStorage.getItem('company');
-  const image = sessionStorage.getItem('image')
-  // const [company,setCompany] = useState('');
+  const image = sessionStorage.getItem('image');
+ 
   
   useEffect(() => {
     

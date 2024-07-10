@@ -47,7 +47,7 @@ export default function LoginManager() {
             console.log(response.data);
 
             // Save token to sessionStorage
-            sessionStorage.setItem('access_token', response.data.access_token);
+            sessionStorage.setItem('access_token_manager', response.data.access_token_manager);
             setLoginMessage('Login successful');
             sessionStorage.setItem('email', response.data.email);
             navigate('/ms');
