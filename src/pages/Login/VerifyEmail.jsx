@@ -156,7 +156,7 @@ export default function VerifyEmail() {
                 {isVerified && (
                     <Alert status="success">
                         <AlertIcon />
-                        Please verify your email. If you don&apos;t see the email, please check spam.
+                        Please verify your email. If you dont see the email, please check spam.
                     </Alert>
                 )}
                 {isError && (
