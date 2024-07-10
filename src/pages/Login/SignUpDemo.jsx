@@ -144,6 +144,8 @@ export default function SignUp() {
                     password,
                     company,
                     companyEmail,
+                    experience: 0,
+                    level: "Beginner",
                     role: "Developer",
                     skills: [],
                     face_encoding: [],
