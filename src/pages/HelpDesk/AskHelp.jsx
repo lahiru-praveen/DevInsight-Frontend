@@ -47,7 +47,7 @@ function AskHelp() {
         try {
             const requestData = {
                 user:user,
-                p_id:projectID,
+                p_id:0,
                 p_name:projectName,
                 r_id:0,
                 r_subject:requestSubject,
