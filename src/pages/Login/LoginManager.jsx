@@ -137,12 +137,21 @@ export default function LoginManager() {
                         </Button>
                     </Stack>
                     <Text textAlign="center">
-                        <Link to="/fp">
-                            <Button variant="link" as="span" color="black">
-                                Forgot password
+                        
+                        <p style={{ color: 'red' }}>{loginMessage}</p>
+                    </Text>
+                    <Text textAlign="center">
+                        <Link to="/co2">
+                            <Button variant="link" color="black">
+                                Create a new Organization account
                             </Button>
                         </Link>
-                        <p style={{ color: 'red' }}>{loginMessage}</p>
+                        <br />
+                        <Link to="/fpm">
+                            <Button variant="link" as="span" color="black">
+                                Forgot your password
+                            </Button>
+                        </Link>
                     </Text>
                 </Stack>
             </Flex>

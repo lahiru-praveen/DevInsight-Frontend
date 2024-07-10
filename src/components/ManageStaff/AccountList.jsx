@@ -129,7 +129,7 @@ const MyComponent = () => {
 
             if (response.status === 200) {
                 const updatedMembers = activeMembers.map(mem =>
-                    mem.email === member.email ? { ...mem, profileStatus: action === 'block' ? 'Blocked' : 'Active' } : mem
+                    mem.email === member.email ? { ...mem, profileStatus: action === 'block' ? 'Suspend' : 'Active' } : mem
                 );
                 setActiveMembers(updatedMembers);
                 setFilteredMembers(updatedMembers);
