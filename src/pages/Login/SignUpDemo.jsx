@@ -144,6 +144,8 @@ export default function SignUp() {
                     password,
                     company,
                     companyEmail,
+                    experience: 0,
+                    level: "Beginner",
                     role: "Developer",
                     skills: [],
                     face_encoding: [],
@@ -259,6 +261,7 @@ export default function SignUp() {
                             type="text"
                             value={company}
                             onChange={handleCompanyChange}
+                            isReadOnly
                         />
                     </FormControl>
                     <FormControl id="email" flex={2}>
@@ -268,6 +271,7 @@ export default function SignUp() {
                             type="email"
                             value={email}
                             onChange={handleEmailChange}
+                            isReadOnly
                         />
                     </FormControl>
                 </Flex>

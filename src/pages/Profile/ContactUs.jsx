@@ -98,7 +98,7 @@ const ContactUs = () => {
                     left="0"
                     width="100%"
                     zIndex="9999"
-                    bg="green.500"
+                    bg="green.200"
                     color="white"
                     padding="1rem"
                 >

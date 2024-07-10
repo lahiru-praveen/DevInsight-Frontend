@@ -1,31 +1,34 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   ChakraProvider,
   Button,
   Avatar,
-  Text,
-  Heading,
+  Text,Heading,
   Divider,
-  FormControl, FormLabel,
+  FormControl,FormLabel,
   Input,
-  HStack,
-  Tag, TagLabel, TagCloseButton,
-  Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter,
+  Tag,
+  Modal,ModalOverlay,ModalContent,ModalHeader,ModalCloseButton,ModalBody,ModalFooter,
   Box,
   VStack,
   Icon,
+  Alert,AlertIcon,AlertTitle,AlertDescription,
+  Switch,
   Flex,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
+  useColorModeValue,
+  Checkbox,
+  Stack,
+  Badge,
+  Select,
+  NumberInput,NumberInputStepper, NumberInputField, NumberIncrementStepper, NumberDecrementStepper,
+  
 } from '@chakra-ui/react';
 import { FiUpload } from 'react-icons/fi';
-import { getUserProfile, createUserProfile, uploadProfilePicture } from './api';
+import { getUserProfile, createUserProfile } from './api';
 import 'cropperjs/dist/cropper.css';
 
-const predefinedSkills = ['C', 'HTML', 'CSS', 'Python', 'Java', 'React', 'Node.js', 'FastAPI', 'Prolog'];
+const predefinedSkills = ['Python', 'JavaScript', 'Java', 'HTML', 'CSS','C', 'C#', 'C++', 'PHP', 'Ruby', 'Swift', 'Go','TypeScript'];
 
 const EditProfile = ({ token, isOpen, onClose, onSave }) => {
   const [profile, setProfile] = useState({
@@ -34,6 +37,9 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
     username: '',
     email: '',
     company: '',
+    companyEmail: '',
+    experience: 0,
+    level: '',
     role: '',
     skills: [],
     profilePicture: '',
@@ -43,10 +49,6 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
 
   const [file, setFile] = useState(null);
   const [error, setError] = useState(null);
-  const [newSkill, setNewSkill] = useState('');
-  const [skillsToAdd, setSkillsToAdd] = useState([]);
-  const [skillsToRemove, setSkillsToRemove] = useState([]);
-  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -55,8 +57,6 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
         const token = sessionStorage.getItem('access_token');
         const data = await getUserProfile(email, token);
         setProfile(data);
-        setSkillsToAdd([]);
-        setSkillsToRemove([]);
       } catch (error) {
         setError(error.detail);
       }
@@ -67,27 +67,13 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log(name, value);
     setProfile((prevProfile) => ({ ...prevProfile, [name]: value }));
   };
 
-  const handleAddSkill = () => {
-    if (newSkill.trim() !== '') {
-      setSkillsToAdd([...skillsToAdd, newSkill.trim()]);
-      setNewSkill('');
-    }
-  };
 
-  const handleAddPredefinedSkill = (skill) => {
-    if (!profile.skills.includes(skill) && !skillsToAdd.includes(skill)) {
-      setSkillsToAdd([...skillsToAdd, skill]);
-    }
-  };
-
-  const handleRemoveSkill = (skillToRemove) => {
-    setProfile((prevProfile) => ({
-      ...prevProfile,
-      skills: prevProfile.skills.filter((skill) => skill !== skillToRemove),
-    }));
+  const handleExperienceChange = (value) => {
+    setProfile((prevProfile) => ({ ...prevProfile, experience: parseInt(value) || 0 }));
   };
 
   const handleSave = async () => {
@@ -95,52 +81,31 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
       if (!profile.email) {
         throw new Error('User email is missing');
       }
-      const updatedSkills = [...profile.skills.filter(skill => !skillsToRemove.includes(skill)), ...skillsToAdd];
-      const updatedProfile = { ...profile, skills: updatedSkills };
-      await createUserProfile(profile.email, updatedProfile, token);
-      if (croppedImage) {
-        await uploadProfilePicture(profile.email, croppedImage, token);
-      }
-      setSuccessMessage('Profile updated successfully');
-      onSave(updatedProfile);
+      await createUserProfile(profile.email, profile, token);
+      onSave(profile);
+      console.log(profile)
       onClose();
     } catch (error) {
       setError(error.detail || error.message);
     }
   };
 
-
-    const handleFileChange = (event) => {
-      const file = event.target.files[0];
-      if (file) {
-        if (file.size > 1048576) { // Check if file size exceeds 1MB
-          setError('Image size should be less than 1MB');
-          return;
-        }
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setProfile((prevProfile) => ({ ...prevProfile, profilePicture: reader.result }));
-        };
-        reader.readAsDataURL(file);
-        setFile(file);
-        setError(null); // Clear any previous error
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      if (file.size > 1048576) { // Check if file size exceeds 1MB
+        setError('Image size should be less than 1MB');
+        return;
       }
-    };
-
-    
-
-    const [image, setImage] = useState(null);
-    const [croppedImage, setCroppedImage] = useState(profile.profilePicture || null);
-    const cropperRef = useRef(null);
-
-  const handleCrop = () => {
-    if (cropperRef.current) {
-      setCroppedImage(cropperRef.current.cropper.getCroppedCanvas().toDataURL());
-      setImage(null);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfile((prevProfile) => ({ ...prevProfile, profilePicture: reader.result }));
+      };
+      reader.readAsDataURL(file);
+      setFile(file);
+      setError(null);
     }
   };
-
-
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -150,55 +115,27 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing={4}>
-          {error && (
+            {error && (
               <Alert status="error">
                 <AlertIcon />
                 <AlertTitle>Error</AlertTitle>
                 <AlertDescription>{typeof error === 'string' ? error : JSON.stringify(error)}</AlertDescription>
               </Alert>
             )}
-            {successMessage && (
-              <Alert status="success">
-                <AlertIcon />
-                <AlertTitle>Success</AlertTitle>
-                <AlertDescription>{successMessage}</AlertDescription>
-              </Alert>
-            )}
-          <FormControl >
-            <FormLabel>First Name</FormLabel>
-            <Input
-              name="firstName"
-              value={profile.firstName}
-              onChange={handleInputChange}
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Last Name</FormLabel>
-            <Input
-              name="lastName"
-              value={profile.lastName}
-              onChange={handleInputChange}
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Username</FormLabel>
-            <Input
-              name="username"
-              value={profile.username}
-              onChange={handleInputChange}
-            />
-          </FormControl>
-          <FormControl >
-            <FormLabel>Email</FormLabel>
-            <Input
-              name="email"
-              value={profile.email}
-              onChange={handleInputChange}
-              isReadOnly
-            />
-          </FormControl>
-          <FormControl>
+            <FormControl>
               <FormLabel>Profile Picture</FormLabel>
+              {profile.profilePicture && (
+                <Box mt={4} mb={4} width="150px" height="150px" mx="auto">
+                  <Avatar
+                    src={profile.profilePicture}
+                    alt="Profile Picture Preview"
+                    size="xl"
+                    borderRadius="full"
+                    width="100%"
+                    height="100%"
+                  />
+                </Box>
+              )}
               <Input
                 type="file"
                 accept="image/*"
@@ -217,71 +154,45 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
               >
                 {file ? file.name : "Choose Image"}
               </Button>
-              {profile.profilePicture && (
-                <Box mt={4} width="150px" height="150px" mx="auto">
-                <Avatar
-                  src={profile.profilePicture} 
-                  alt="Profile Picture Preview"
-                  size="xl" 
-                  borderRadius="full"
-                  width="100%"
-                  height="100%"
-                />
-                </Box>
-              )}
             </FormControl>
-
             <FormControl>
-              <FormLabel>Skills</FormLabel>
-              <HStack>
-                <Input
-                  type="text"
-                  value={newSkill}
-                  onChange={(e) => setNewSkill(e.target.value)}
-                  placeholder="Add a new skill"
-                />
-                <Button onClick={handleAddSkill} colorScheme="blue">
-                  Add
-                </Button>
-              </HStack>
+              <FormLabel>Username</FormLabel>
+              <Input
+                name="username"
+                value={profile.username}
+                onChange={handleInputChange}
+              />
             </FormControl>
+            <FormControl>
+              <FormLabel>Email</FormLabel>
+              <Input
+                name="email"
+                value={profile.email}
+                onChange={handleInputChange}
+                isReadOnly
+              />
+            </FormControl>
+            <Box align="left" size="md" width="100%">
+            <Text size="md" as='b'>Experience level</Text>
+            <Select name="level" value={profile.level || "Beginner"} onChange={handleInputChange}>
+              <option name="level" value="Beginner" className="text-gray-900">Beginner</option>
+              <option name="level" value="Intermediate" className="text-gray-900">Intermediate</option>
+              <option name="level" value="Expert" className="text-gray-900">Expert</option>
+            </Select>
+          </Box>
 
-            <Box>
-              <FormLabel>Selected Skills</FormLabel>
-              <Box mb={2}>
-                {profile.skills.map((skill, index) => (
-                  <Tag key={index} size="md" colorScheme="teal" borderRadius="full" m={1}>
-                    <TagLabel>{skill}</TagLabel>
-                    <TagCloseButton onClick={() => handleRemoveSkill(skill)} />
-                  </Tag>
-                ))}
-                {skillsToAdd.map((skill, index) => (
-                  <Tag key={index} size="md" colorScheme="blue" borderRadius="full" m={2}>
-                    <TagLabel>{skill}</TagLabel>
-                    <TagCloseButton onClick={() => setSkillsToAdd(skillsToAdd.filter(s => s !== skill))} />
-                  </Tag>
-                ))}
-              </Box>
-            </Box>
-
-            <Box>
-              <FormLabel>Suggested Skills</FormLabel>
-              <Box>
-                {predefinedSkills.map((skill, index) => (
-                  <Tag
-                    key={index}
-                    size="md"
-                    colorScheme="gray"
-                    borderRadius="full"
-                    m={1}
-                    cursor="pointer"
-                    onClick={() => handleAddPredefinedSkill(skill)}
-                  >
-                    <TagLabel>{skill}</TagLabel>
-                  </Tag>
-                ))}
-              </Box>
-            </Box>
+          <Box width="100%">
+            <Text size="md" as='b'>Experiance in years</Text>
+            <NumberInput  step={1} maxW='100px' name="experience" mr='2rem'  max={40} min={0} value={profile.experience} onChange={handleExperienceChange}>
+             <NumberInputField />
+            <NumberInputStepper>
+            <NumberIncrementStepper />
+            <NumberDecrementStepper />
+           </NumberInputStepper>
+             </NumberInput>
+          </Box>
+              
+            
           </VStack>
         </ModalBody>
         <ModalFooter>
@@ -297,80 +208,167 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
 
 const ProfileAndSkills = ({ profile, onUpdateProfile, token }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSkillsModalOpen, setIsSkillsModalOpen] = useState(false);
+  const [skills, setSkills] = useState(predefinedSkills.reduce((acc, skill) => {
+    acc[skill] = profile.skills.includes(skill);
+    return acc;
+  }, {}));
+
+  const [selectedSkills, setSelectedSkills] = useState({});
+
+  useEffect(() => {
+    // Initialize selectedSkills state based on profile skills
+    const initialSelectedSkills = predefinedSkills.reduce((acc, skill) => {
+      acc[skill] = profile.skills.includes(skill);
+      return acc;
+    }, {});
+    setSelectedSkills(initialSelectedSkills);
+  }, [profile.skills]);
+
+  const handleSkillChange = (skill) => {
+    setSelectedSkills(prevSkills => ({
+      ...prevSkills,
+      [skill]: !prevSkills[skill] // Toggle the skill state
+    }));
+  };
+
+  const handleSaveSkills = async () => {
+    const updatedProfile = { ...profile, skills: Object.keys(selectedSkills).filter(skill => selectedSkills[skill]) };
+    
+    try {
+      await createUserProfile(profile.email, updatedProfile, token);
+      onUpdateProfile(updatedProfile);
+      setIsSkillsModalOpen(false);
+    } catch (error) {
+      console.error('Error saving skills:', error);
+    }
+  };
 
   return (
-    <Box
-      position="relative"
-      bg="gray.100"
-      shadow="lg"
-      borderRadius="lg"
-      p={6}
-      maxW="xl"
-      mx="auto"
-      minH="calc(100vh - 2rem)"
-      display="flex"
-      flexDirection="column"
-    >
-      <Button
-        position="absolute"
-        top={4}
-        right={4}
-        variant="link"
-        colorScheme="teal"
-        onClick={() => setIsModalOpen(true)}
-      >
-        Edit Profile
-      </Button>
+    <Flex width="100%" height="100vh" bg={useColorModeValue('gray.700')}>
+    <Box className=" p-6 flex flex-col" width="100%" mt="10"> 
+      <Box className="relative shadow-lg rounded-lg w-full max-w-4xl mx-auto flex flex-col md:flex-row bg-white p-4">
+        {/* Left Side Box */}
+        <Box className="w-full md:w-1/3 h-full p-6 border-r border-gray-200">
+          <Box
+            className="w-64 h-64 mb-4"
+            borderRadius="md"
+            overflow="hidden"
+            p={4}
+          >
+            <Avatar size="full" name={profile.username} src={profile.profilePicture} />
+          </Box>
+          <Divider w="100%" />
+          <VStack spacing={2} className="mt-auto">
+            <Text fontSize="md" color="gray.600">
+              Organization
+            </Text>
+            <Text fontSize="md" color="gray.600" as="b">
+              {profile.company}
+            </Text>
+            
+            <Text fontSize="md" color="gray.600" as="b">
+              {profile.companyEmail}
+            </Text>
+          </VStack>
+        </Box>
 
-      <VStack spacing={6} align="center" flex={1} justifyContent="center">
-        <Avatar size="2xl" name={profile.username} src={profile.profilePicture} />
-        <Heading as="h2" size="lg" textAlign="center">
-          {profile.username}
-        </Heading>
-        <Divider w="100%" />
-        <VStack align="center" spacing={2}>
-          <Text fontSize="sm" color="gray.500">
-            Email
-          </Text>
-          <Text fontSize="md" color="gray.700">
-            {profile.email}
-          </Text>
-        </VStack>
-        <Divider w="100%" />
-        <VStack align="center" spacing={2}>
-          <Text fontSize="sm" color="gray.500">
-            Role
-          </Text>
-          <Button colorScheme="blue" size="xs" variant="solid">
-            {profile.role}
-          </Button>
-        </VStack>
-        <VStack align="center" spacing={2}>
-          <Text fontSize="sm" color="gray.500">
-            Organization
-          </Text>
-          <Text fontSize="md" color="gray.700">
-            {profile.company}
-          </Text>
-        </VStack>
-        <Divider w="100%" />
-        <VStack align="center" spacing={2}>
-          <Text fontSize="sm" color="gray.500">
-            Skills
-          </Text>
-          <Flex flexWrap="wrap" justifyContent="center">
-            {profile.skills && profile.skills.length > 0 ? (
-              profile.skills.map((skill, index) => (
-                <Tag key={index} size="lg" colorScheme="teal" borderRadius="full" m={1}>
+        {/* Right Side Box */}
+        <Box className="w-full md:w-2/3 h-full flex flex-col">
+            <Button position="absolute" top={4} right={4} onClick={() => setIsModalOpen(true)} variant="link" colorScheme="teal">
+              Edit Profile
+            </Button>
+
+          {/* Top Half - User Details */}
+              <Box className="h-1/2 p-6 flex flex-col">
+                <Button colorScheme="blue" size="md"  variant='ghost' width="20%">
+                    {profile.role}
+                </Button>
+
+                <Flex>
+                  <Heading as="h2" size="lg" ml={3}>
+                    {profile.username}
+                  </Heading>
+                  <Badge ml='1' colorScheme='green' size='sm' height="45%">
+                      {profile.level}
+                  </Badge>
+                </Flex>
+                
+                
+                  <Box align="left" spacing={2} className="mt-4">
+                  
+                    <Text fontSize="md" color="gray.700" ml={4} as="b">
+                      {profile.email}
+                    </Text>
+                  </Box><br/><br/>
+                  <Flex><Text fontSize="md" color="gray.700" ml={4} mr={2}>Years of Experiance</Text>
+                  <Text>
+                  {profile.experience}
+                  </Text> 
+                   </Flex>
+                  
+                </Box>
+
+          {/* Bottom Half - Skills */}
+          <Box className="h-1/2 p-6 flex flex-col items-center justify-center border-t border-gray-200">
+            <Text fontSize="sm" color="gray.500">
+              Skills
+            </Text>
+            <Flex flexWrap="wrap" justifyContent="center" className="mt-4">
+              {profile.skills.map((skill, index) => (
+                <Box key={index} className="flex items-center m-2">
+                  <Tag size="lg" colorScheme="teal" borderRadius="full" m={1}>
+                    {skill}
+                  </Tag>
+                </Box>
+              ))}
+            </Flex>
+            <Button
+              position="absolute"
+              top={60}
+              right={4}
+              variant="link"
+              colorScheme="teal"
+              onClick={() => setIsSkillsModalOpen(true)}
+            >
+              Edit Skills
+            </Button>
+          </Box>
+        </Box>
+
+        
+         {/* Edit Skills Modal */}
+      <Modal isOpen={isSkillsModalOpen} onClose={() => setIsSkillsModalOpen(false)}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Edit Skills</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {predefinedSkills.map((skill, index) => (
+              <FormControl key={index} display="flex" alignItems="center" mb={4}>
+                <FormLabel htmlFor={`switch-${skill}`} mb="0" width="100px">
                   {skill}
-                </Tag>
-              ))
-            ) : (
-              <Text>No skills found</Text>
-            )}
-          </Flex>
-        </VStack>
-      </VStack>
+                </FormLabel>
+                <Switch
+                  id={`switch-${skill}`}
+                  colorScheme={selectedSkills[skill] ? "green" : "red"}
+                  isChecked={selectedSkills[skill]}
+                  onChange={() => handleSkillChange(skill)}
+                />
+              </FormControl>
+            ))}
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={handleSaveSkills}>
+              Save
+            </Button>
+            <Button variant="ghost" onClick={() => setIsSkillsModalOpen(false)}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      </Box>
 
       <EditProfile
         token={token}
@@ -379,14 +377,26 @@ const ProfileAndSkills = ({ profile, onUpdateProfile, token }) => {
         onSave={onUpdateProfile}
       />
     </Box>
+    </Flex>
   );
 };
 
-const ProfilePage = () => {
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const token = sessionStorage.getItem('token');
+const ProfilePage = ({ token }) => {
+  const [profile, setProfile] = useState({
+    lastName: '',
+    firstName: '',
+    username: '',
+    email: '',
+    company: '',
+    companyEmail: '',
+    experience: 0,
+    level: '',
+    role: '',
+    skills: [],
+    profilePicture: '',
+    user_Id: '',
+    profileStatus: 'Active',
+  });
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -395,10 +405,8 @@ const ProfilePage = () => {
         const token = sessionStorage.getItem('access_token');
         const data = await getUserProfile(email, token);
         setProfile(data);
-        setLoading(false);
       } catch (error) {
-        setError(error.detail);
-        setLoading(false);
+        console.error('Error fetching user profile:', error);
       }
     };
 
@@ -409,28 +417,21 @@ const ProfilePage = () => {
     setProfile(updatedProfile);
   };
 
-  if (loading) {
-    return <Text>Loading...</Text>;
-  }
-
-  if (error) {
-    return <Text color="red.500">{error}</Text>;
-  }
-
   return (
     <ChakraProvider>
-      <ProfileAndSkills
-        profile={profile}
-        onUpdateProfile={handleUpdateProfile}
-        token={token}
-      />
+      <Box className="min-h-screen bg-gray-100 p-6">
+        <Box className="flex justify-center items-center">
+          <ProfileAndSkills profile={profile} onUpdateProfile={handleUpdateProfile} token={token} />
+        </Box>
+      </Box>
     </ChakraProvider>
   );
 };
 
-export default ProfilePage;
+// ProfilePage.propTypes = {
+//   token: PropTypes.string.isRequired,
+// };
 
-// Prop validations for EditProfile component
 EditProfile.propTypes = {
   token: PropTypes.string.isRequired,
   isOpen: PropTypes.bool.isRequired,
@@ -438,20 +439,10 @@ EditProfile.propTypes = {
   onSave: PropTypes.func.isRequired,
 };
 
-// Prop validations for ProfileAndSkills component
 ProfileAndSkills.propTypes = {
-  profile: PropTypes.shape({
-    firstName: PropTypes.string.isRequired,
-    lastName: PropTypes.string.isRequired,
-    username: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
-    company: PropTypes.string.isRequired,
-    role: PropTypes.string.isRequired,
-    skills: PropTypes.arrayOf(PropTypes.string).isRequired,
-    profilePicture: PropTypes.string,
-  }).isRequired,
+  profile: PropTypes.object.isRequired,
   onUpdateProfile: PropTypes.func.isRequired,
-  token: PropTypes.string, // Remove if not used
+  token: PropTypes.string.isRequired,
 };
 
-
+export default ProfilePage;
