@@ -5,7 +5,7 @@ import ToolTip from "../../context/ToolTip.jsx";
 import { Icon } from "@chakra-ui/icons";
 import { FcExpand } from 'react-icons/fc';
 import { VscBlank } from 'react-icons/vsc';
-import SubmissionModal from '../dashboard/SubmissionModal';
+import RequestModal from '../HelpDesk/RequestModals.jsx';
 
 export default function Requests({ request, drop }) {
     const [isModalOpen, setModalOpen] = useState(false);
@@ -47,14 +47,7 @@ export default function Requests({ request, drop }) {
                     </Flex>
                 </Card>
             </div>
-            <SubmissionModal
-                isOpen={isModalOpen}
-                onClose={() => setModalOpen(false)}
-                p_name={p_name}
-                code={"code"}
-                des={"description"}
-                entity_id={p_id}
-            />
+            <RequestModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} p_name={p_name} subject={r_subject} request={r_content} r_id={r_id} p_id={p_id}/>
         </>
     );
 }

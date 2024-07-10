@@ -8,12 +8,7 @@ function AskHelp() {
     const location = useLocation();
     const navigate = useNavigate();
     const {
-        projectID,
         projectName,
-        fileName,
-        language,
-        description,
-        mode,
         code,
         review,
         suggestions,
@@ -25,6 +20,9 @@ function AskHelp() {
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const user = sessionStorage.getItem('email');
+    const [projectID, setProjectID] = useState('');
+
+
     const handleSubjectChange = (event) => {
         setRequestSubject(event.target.value);
     };
@@ -45,9 +43,16 @@ function AskHelp() {
 
     const confirmSubmission = async () => {
         try {
+            const new_p_id = await axios.get("http://localhost:8000/get-latest-p-id", {
+                params: {
+                    user: user
+                }
+            });
+            setProjectID(new_p_id.data);
+
             const requestData = {
                 user:user,
-                p_id:0,
+                p_id:projectID,
                 p_name:projectName,
                 r_id:0,
                 r_subject:requestSubject,

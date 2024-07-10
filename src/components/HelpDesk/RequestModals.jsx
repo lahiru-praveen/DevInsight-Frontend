@@ -3,26 +3,24 @@ import PropTypes from 'prop-types';
 import axios from "axios";
 import {useEffect, useState} from "react";
 
-const SubmissionModal = ({ isOpen, onClose, p_name, code , des , entity_id}) => {
+const RequestModal = ({ isOpen, onClose, p_name, subject , request , r_id, p_id}) => {
     const [isDeleting, setIsDeleting] = useState(false);
-    const [reviewContent, setReviewContent] = useState('');
-    const [suggestionContent, setSuggestionContent] = useState('');
-    const [referLinksContent, setReferLinksContent] = useState('');
+    const [responseContent, setResponseContent] = useState('');
     const user = sessionStorage.getItem('email');
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const result = await axios.get(`http://localhost:8000/get-review/${entity_id}`, {
+                const result = await axios.get(`http://localhost:8000/get-response`, {
                     params: {
-                        user: user
+                        p_id: p_id,
+                        user: user,
+                        r_id: r_id
                     }
                 });
                 console.log("Fetch Result: ", result); // Log the entire response
-                const { review, suggestions, reference_links } = result.data;
-                setReviewContent(review);
-                setSuggestionContent(suggestions);
-                setReferLinksContent(reference_links);
+                const { response_content} = result.data;
+                setResponseContent(response_content);
             } catch (error) {
                 console.error("Error fetching files:", error);
             }
@@ -30,7 +28,7 @@ const SubmissionModal = ({ isOpen, onClose, p_name, code , des , entity_id}) => 
         if (isOpen) {
             fetchData().then(r => console.log(r));
         }
-    }, [isOpen, entity_id]);
+    }, [isOpen,p_id,r_id]);
 
 
     const handleDelete = async () => {
@@ -38,7 +36,7 @@ const SubmissionModal = ({ isOpen, onClose, p_name, code , des , entity_id}) => 
         setIsDeleting(true);
         try {
             if (confirmed) {
-                const response = await axios.delete("http://localhost:8000/delete-sub", {data: { entity_id, user }});
+                const response = await axios.delete("http://localhost:8000/delete-request", {data: { p_id, user , r_id}});
                 if (response.status === 200) {
                     alert("Submission Deleted Successfully");
                     onClose(); // Close the modal after deletion
@@ -66,58 +64,20 @@ const SubmissionModal = ({ isOpen, onClose, p_name, code , des , entity_id}) => 
                 <ModalCloseButton />
                 <ModalBody>
                     <div>
-                        <Tabs variant='soft-rounded' colorScheme='blue'>
-                            <div>
-                                <TabList>
-                                    <Tab>Code</Tab>
-                                    <Tab>Review</Tab>
-                                    <Tab>Help Requests</Tab>
-                                </TabList>
-                            </div>
-                            <TabPanels>
-                                <div>
-                                    <TabPanel>
-                                        <div className="font-bold bg-[#EBEBEB] color-[#898989] p-10 m-2">
-                                            <Text className="text-xl font-bold mr-2">Description - </Text>
-                                            <Box bg='white' p={4} color='black' className="mt-2 mb-8">
-                                                <Text>{des}</Text>
-                                            </Box>
-                                            <Text className="text-xl font-bold mr-2">Code - </Text>
-                                            <Box bg='white'  p={4} className="mt-2 mb-8">
-                                                <pre>{code}</pre>
-                                            </Box>
-                                        </div>
-                                    </TabPanel>
-                                </div>
-                                <div>
-                                    <TabPanel>
-                                        <div className="font-bold bg-[#EBEBEB] color-[#898989] p-10 m-2">
-                                            <Text className="text-xl font-bold mr-2">Review - </Text>
-                                            <Box bg='white' p={4} color='black' className="mt-2 mb-8">
-                                                <pre>{reviewContent}</pre>
-                                            </Box>
-                                            <Text className="text-xl font-bold mr-2">Suggestions - </Text>
-                                            <Box bg='white'  p={4} className="mt-2 mb-8">
-                                                <pre>{suggestionContent}</pre>
-                                            </Box>
-                                            <Text className="text-xl font-bold mr-2">Reference Links - </Text>
-                                            <Box bg='white'  p={4} className="mt-2 mb-8">
-                                                <pre>{referLinksContent}</pre>
-                                            </Box>
-                                        </div>
-                                    </TabPanel>
-                                </div>
-                                <div>
-                                    <TabPanel>
-                                        <div className="font-bold bg-[#EBEBEB] color-[#898989] p-10 m-2">
-                                            <pre>
-                                                Request Details
-                                            </pre>
-                                        </div>
-                                    </TabPanel>
-                                </div>
-                            </TabPanels>
-                        </Tabs>
+                        <div className="font-bold bg-[#EBEBEB] color-[#898989] p-10 m-2">
+                            <Text className="text-xl font-bold mr-2">Subject - </Text>
+                            <Box bg='white' p={4} color='black' className="mt-2 mb-8">
+                                <Text>{subject}</Text>
+                            </Box>
+                            <Text className="text-xl font-bold mr-2">Request - </Text>
+                            <Box bg='white' p={4} className="mt-2 mb-8">
+                                <pre>{request}</pre>
+                            </Box>
+                            <Text className="text-xl font-bold mr-2">Response - </Text>
+                            <Box bg='white' p={4} className="mt-2 mb-8">
+                                <pre>{responseContent}</pre>
+                            </Box>
+                        </div>
                     </div>
                 </ModalBody>
                 <ModalFooter>
@@ -133,13 +93,14 @@ const SubmissionModal = ({ isOpen, onClose, p_name, code , des , entity_id}) => 
     );
 };
 
-SubmissionModal.propTypes = {
+RequestModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     p_name: PropTypes.string.isRequired,
-    code: PropTypes.string.isRequired,
-    des: PropTypes.string.isRequired,
-    entity_id: PropTypes.number.isRequired, // Add entity_id to PropTypes
+    subject: PropTypes.string.isRequired,
+    request: PropTypes.string.isRequired,
+    r_id: PropTypes.number.isRequired,
+    p_id: PropTypes.number.isRequired,
 };
 
-export default SubmissionModal;
+export default RequestModal;

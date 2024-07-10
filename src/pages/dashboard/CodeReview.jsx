@@ -34,7 +34,7 @@ export default function CodeReview() {
     const navigate = useNavigate();
     const { state } = location;
     let { reviewContent, selectedFileName, mode, suggestionContent, referLinksContent, projectName, language, description, projectId } = state || {};
-    console.log(reviewContent);
+    console.log(projectId);
     console.log("Selected file name in CodePreview:", selectedFileName);
     console.log(suggestionContent);
 
@@ -56,7 +56,7 @@ export default function CodeReview() {
 
     const handleAskHelp = async () => {
         try {
-            navigate('/ah', {state: {projectID: projectId, projectName: projectName, fileName: selectedFileName, language: language, description: description, mode: mode, code: selectedFileContent, review: reviewContent, suggestions: suggestionContent, referLinks: referLinksContent}});
+            navigate('/ah', {state: {projectName: projectName, code: selectedFileContent, review: reviewContent, suggestions: suggestionContent, referLinks: referLinksContent}});
         } catch (error) {
             console.error("Error navigating to Ask Help:", error);
         }
