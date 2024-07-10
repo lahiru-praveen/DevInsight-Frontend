@@ -8,12 +8,7 @@ function AskHelp() {
     const location = useLocation();
     const navigate = useNavigate();
     const {
-        projectID,
         projectName,
-        fileName,
-        language,
-        description,
-        mode,
         code,
         review,
         suggestions,
@@ -91,6 +86,8 @@ function AskHelp() {
                         <TabList>
                             <Tab>Preview</Tab>
                             <Tab>Review</Tab>
+                            <Tab>Suggestions</Tab>
+                            <Tab>Reference Links</Tab>
                         </TabList>
                         <TabPanels className="h-full">
                             <TabPanel className="h-full overflow-auto">
@@ -99,6 +96,12 @@ function AskHelp() {
                             </TabPanel>
                             <TabPanel className="h-full overflow-auto">
                                 <pre>{review}</pre>
+                            </TabPanel>
+                            <TabPanel className="h-full overflow-auto">
+                                <pre>{suggestions}</pre>
+                            </TabPanel>
+                            <TabPanel className="h-full overflow-auto">
+                                <pre>{referLinks}</pre>
                             </TabPanel>
                         </TabPanels>
                     </Tabs>
