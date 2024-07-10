@@ -25,6 +25,7 @@ import AskHelp from "./pages/HelpDesk/AskHelp.jsx";
 import UserResponsePreview from "./pages/HelpDesk/UserResponsePreview.jsx";
 import ManagerProfile from "./pages/MangerProfile/ManagerProfile.jsx";
 import AccSuccess from "./pages/CreateOrg/AccSuccess.jsx";
+import InvalidPage from "./pages/CreateOrg/Invalidpage.jsx";
 import Settings from "./pages/Profile/Settings.jsx";
 import LoginFace from "./pages/Login/FaceLogin.jsx";
 import RegisterFace from "./pages/Login/FaceRegister.jsx";
@@ -67,7 +68,8 @@ export default function App() {
                     <Route path="/ah" element={<AskHelp/>}/>
                     <Route path="/urp" element={<UserResponsePreview/>}/>
                     <Route path="/mp" element={<ManagerProfile/>}/> 
-                    <Route path="/as" element={<AccSuccess/>}/>
+                    <Route path="/successpage" element={<AccSuccess/>}/>
+                    <Route path="/invalidpage" element={<InvalidPage/>}/>
                     <Route path="/fpr" element={<ForgotPasswordAndReset/>}/>
                     <Route path="/fprm" element={<ForgotPasswordAndResentmanager/>}/>
                     <Route path="/settings" element={<Settings/>}/>

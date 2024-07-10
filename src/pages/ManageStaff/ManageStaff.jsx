@@ -10,7 +10,7 @@ function ManageStaff() {
     // Fetch user data from the database
     const fetchProfile = async () => {
         try {
-            const token = sessionStorage.getItem('access_token'); 
+            const token = sessionStorage.getItem('access_token_manager'); 
             if (!token) {
                 throw new Error('No token found');
             }

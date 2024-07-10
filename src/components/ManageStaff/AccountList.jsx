@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import axios from "axios";
-import {Select, Input, InputGroup, InputLeftElement, Button, Alert, AlertIcon, Spinner, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, FormControl, FormLabel, useDisclosure, Text} from '@chakra-ui/react';
+import {Select, Input, InputGroup, InputLeftElement, Button, Avatar, Alert, AlertIcon, Spinner, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, FormControl, FormLabel, useDisclosure, Text, Skeleton, Stack, useToast, Tooltip} from '@chakra-ui/react';
 import { Search2Icon } from "@chakra-ui/icons";
 import pp from '../../assets/pp.jpeg';
 
@@ -19,8 +19,11 @@ const MyComponent = () => {
     const [selectedRole, setSelectedRole] = useState("All");
     const [roleError, setRoleError] = useState("");
     const [isRoleChanged, setIsRoleChanged] = useState(false);
-    const [successAlert, setSuccessAlert] = useState(false);
     const organization_email = sessionStorage.getItem('email');
+    const [MemberCount, setMemeberCount] = useState(0);
+    const [isLoading, setIsLoading] = useState(true);
+    const [hasFetched, setHasFetched] = useState(false);
+    const toast = useToast();
 
     useEffect(() => {
         const fetchActiveMembers = async () => {
@@ -29,9 +32,13 @@ const MyComponent = () => {
                 console.log(response.data);
                 const activeMembers = response.data.filter(member => member.profileStatus !== 'Deactive');
                 setActiveMembers(activeMembers);
+                setMemeberCount(activeMembers.length);
                 setFilteredMembers(activeMembers);
+                setIsLoading(false);
+                setHasFetched(true);
             } catch (error) {
                 console.error('Error fetching active members:', error);
+                
             }
         };
 
@@ -104,13 +111,26 @@ const MyComponent = () => {
                 onConfirmModalClose();
 
                 // Show success alert
-                setSuccessAlert(true);
+                toast({
+                    title: "Role Updated.",
+                    description: "User Role have been successfully updated",
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                  });
             } else {
                 setError("Error updating role. Please try again later.");
             }
         } catch (error) {
             console.error('Error updating role:', error);
             setError("Error updating role. Please try again later.");
+            toast({
+                title: "Role update failed.",
+                description: "Error updating role. Please try again later.",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+              });
         } finally {
             onLoadingModalClose(); // Hide loading modal
         }
@@ -133,25 +153,43 @@ const MyComponent = () => {
                 );
                 setActiveMembers(updatedMembers);
                 setFilteredMembers(updatedMembers);
-                setRoleError("");
+                
                 onLoadingModalClose();
+                toast({
+                    title: "Action Completed.",
+                    description: "Account state successfully changed.",
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                  });
 
                 // Show success alert
-                setSuccessAlert(true);
+                
             } else {
-                setError("Error updating profile status. Please try again later.");
+                toast({
+                    title: "Action Failed.",
+                    description: "Error changing account state. Please try again later.",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                  });
+                  
             }
         } catch (error) {
-            console.error('Error updating profile status:', error);
-            setError("Error updating profile status. Please try again later.");
+            console.error('Error updating profile status:', error)
+            toast({
+                title: "Action Failed.",
+                description: "Error changing account state. Please try again later.",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+              });
         } finally {
             onLoadingModalClose(); // Hide loading modal
         }
     };
 
-    const closeSuccessAlert = () => {
-        setSuccessAlert(false);
-    };
+    
 
     return (
         <div className='px-20 py-5'>
@@ -213,97 +251,113 @@ const MyComponent = () => {
                 </ModalContent>
             </Modal>
 
-            {successAlert && (
-                <Alert
-                    status="success"
-                    variant="subtle"
-                    flexDirection="column"
-                    alignItems="center"
-                    justifyContent="center"
-                    textAlign="center"
-                    mb={4}
-                >
-                    <AlertIcon boxSize="40px" mr={0} />
-                    <Text fontSize="lg">Action performed successfully!</Text>
-                    <Text
-                        as="button"
-                        onClick={closeSuccessAlert}
-                        mt={4}
-                        color="blue.500"
-                        fontSize="sm"
-                        fontWeight="bold"
-                        textDecoration="underline"
-                        _hover={{ cursor: 'pointer', textDecoration: 'none' }}
-                    >
-                        Close
-                    </Text>
-                </Alert>
-            )}
-
-            <h1 className="py-5 text-xl leading-tight font-bold text-gray-500">
-                Active Members
+            
+            <div className="flex">
+            <h1 className=" text-xl leading-tight font-bold text-gray-500">
+                Active Members 
             </h1>
+            <Tooltip hasArrow label='Number of active members' bg='blue.200' placement='bottom'>
+            <h1 className="text-xl leading-tight font-bold text-gray-500 ml-4 bg-blue-100 px-2 rounded">{MemberCount}</h1></Tooltip>
+            </div>
             <div className='flex flex-row space-x-5 py-5'>
                 <div className='basis-1/4'>
+                    <Tooltip hasArrow label='Select the sorting category' bg='blue.200' placement='bottom'>
                     <Select onChange={handleRoleFilterChange} value={selectedRole}>
                         <option value='All'>All</option>
                         <option value='Quality assurance'>Quality assurance</option>
                         <option value='Developer'>Developer</option>
                     </Select>
+                    </Tooltip>
                 </div>
                 <div className='basis-3/4'>
+                    <Tooltip hasArrow label='Search the members' bg='blue.200' placement='bottom'>
                     <InputGroup>
                         <InputLeftElement children={<Search2Icon color="gray.600" />} />
                         <Input placeholder="Search..." onChange={(e) => setQuery(e.target.value)} />
                     </InputGroup>
+                    </Tooltip>
                 </div>
             </div>
             <div className="w-full overflow-y-scroll bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
                 <div className="flow-root w">
                     <ul role="list" className="divide-y divide-gray-200 dark:divide-gray-700">
-                        <li className="py-2 sm:py-4 flex justify-between font-semibold text-gray-700 dark:text-gray-300">
+                        <li className="flex justify-between font-semibold text-gray-700 dark:text-gray-300">
                             <div className="w-1/3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">MEMBERS</div>
                             <div className="w-1/3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ROLE</div>
                             <div className="w-1/3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">ACTIONS</div>
                         </li>
-                        {filteredMembers.map((member, index) => (
-                            <li key={index} className="py-3 sm:py-4">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center w-1/3">
-                                        <div className="flex-shrink-0">
-                                            <img className="w-8 h-8 rounded-full" src={member.profilePicture !== " " ? member.profilePicture : pp } alt={`${member.username} `} />
-                                        </div>
-                                        <div className="flex-1 min-w-0 ms-4">
-                                            <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                                {`${member.username}`}
-                                            </p>
-                                            <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                                                {member.email}
-                                            </p>
-                                        </div>
+                        <div className=' py-5'>
+                        {isLoading ? (
+                            <Stack>
+                                <Skeleton height='40px' borderRadius='md' />
+                                <Skeleton height='40px' borderRadius='md' />
+                                <Skeleton height='40px' borderRadius='md' />
+                            </Stack>
+                                ) : (
+                            <>
+                                {!hasFetched && <Text>No active members</Text>}
+                                {filteredMembers.length === 0 ? (
+                                    <div className="text-center">
+                                    <h1 className=" text-xl leading-tight font-bold text-gray-300">
+                                    No Active Members
+                                    </h1>
                                     </div>
-                                    <p className="text-sm font-medium text-gray-900 truncate dark:text-white w-1/3">
-                                        {member.role}
-                                    </p>
-                                    <div className="w-1/3 text-right">
-                                        <Button onClick={() => onOpenRoleModal(index)} colorScheme="blue" size="sm"
-                                        isDisabled={member.profileStatus === 'Suspend'}>
-                                            Change Role
-                                        </Button>
-                                        {member.profileStatus === 'Active' && (
-                                            <Button onClick={() => handleBlockOrUnblock(member, 'block')} colorScheme="red" size="sm" ml={2}>
-                                                Block
-                                            </Button>
-                                        )}
-                                        {member.profileStatus === 'Suspend' && (
-                                            <Button onClick={() => handleBlockOrUnblock(member, 'unblock')} colorScheme="green" size="sm" ml={2}>
-                                                Unblock
-                                            </Button>
-                                        )}
+                                ) : (
+                                    <div >
+                                        
+                                            
+                                                
+                                                {filteredMembers.map((member, index) => (
+                                                    <li key={index} className="py-3 sm:py-4">
+                                                        <div className="flex items-center justify-between">
+                                                            <div className="flex items-center w-1/3">
+                                                                <div className="flex-shrink-0">
+                                                                    <Avatar size='sm' src={member.profilePicture} name={`${member.username}`} />
+                                                                </div>
+                                                                <div className="flex-1 min-w-0 ms-4">
+                                                                    <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
+                                                                        {`${member.username}`}
+                                                                    </p>
+                                                                    <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                                        {member.email}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            <p className="text-sm font-medium text-gray-900 truncate dark:text-white w-1/3">
+                                                                {member.role}
+                                                            </p>
+                                                            <div className="w-1/3 text-right">
+                                                                <Tooltip hasArrow label='Change the member role' bg='blue.200' placement='bottom'>
+                                                                <Button onClick={() => onOpenRoleModal(index)} colorScheme="blue" size="sm"
+                                                                    isDisabled={member.profileStatus === 'Suspend'}>
+                                                                    Change Role
+                                                                </Button>
+                                                                </Tooltip>
+                                                                {member.profileStatus === 'Active' && (
+                                                                    <Tooltip hasArrow label='Block the member' bg='blue.200' placement='bottom'>
+                                                                    <Button onClick={() => handleBlockOrUnblock(member, 'block')} colorScheme="red" size="sm" ml={2}>
+                                                                        Block
+                                                                    </Button>
+                                                                    </Tooltip>
+                                                                )}
+                                                                {member.profileStatus === 'Suspend' && (
+                                                                    <Tooltip hasArrow label='Unblock the member' bg='blue.200' placement='bottom'>
+                                                                    <Button onClick={() => handleBlockOrUnblock(member, 'unblock')} colorScheme="green" size="sm" ml={2}>
+                                                                        Unblock
+                                                                    </Button>
+                                                                    </Tooltip>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                ))}
+                                            
+                                        
                                     </div>
-                                </div>
-                            </li>
-                        ))}
+                                )}
+                            </>
+                        )}
+                    </div>
                     </ul>
                 </div>
             </div>
