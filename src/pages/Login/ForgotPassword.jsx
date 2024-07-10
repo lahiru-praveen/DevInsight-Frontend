@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import {
   Button,
@@ -21,7 +20,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import emailjs from 'emailjs-com';
 import logo from '../../assets/devsign.png';
-import image from '../../assets/fp.jpg';
+import image from '../../assets/fp.png';
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
@@ -45,13 +44,33 @@ export default function ForgotPassword() {
       return () => clearTimeout(timer);
     }
   }, [successMessage, errorMessage]);
-  
 
   const generateOtp = () => {
     return Math.floor(100000 + Math.random() * 900000).toString();
   };
 
   const handleSendEmail = async () => {
+    // Check if the email exists in the database
+    try {
+      const response = await fetch('http://localhost:8000/api/check-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+      const data = await response.json();
+      if (!data.exists) {
+        setErrorMessage('Email does not exist.');
+        return;
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setErrorMessage('An error occurred. Please try again.');
+      return;
+    }
+
+    // If email exists, proceed to send OTP
     const generatedOtp = generateOtp();
     setOtp(generatedOtp);
 
@@ -83,7 +102,6 @@ export default function ForgotPassword() {
     setIsCodeFilled(newCode.every((c) => c !== ''));
   };
 
-  
   const handleVerify = async () => {
     if (code.join('') === otp) {
       try {
@@ -94,7 +112,7 @@ export default function ForgotPassword() {
           },
           body: JSON.stringify({ email, code: code.join('') }),
         });
-  
+
         if (response.ok) {
           navigate('/fpr', { state: { email, code: code.join('') } });
           setErrorMessage('');
@@ -113,6 +131,7 @@ export default function ForgotPassword() {
 
   return (
     <Flex minH={'100vh'}>
+
      {/* Left Side */}
      <Box
      flex={1}
@@ -181,60 +200,63 @@ export default function ForgotPassword() {
                 />
               ))}
             </PinInput>
+
           </Stack>
-        </FormControl>
 
-        <Stack spacing={6}>
-          <Button
-            bg={isCodeFilled ? 'blue.500' : 'blue.200'}
-            color={'white'}
-            onClick={handleVerify}
-            disabled={!isCodeFilled}
-          >
-            Verify
-          </Button>
-        </Stack>
+          <p>Enter the 6-digit otp</p>
 
-   
+          <FormControl>
+            <Stack direction="row" spacing={2}>
+              <PinInput>
+                {code.map((digit, index) => (
+                  <PinInputField
+                    key={index}
+                    value={digit}
+                    onChange={(e) => handleCodeChange(e.target.value, index)}
+                  />
+                ))}
+              </PinInput>
+            </Stack>
+          </FormControl>
 
-        {successMessage && (
-          
+          <Stack spacing={6}>
+            <Button
+              bg={isCodeFilled ? 'blue.500' : 'blue.200'}
+              color={'white'}
+              onClick={handleVerify}
+              disabled={!isCodeFilled}
+            >
+              Verify
+            </Button>
+          </Stack>
+
+          {successMessage && (
             <Alert status="success">
               <AlertIcon />
               <AlertTitle mr={2}>
-                <center>
-                  {isResend ? "Email has been resent." : "Success!"}
-                </center>
+                <center>{isResend ? 'Email has been resent.' : 'Success!'}</center>
               </AlertTitle>
               <AlertDescription>{successMessage}</AlertDescription>
               <CloseButton position="absolute" right="8px" top="8px" onClick={() => setSuccessMessage('')} />
             </Alert>
-          
-        )}
+          )}
 
+          {errorMessage && (
+            <Alert status="error">
+              <AlertIcon />
+              <AlertTitle mr={2}>Error!</AlertTitle>
+              <AlertDescription>{errorMessage}</AlertDescription>
+              <CloseButton position="absolute" right="8px" top="8px" onClick={() => setErrorMessage('')} />
+            </Alert>
+          )}
 
-
-
-        {errorMessage && (
-       
-          <Alert status="error">
-            <AlertIcon />
-            <AlertTitle mr={2}>Error!</AlertTitle>
-            <AlertDescription>{errorMessage}</AlertDescription>
-            <CloseButton position="absolute" right="8px" top="8px" onClick={() => setErrorMessage('')} />
-          </Alert>
-     
-        )}
-
-        <div align={'right'}>
-        <Button variant="link" colorScheme="blue" onClick={() => handleSendEmail(true)}>
-            Re-send the email
-          </Button>
-        </div>
-      </Stack>
+          <div align={'right'}>
+            <Button variant="link" colorScheme="blue" onClick={() => handleSendEmail(true)}>
+              Re-send the email
+            </Button>
+          </div>
+        </Stack>
+      </Flex>
     </Flex>
-    </Flex>  
   );
-
-
 }
