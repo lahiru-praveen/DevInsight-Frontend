@@ -57,6 +57,7 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
         const email = sessionStorage.getItem('email');
         const token = sessionStorage.getItem('access_token');
         const data = await getUserProfile(email, token);
+        console.log(data);
         setProfile(data);
       } catch (error) {
         setError(error.detail);
