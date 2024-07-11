@@ -1,13 +1,12 @@
-import NavBarQAE from "../../components/dashboard/NavBarQAE.jsx";
 import { Text, Input, Select } from "@chakra-ui/react";
-import Requests from "../../components/HelpDesk/Requests.jsx";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import NavBarQAE from "../../components/dashboard/NavBarQAE.jsx";
+import { debounce } from "lodash";
 import Responses from "../../components/HelpDesk/Responses.jsx";
+
 export default function UserHelpRequests() {
-    const [request, setRequest] = useState([]);
     const [response, setResponse] = useState([]);
-    const [filteredRequests, setFilteredRequests] = useState([]);
     const [filteredResponses, setFilteredResponses] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOrder, setSortOrder] = useState("asc");
@@ -17,35 +16,33 @@ export default function UserHelpRequests() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const result = await axios.get('http://localhost:8000/pre-responses', {
-                    params: {
-                        user: user
-                    }
+                const result = await axios.get('http://localhost:8000/pre-responds', {
+                    params: { qae: user }
                 });
                 console.log("Fetch Result: ", result.data); // Log the entire response
-                if (result.status === 200 && result.data) {
-                    setRequest(result.data);
-                    setFilteredRequests(result.data);
+                if (result.status === 200) {
+                    setResponse(result.data);
                 } else {
                     console.error("Failed to fetch data:", result.message);
                     setError("Failed to fetch data");
                 }
             } catch (error) {
-                console.error("Error fetching files:", error);
+                console.error("Error fetching data:", error);
                 setError("Error fetching data");
             }
         };
+
         fetchData();
-    }, []);
+    }, [user]);
 
-    useEffect(() => {
-        filterAndSortSubmissions();
-    }, [searchQuery, sortOrder, request]);
 
-    const filterAndSortSubmissions = () => {
-        let filtered = request.filter(request =>
-            request.p_name.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+    const filterAndSortResponses = useCallback(debounce(() => {
+        let filtered = response;
+        if (searchQuery) {
+            filtered = response.filter(req =>
+                req.p_name.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        }
 
         filtered.sort((a, b) => {
             const dateA = new Date(a.date);
@@ -53,8 +50,12 @@ export default function UserHelpRequests() {
             return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
         });
 
-        setFilteredRequests(filtered);
-    };
+        setFilteredResponses(filtered);
+    }, 300), [searchQuery, sortOrder, response]);
+
+    useEffect(() => {
+        filterAndSortResponses();
+    }, [searchQuery, sortOrder, filterAndSortResponses]);
 
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
@@ -66,25 +67,24 @@ export default function UserHelpRequests() {
 
     // Static headers
     const headers = {
-        p_id: "Project ID",
-        user:"User",
-        r_id: "Request ID",
-        r_subject: "Subject",
-        r_content: "Request",
-        response_content: "Request",
-        date: "Requested Date",
-        response_date: "Responded Date",
-
+        user: "User",
+        p_name: "Submission/Project Name",
+        req_id: "Request ID",
+        req_date: "Requested Date",
+        req_subject: "Subject",
+        req_content: "Request",
+        res_status: "Response Status",
+        res_date: "Responded Date",
     };
 
     return (
         <div className="flex flex-col h-screen">
             <div>
-                <NavBarQAE button1={false} button2={false} button3={false} button4={false} />
+                <NavBarQAE button1={false} button2={false} button3={false} button4={false} button5={false}/>
             </div>
             <div className="flex flex-col mt-5 ml-10 mb-5 mr-10">
                 <Text className="font-bold mb-4" fontSize='30px'>
-                    Requests
+                    Responses
                 </Text>
                 <div className="flex mb-8">
                     <Input
@@ -99,21 +99,13 @@ export default function UserHelpRequests() {
                     </Select>
                 </div>
                 {/* Render static headers */}
-                <Requests request={headers} drop={1} />
+                <Responses response={headers} drop={1} />
                 {error && <Text color="red">{error}</Text>}
                 <div>
-                    {filteredRequests.map(request => (
-                        <Requests key={request.p_id} request={request} drop={0} />
+                    {filteredResponses.map(res => (
+                        <Responses key={res.r_id} response={res} drop={0} />
                     ))}
                 </div>
-                <Responses request={headers} drop={1} />
-                {error && <Text color="red">{error}</Text>}
-                <div>
-                    {filteredResponses.map(request => (
-                        <Responses key={request.p_id} request={request} drop={0} />
-                    ))}
-                </div>
-
             </div>
         </div>
     );
