@@ -309,6 +309,7 @@ const MyComponent = () => {
                                                 
                                                 {filteredMembers.map((member, index) => (
                                                     <li key={index} className="py-3 sm:py-4">
+                                                        
                                                         <div className="flex items-center justify-between">
                                                             <div className="flex items-center w-1/3">
                                                                 <div className="flex-shrink-0">

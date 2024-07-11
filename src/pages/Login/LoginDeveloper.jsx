@@ -76,10 +76,11 @@ export default function LoginDeveloper() {
                 setLoginMessage('Incorrect password. Please try again.');
             } else if (error.response && error.response.status === 404) {
                 setLoginMessage('User not found. Please try again.');
+            } else if (error.response.status === 403){
+                navigate('/login-blocked');
             } else {
                 setLoginMessage('An error occurred. Please try again later.');
-            }
-            console.error('Error logging in:', error);
+            }console.error('Error logging in:', error);
         }
     };
 
