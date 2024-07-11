@@ -187,21 +187,7 @@ export default function ForgotPassword() {
           </Button>
         </Stack>
 
-        <p>Enter the 6-digit otp</p>
 
-        <FormControl>
-          <Stack direction="row" spacing={4} justify="center">
-            <PinInput>
-              {code.map((digit, index) => (
-                <PinInputField
-                  key={index}
-                  value={digit}
-                  onChange={(e) => handleCodeChange(e.target.value, index)}
-                />
-              ))}
-            </PinInput>
-
-          </Stack>
 
           <p>Enter the 6-digit otp</p>
 
