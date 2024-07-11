@@ -1,4 +1,5 @@
 
+
 import axios from 'axios';
 
 // Function to get user profile data
@@ -50,4 +51,3 @@ export const uploadProfilePicture = async (email, file, token) => {
     throw error;
   }
 };
-
