@@ -3,12 +3,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import axios from 'axios';
+import NavBarQAE from "../../components/dashboard/NavBarQAE.jsx";
 
 function AskHelp() {
     const location = useLocation();
     const navigate = useNavigate();
     const {projectName, code, review, suggestions, referLinks, fileName ,mode,language, description} = location.state || {};
-
+    const role = sessionStorage.getItem('role');
     const [requestSubject, setRequestSubject] = useState('');
     const [requestText, setRequestText] = useState('');
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -94,7 +95,12 @@ function AskHelp() {
 
     return (
         <div>
-            <NavBarUser button4={false} button2={false} button3={false} button1={false}/>
+            <div>
+                {role === 'Developer' ?
+                    <NavBarUser button1={false} button2={true} button3={true} button4={true}/> :
+                    <NavBarQAE button1={false} button2={true} button3={true} button4={true} button5={true}/>
+                };
+            </div>
             <div className="grid grid-cols-2 divide-x py-4  mx-4">
                 <div className="bg-gray-200 rounded-lg">
                     <Tabs className="grid grid-cols-2 divide-x py-4 ml-4" variant="enclosed" colorScheme="blue" height={"1100"}>

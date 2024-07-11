@@ -17,6 +17,7 @@ import { FaWindowClose } from "react-icons/fa";
 import LanguageSelectMenu from "../../components/dashboard/LanguageSelectMenu.jsx";
 import {useNavigate} from "react-router-dom";
 import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
+import NavBarQAE from "../../components/dashboard/NavBarQAE.jsx";
 import axios from "axios";
 import {MdDriveFolderUpload} from "react-icons/md";
 import { FaFlagCheckered } from "react-icons/fa";
@@ -48,6 +49,7 @@ export default function DashboardMain() {
     const [prName,setPrName] = useState('')
     const [availablePrName,setAvailablePrName] = useState('')
     const email = sessionStorage.getItem("email");
+    const role = sessionStorage.getItem('role');
 
     const handleLanguageChange = (language) => {
         setSelectedLanguage(language);
@@ -299,7 +301,10 @@ export default function DashboardMain() {
     return (
         <div className="flex flex-col h-screen ">
             <div>
-                <NavBarUser button1={false} button2={false} button3={false} button4={false}/>
+                {role === 'Developer' ?
+                    <NavBarUser button1={false} button2={false} button3={false} button4={false}/> :
+                    <NavBarQAE button1={false} button2={false} button3={false} button4={false} button5={false}/>
+                };
             </div>
 
             <div className="flex flex-row  flex-grow">
