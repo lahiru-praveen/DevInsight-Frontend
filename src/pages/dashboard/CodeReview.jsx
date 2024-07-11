@@ -22,7 +22,6 @@ import {Link, useLocation, useNavigate} from "react-router-dom";
 import FileList from "../../components/dashboard/FileList.jsx";
 import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
 import {ChevronRightIcon} from "@chakra-ui/icons";
-import { BiFingerprint } from 'react-icons/bi';
 import Chatbot from "../../components/Chatbot/chatbot.jsx";
 import { TiSocialGithubCircular } from "react-icons/ti";
 
@@ -33,8 +32,7 @@ export default function CodeReview() {
     const location = useLocation();
     const navigate = useNavigate();
     const { state } = location;
-    let { reviewContent, selectedFileName, mode, suggestionContent, referLinksContent, projectName, language, description, projectId } = state || {};
-    console.log(projectId);
+    let { reviewContent, selectedFileName, mode, suggestionContent, referLinksContent, projectName, language, description} = state || {};
     console.log("Selected file name in CodePreview:", selectedFileName);
     console.log(suggestionContent);
 
@@ -56,7 +54,7 @@ export default function CodeReview() {
 
     const handleAskHelp = async () => {
         try {
-            navigate('/ah', {state: {projectName: projectName, code: selectedFileContent, review: reviewContent, suggestions: suggestionContent, referLinks: referLinksContent}});
+            navigate('/ah', {state: {projectName: projectName, code: selectedFileContent, review: reviewContent, suggestions: suggestionContent, referLinks: referLinksContent, fileName: selectedFileName,mode: mode,language: language, description:description}});
         } catch (error) {
             console.error("Error navigating to Ask Help:", error);
         }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
@@ -7,13 +7,7 @@ import axios from 'axios';
 function AskHelp() {
     const location = useLocation();
     const navigate = useNavigate();
-    const {
-        projectName,
-        code,
-        review,
-        suggestions,
-        referLinks
-    } = location.state || {};
+    const {projectName, code, review, suggestions, referLinks, fileName ,mode,language, description} = location.state || {};
 
     const [requestSubject, setRequestSubject] = useState('');
     const [requestText, setRequestText] = useState('');
@@ -41,14 +35,25 @@ function AskHelp() {
         setShowConfirmationModal(true);
     };
 
+    useEffect(() => {
+        const fetchProjectID = async () => {
+            try {
+                const new_p_id = await axios.get("http://localhost:8000/get-latest-p-id", {
+                    params: {
+                        user: user
+                    }
+                });
+                setProjectID(new_p_id.data);
+            } catch (error) {
+                console.error("Error fetching the project ID:", error);
+            }
+        };
+
+        fetchProjectID().then(r => console.log(r));
+    }, [user]);
+
     const confirmSubmission = async () => {
         try {
-            const new_p_id = await axios.get("http://localhost:8000/get-latest-p-id", {
-                params: {
-                    user: user
-                }
-            });
-            setProjectID(new_p_id.data);
 
             const requestData = {
                 user:user,
@@ -75,7 +80,7 @@ function AskHelp() {
             setRequestText('');
             setShowConfirmationModal(false);
 
-            navigate('/cr');
+            navigate('/cr', { state: { reviewContent:review, selectedFileName:fileName, mode:mode, suggestionContent:suggestions, referLinksContent:referLinks, projectName:projectName, language:language, description:description } });
         } catch (error) {
             console.error('Failed to save request:', error);
             if (error.response) {
