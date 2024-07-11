@@ -15,6 +15,8 @@ import {
 } from '@chakra-ui/react';
 
 import MailSentImg from '../../assets/email.gif';
+import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
+import NavBarQAE from "../../components/dashboard/NavBarQAE.jsx";
 
 const ContactUs = () => {
   const [name, setName] = useState('');
@@ -23,6 +25,7 @@ const ContactUs = () => {
   const [message, setMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
+  const role = sessionStorage.getItem('role');
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -64,6 +67,13 @@ const ContactUs = () => {
 
 
   return (
+      <div className="flex flex-col h-screen ">
+      <div>
+        {role === 'Developer' ?
+            <NavBarUser button1={false} button2={false} button3={false} button4={false}/> :
+            <NavBarQAE button1={false} button2={false} button3={false} button4={false} button5={false}/>
+        };
+      </div>
       <section className="bg-white">
        
         <div className="flex flex-col lg:flex-row mx-auto max-w-screen-md py-8 lg:py-16 px-4">
@@ -180,6 +190,7 @@ const ContactUs = () => {
           </div>
         </div>
       </section>
+      </div>
   );
 };
 

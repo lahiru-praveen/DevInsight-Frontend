@@ -1,18 +1,4 @@
-import React from 'react';
-import {
-    Box,
-    Button,
-    Flex,
-    Tab,
-    TabList,
-    TabPanel,
-    TabPanels,
-    Tabs,
-    Text,
-    CircularProgress,
-    Breadcrumb, BreadcrumbItem, BreadcrumbLink, Tooltip, useDisclosure
-} from "@chakra-ui/react";
-
+import {Box, Button, Flex, Tab, TabList, TabPanel, TabPanels, Tabs, Text, CircularProgress, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Tooltip, useDisclosure} from "@chakra-ui/react";
 import { IoMdDownload } from "react-icons/io";
 import { BsFillQuestionSquareFill } from "react-icons/bs";
 import { useState } from "react";
@@ -27,6 +13,7 @@ import Chatbot from "../../components/Chatbot/chatbot.jsx";
 import { TiSocialGithubCircular } from "react-icons/ti";
 import ReactMarkdown from 'react-markdown';
 import ChakraUIRenderer from 'chakra-ui-markdown-renderer';
+import NavBarQAE from "../../components/dashboard/NavBarQAE.jsx";
 
 const newTheme = {
     p: props => {
@@ -52,6 +39,7 @@ export default function CodeReview() {
     let { reviewContent, selectedFileName, mode, suggestionContent, referLinksContent, projectName, language, description} = state || {};
     console.log("Selected file name in CodePreview:", selectedFileName);
     console.log(suggestionContent);
+    const role = sessionStorage.getItem('role');
 
     const handleDownloadPdf = async () => {
         try {
@@ -109,7 +97,10 @@ export default function CodeReview() {
     return (
         <div className="flex flex-col h-screen">
             <div>
-                <NavBarUser button1={false} button2={true} button3={true} button4={true} />
+                {role === 'Developer' ?
+                    <NavBarUser button1={false} button2={true} button3={true} button4={true}/> :
+                    <NavBarQAE button1={false} button2={true} button3={true} button4={true} button5={true}/>
+                };
             </div>
 
             <div className="flex flex-row flex-grow">
@@ -143,7 +134,7 @@ export default function CodeReview() {
                         </TabList>
                         <TabPanels>
                             <TabPanel>
-                                <div className="flex flex-col " overflowY="auto">
+                                <div className="flex flex-col " style={{ overflowY: 'auto' }}>
                                     <div className="flex justify-end mb-2">
                                         <Tooltip hasArrow label='Ask a help from Qauliry Assuarence Engineer' bg='blue.200' placement='bottom'>
                                             <Button colorScheme="blue" size="lg" className="w-48"
@@ -171,7 +162,7 @@ export default function CodeReview() {
                             <TabPanel>
                                 
                                 <div className="flex flex-col  " >
-                                    <div className="flex justify-end mb-2 space-x-2" overflowY="auto">
+                                    <div className="flex justify-end mb-2 space-x-2" style={{ overflowY: 'auto' }}>
                                         <Tooltip hasArrow label='Ask a help from Qauliry Assuarence Engineer' bg='blue.200' placement='bottom'>
                                             <Button colorScheme="blue" size="lg" className="w-48"
                                                 onClick={handleAskHelp}>

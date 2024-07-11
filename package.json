@@ -30,6 +30,7 @@
     "face-api.js": "^0.22.2",
     "framer-motion": "^11.2.11",
     "highlight.js": "^11.9.0",
+    "lodash": "^4.17.21",
     "postcss-cli": "^11.0.0",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
