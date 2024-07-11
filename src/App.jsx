@@ -81,7 +81,6 @@ export default function App() {
                     <Route path="/change-password" element={<ChangePassword />}/>                    
                     <Route path="/opage" element={<Orgnizationpage/>}/>
                     <Route path="/SignUpInvite" element={<SignUpInvite/>}/>
-                    <Route path="/ep2" element={<EditProfile2/>}/>
                 </Routes>
                 </AuthProvider>
             </CodeProvider>
