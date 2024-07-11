@@ -187,7 +187,6 @@ export default function ForgotPassword() {
           </Button>
         </Stack>
 
-        <p>Enter the 6-digit otp</p>
 
         <FormControl>
           <Stack direction="row" spacing={4} justify="center">

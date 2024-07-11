@@ -12,6 +12,7 @@ import {IoHelpCircle, IoHome} from "react-icons/io5";
 import {IoIosArrowForward} from "react-icons/io";
 import {ChevronRightIcon} from "@chakra-ui/icons";
 import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
+import NavBarQAE from "../../components/dashboard/NavBarQAE.jsx";
 
 export default function CodePreview() {
     const { selectedFileContent, setSelectedFileContent } = useCode();
@@ -26,6 +27,7 @@ export default function CodePreview() {
     const navigate = useNavigate();
     const location = useLocation();
     console.log(projectID);
+    const role = sessionStorage.getItem('role');
 
     const { state } = location;
     let { code, mode, language, description, projectName, user } = state || {};
@@ -174,7 +176,10 @@ export default function CodePreview() {
     return (
         <div className="flex flex-col h-screen">
             <div>
-                <NavBarUser button1={false} button2={true} button3={true} button4={true}/>
+                {role === 'Developer' ?
+                    <NavBarUser button1={false} button2={true} button3={true} button4={true}/> :
+                    <NavBarQAE button1={false} button2={true} button3={true} button4={true} button5={true}/>
+                };
             </div>
 
             <div className="flex flex-row flex-grow">

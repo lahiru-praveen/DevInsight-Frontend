@@ -36,6 +36,9 @@ import SignUpInvite from "./pages/Login/SignUpInvitaion.jsx";
 import ForgotPassword from "./pages/Login/ForgotPassword.jsx";
 import ForgotPasswordmanager from "./pages/Login/ForgotPasswordmanager.jsx";
 import ForgotPasswordAndResentmanager from "./pages/Login/ForgotPasswordAndResetmanager.jsx";
+import ChangePasswordManager from "./pages/ManageStaff/ChangePasswordManager.jsx";
+import LoginBlocked from "./pages/Login/LoginBlockedpage.jsx";
+import ContactUsManager from "./pages/ManageStaff/Contact_Us_Manager.jsx";
 
 
 
@@ -65,6 +68,7 @@ export default function App() {
                     <Route path="/ms" element={<ManageStaff/>}/>
                     <Route path="/cr" element={<CodeReview/>}/>
                     <Route path="/cu" element={<ContactUs/>}/>
+                    <Route path="/Contact-us-manager" element={<ContactUsManager/>}/>
                     <Route path="/cs" element={<CodeSubmissions/>}/>
                     <Route path="/ah" element={<AskHelp/>}/>
                     <Route path="/urp" element={<UserResponsePreview/>}/>
@@ -77,8 +81,11 @@ export default function App() {
                     <Route path="/face-login" element={<LoginFace/>}/>
                     <Route path="/face-register" element={<RegisterFace/>}/>
                     <Route path="/fingerprint-register" element={<FingerprintLogin/>}/>
-                    <Route path="/change-password" element={<ChangePassword />}/>                    
+                    <Route path="/change-password" element={<ChangePassword/>}/>
+                    <Route path="/change-password-m" element={<ChangePasswordManager/>}/>
+                    <Route path="/change-password-m" element={<ChangePasswordManager/>}/>
                     <Route path="/opage" element={<Orgnizationpage/>}/>
+                    <Route path="/login-blocked" element={<LoginBlocked/>}/>
                     <Route path="/SignUpInvite" element={<SignUpInvite/>}/>
                 </Routes>
                 </AuthProvider>

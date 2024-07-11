@@ -1,21 +1,7 @@
-
-
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import {
-    Button,
-    FormControl,
-    Flex,
-    Input,
-    Stack,
-    Text,
-    useColorModeValue,
-    Alert,
-    AlertIcon,
-    Box,
-    Spacer,
-} from '@chakra-ui/react';
+import {Button, FormControl, Flex, Input, Stack, Text, useColorModeValue, Alert, AlertIcon, Box, Spacer,} from '@chakra-ui/react';
 import logo from '../../assets/devsign.png';
 import image from '../../assets/S.png'; 
 import { BiFingerprint } from 'react-icons/bi';
@@ -68,6 +54,7 @@ export default function LoginDeveloper() {
             sessionStorage.setItem('password', password);
             // sessionStorage.setItem('email', response.data.email, 'password', response.data.password);
             sessionStorage.setItem('llm', "gemini");
+            sessionStorage.setItem('role', response.data.role);
             
             navigate('/db');
         } catch (error) {
@@ -76,10 +63,11 @@ export default function LoginDeveloper() {
                 setLoginMessage('Incorrect password. Please try again.');
             } else if (error.response && error.response.status === 404) {
                 setLoginMessage('User not found. Please try again.');
+            } else if (error.response.status === 403){
+                navigate('/login-blocked');
             } else {
                 setLoginMessage('An error occurred. Please try again later.');
-            }
-            console.error('Error logging in:', error);
+            }console.error('Error logging in:', error);
         }
     };
 
