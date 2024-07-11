@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import axios from "axios";
-import {Select, Input, InputGroup, InputLeftElement, Button, Avatar, Alert, AlertIcon, Spinner, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, FormControl, FormLabel, useDisclosure, Text, Skeleton, Stack, useToast, Tooltip} from '@chakra-ui/react';
+import {Select, Input, InputGroup, InputLeftElement, Button, Avatar, Alert, AlertIcon, Spinner, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, FormControl, FormLabel, useDisclosure, Text, Skeleton, Stack, useToast, Tooltip, Box} from '@chakra-ui/react';
 import { Search2Icon } from "@chakra-ui/icons";
 import pp from '../../assets/pp.jpeg';
 
@@ -308,8 +308,8 @@ const MyComponent = () => {
                                             
                                                 
                                                 {filteredMembers.map((member, index) => (
-                                                    <li key={index} className="py-3 sm:py-4">
-                                                        
+                                                    <li key={index} className="py-2 ">
+                                                        <Box bg='gray.200' w='100%' p={2} borderRadius='md'>
                                                         <div className="flex items-center justify-between">
                                                             <div className="flex items-center w-1/3">
                                                                 <div className="flex-shrink-0">
@@ -350,6 +350,7 @@ const MyComponent = () => {
                                                                 )}
                                                             </div>
                                                         </div>
+                                                        </Box>
                                                     </li>
                                                 ))}
                                             

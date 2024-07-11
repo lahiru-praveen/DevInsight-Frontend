@@ -3,7 +3,7 @@ import axios from "axios";
 import {
   Box, Flex, Text, Menu, MenuButton, MenuList, MenuItem, MenuDivider,Image, Button,
   Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton,
-  useDisclosure
+  useDisclosure, Tabs, Tab , TabList
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import Devinsight from '../../assets/Devinsight.png';
@@ -13,6 +13,17 @@ const ManagerNavBar = () => {
   const adminEmail = sessionStorage.getItem('email');
   const company = sessionStorage.getItem('company');
   const image = sessionStorage.getItem('image');
+
+  const tabIndex = () => {
+    switch (location.pathname) {
+        case '/ms':
+            return 0;
+        case '/cs':
+            return 1;
+        default:
+            return -1;
+    }
+  };
  
   
   useEffect(() => {
@@ -52,17 +63,23 @@ const ManagerNavBar = () => {
         </Box>
 
         <Box textAlign="center" color="gray.600">
-          <Text fontSize="xl" fontWeight="bold">
-            Member Manage Portal
-          </Text>
-        </Box>
+                    <Tabs index={tabIndex()} variant="soft-rounded" colorScheme='blue'>
+                        <TabList>
+                            <Tab as={Link} to="/ms" 
+                                 colorScheme={location.pathname === '/db' ? 'blue' : 'gray'}>Admin Portal</Tab>
+                            <Tab as={Link} to="/Contact-us-manager" 
+                                 colorScheme={location.pathname === '/Contact-us-manager' ? 'blue' : 'gray'}>Help</Tab>
+                            
+                        </TabList>
+                    </Tabs>
+                    </Box>
 
         <Flex alignItems="center">
           <Box textAlign="right" mr={3}>
             <Text fontWeight="bold" color="black">
             {company} 
             </Text>
-            <Text fontSize="sm" color="gray.300">
+            <Text fontSize="sm" color="gray.500">
             {adminEmail}
             </Text>
           </Box>

@@ -313,7 +313,7 @@ export const InviteTable = () => {
 
       <div className="overflow-x-auto shadow-md sm:rounded-lg overflow-y-scroll h-64">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="sticky top-0 bg-white">
+          <thead className="sticky top-0 bg-gray-200">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
@@ -330,9 +330,12 @@ export const InviteTable = () => {
                 <td className="px-6 py-4">
                   <div className="flex justify-end space-x-2">
                     <Tooltip hasArrow label='Delete the invitation' bg='blue.200' placement='bottom'>
-                    <button onClick={() => onOpenModal(index)} className="px-3 py-1 text-red-500 hover:text-red-600">Delete</button></Tooltip>
+                    <Button onClick={() => onOpenModal(index)} colorScheme='red' size='sm' variant='outline'>Delete</Button></Tooltip>
+                    
                     <Tooltip hasArrow label='Resend the invitation' bg='blue.200' placement='bottom'>
-                    <button onClick={() => handleResendInvite(invite._id.$oid)} className="px-3 py-1 text-blue-500 hover:text-blue-600">Resend</button></Tooltip>
+                    <Button onClick={() => handleResendInvite(invite._id.$oid)} colorScheme='blue' size='sm' variant='outline'>Resend</Button></Tooltip>
+                    {/* <Tooltip hasArrow label='Resend the invitation' bg='blue.200' placement='bottom'>
+                    <button onClick={() => handleResendInvite(invite._id.$oid)} className="px-3 py-1 text-blue-500 hover:text-blue-600">Resend</button></Tooltip> */}
                   </div>
                 </td>
               </tr>
