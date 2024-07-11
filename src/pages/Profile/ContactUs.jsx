@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react';
 
 import MailSentImg from '../../assets/email.gif';
+import BackButton from '../../components/Profile_page/BackButton';
 
 const ContactUs = () => {
   const [name, setName] = useState('');
@@ -65,7 +66,9 @@ const ContactUs = () => {
 
   return (
       <section className="bg-white">
-       
+       <Box>
+      <BackButton />
+    </Box>
         <div className="flex flex-col lg:flex-row mx-auto max-w-screen-md py-8 lg:py-16 px-4">
           <div className="flex-1 bg-gray-000 text-black p-8 rounded-lg">
             <Box textAlign="left">

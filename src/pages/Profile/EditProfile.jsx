@@ -27,8 +27,9 @@ import {
 import { FiUpload } from 'react-icons/fi';
 import { getUserProfile, createUserProfile } from './api';
 import 'cropperjs/dist/cropper.css';
+import BackButton from '../../components/Profile_page/BackButton';
 
-const predefinedSkills = ['Python', 'JavaScript', 'Java', 'HTML', 'CSS','C', 'C#', 'C++', 'PHP', 'Ruby', 'Swift', 'Go','TypeScript'];
+const predefinedSkills = ['python', 'javascript', 'java', 'html', 'c','cs', 'cpp', 'php', 'ruby', 'swift', 'go', 'typescript','css'];
 
 const EditProfile = ({ token, isOpen, onClose, onSave }) => {
   const [profile, setProfile] = useState({
@@ -215,6 +216,7 @@ const ProfileAndSkills = ({ profile, onUpdateProfile, token }) => {
   }, {}));
 
   const [selectedSkills, setSelectedSkills] = useState({});
+  
 
   useEffect(() => {
     // Initialize selectedSkills state based on profile skills
@@ -245,7 +247,10 @@ const ProfileAndSkills = ({ profile, onUpdateProfile, token }) => {
   };
 
   return (
-    <Flex width="100%" height="100vh" bg={useColorModeValue('gray.700')}>
+    <Flex width="100%" height="100vh">
+      <Box>
+      <BackButton />
+    </Box>
     <Box className=" p-6 flex flex-col" width="100%" mt="10"> 
       <Box className="relative shadow-lg rounded-lg w-full max-w-4xl mx-auto flex flex-col md:flex-row bg-white p-4">
         {/* Left Side Box */}

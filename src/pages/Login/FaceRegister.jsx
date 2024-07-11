@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Webcam from 'react-webcam';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button,Text, Heading,Flex, useColorModeValue,Spacer } from '@chakra-ui/react';
+import { Box, Button,Text, Heading,Flex, useColorModeValue} from '@chakra-ui/react';
 import logo from '../../assets/devsign.png';
 import image from '../../assets/face.png';
+import BackButton from '../../components/Profile_page/BackButton';
 
 const RegisterFace = () => {
   const [email, setEmail] = useState('');
@@ -59,6 +60,9 @@ const RegisterFace = () => {
   
   return (
     <Flex minH={'100vh'}>
+      <Box>
+      <BackButton />
+    </Box>
       {/* Left Box */}
       <Box
         flex={1}
