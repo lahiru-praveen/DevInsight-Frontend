@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import NavBarQAE from "../../components/dashboard/NavBarQAE.jsx";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
@@ -8,13 +8,40 @@ import { MdDriveFolderUpload } from 'react-icons/md';
 
 function QAECodePreview() {
     const location = useLocation();
-    const { code, review } = location.state || {};
+    const { user } = location.state || {};
 
+    const [code, setCode] = useState('');
+    const [review, setReview] = useState('');
     const [isTextBoxVisible, setIsTextBoxVisible] = useState(false);
     const [responseText, setResponseText] = useState('');
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [showForwardConfirmationModal, setShowForwardConfirmationModal] = useState(false);
     const [showOptionsModal, setShowOptionsModal] = useState(false); // New state for options modal
+    const [error, setError] = useState(null); // New state for error handling
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const result = await axios.get('http://localhost:8000/pre-code', {
+                    params: {
+                        user: user
+                    }
+                });
+                console.log("Fetch Result: ", result.data); // Log the entire response
+                if (result.status === 200 && result.data) {
+                    setCode(result.data.code);
+                    setReview(result.data.review);
+                } else {
+                    console.error("Failed to fetch data:", result.message);
+                    setError("Failed to fetch data");
+                }
+            } catch (error) {
+                console.error("Error fetching files:", error);
+                setError("Error fetching data");
+            }
+        };
+        fetchData();
+    }, [user]);
 
     const handleButtonClick = () => {
         setIsTextBoxVisible(true);
@@ -32,21 +59,6 @@ function QAECodePreview() {
             return;
         }
         setShowConfirmationModal(true);
-    };
-
-    const confirmSubmission = async () => {
-        try {
-            const response = await axios.post(
-                'http://localhost:8000/api/sam/',
-                { "response_text": responseText },
-                { headers: { 'Content-Type': 'application/json' } }
-            );
-            console.log('Response saved successfully:', response.data);
-        } catch (error) {
-            console.error('Failed to save response:', error);
-            console.error('Error details:', error.response);
-        }
-        setShowConfirmationModal(false);
     };
 
     const cancelSubmission = () => {
@@ -81,10 +93,18 @@ function QAECodePreview() {
                         <TabList>
                             <Tab>Preview</Tab>
                             <Tab>Review</Tab>
+                            <Tab>Suggestions</Tab>
+                            <Tab>Reference Links</Tab>
                         </TabList>
                         <TabPanels>
                             <TabPanel>
                                 <pre>{code}</pre>
+                            </TabPanel>
+                            <TabPanel>
+                                <pre>{review}</pre>
+                            </TabPanel>
+                            <TabPanel>
+                                <pre>{review}</pre>
                             </TabPanel>
                             <TabPanel>
                                 <pre>{review}</pre>
@@ -181,16 +201,13 @@ function QAECodePreview() {
                             <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={() => handleOptionSubmit('Option 1')}>Unavailable</button>
                             <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={() => handleOptionSubmit('Option 2')}>Not my field</button>
                             <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={() => handleOptionSubmit('Option 3')}>Request is not clear</button>
-                            {/*<button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={() => handleOptionSubmit('Option 4')}>Option 4</button>*/}
-                            {/*<button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={() => handleOptionSubmit('Option 5')}>Option 5</button>*/}
                         </a>
                         </div>
                     </div>
                 </div>
             )}
         </div>
-     );
- }
+    );
+}
 
- export default QAECodePreview;
-
+export default QAECodePreview;
