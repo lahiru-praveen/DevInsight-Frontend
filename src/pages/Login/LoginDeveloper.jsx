@@ -1,21 +1,7 @@
-
-
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import {
-    Button,
-    FormControl,
-    Flex,
-    Input,
-    Stack,
-    Text,
-    useColorModeValue,
-    Alert,
-    AlertIcon,
-    Box,
-    Spacer,
-} from '@chakra-ui/react';
+import {Button, FormControl, Flex, Input, Stack, Text, useColorModeValue, Alert, AlertIcon, Box, Spacer,} from '@chakra-ui/react';
 import logo from '../../assets/devsign.png';
 import image from '../../assets/S.png'; 
 import { BiFingerprint } from 'react-icons/bi';
@@ -66,8 +52,9 @@ export default function LoginDeveloper() {
             setLoginMessage('Login successful');
             sessionStorage.setItem('email', email);
             sessionStorage.setItem('password', password);
-            sessionStorage.setItem('email', response.data.email, 'password', response.data.password);
+            // sessionStorage.setItem('email', response.data.email, 'password', response.data.password);
             sessionStorage.setItem('llm', "gemini");
+            sessionStorage.setItem('role', response.data.role);
             
             navigate('/db');
         } catch (error) {

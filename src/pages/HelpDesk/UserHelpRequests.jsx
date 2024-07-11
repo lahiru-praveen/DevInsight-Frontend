@@ -2,7 +2,9 @@ import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
 import { Text, Input, Select } from "@chakra-ui/react";
 import Requests from "../../components/HelpDesk/Requests.jsx";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import NavBarQAE from "../../components/dashboard/NavBarQAE.jsx";
+import { debounce } from "lodash";
 
 export default function UserHelpRequests() {
     const [request, setRequest] = useState([]);
@@ -11,6 +13,7 @@ export default function UserHelpRequests() {
     const [sortOrder, setSortOrder] = useState("asc");
     const [error, setError] = useState(null);
     const user = sessionStorage.getItem('email');
+    const role = sessionStorage.getItem('role');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -34,16 +37,15 @@ export default function UserHelpRequests() {
             }
         };
         fetchData();
-    }, []);
+    }, [user]);
 
-    useEffect(() => {
-        filterAndSortSubmissions();
-    }, [searchQuery, sortOrder, request]);
-
-    const filterAndSortSubmissions = () => {
-        let filtered = request.filter(request =>
-            request.p_name.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+    const filterAndSortSubmissions = useCallback(debounce(() => {
+        let filtered = request;
+        if (searchQuery) {
+            filtered = request.filter(req =>
+                req.p_name.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        }
 
         filtered.sort((a, b) => {
             const dateA = new Date(a.date);
@@ -52,7 +54,11 @@ export default function UserHelpRequests() {
         });
 
         setFilteredRequests(filtered);
-    };
+    }, 300), [searchQuery, sortOrder, request]);
+
+    useEffect(() => {
+        filterAndSortSubmissions();
+    }, [searchQuery, sortOrder, filterAndSortSubmissions]);
 
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
@@ -76,7 +82,10 @@ export default function UserHelpRequests() {
     return (
         <div className="flex flex-col h-screen">
             <div>
-                <NavBarUser button1={false} button2={false} button3={false} button4={false} />
+                {role === 'Developer' ?
+                    <NavBarUser button1={false} button2={false} button3={false} button4={false}/> :
+                    <NavBarQAE button1={false} button2={false} button3={false} button4={false} button5={false}/>
+                }
             </div>
             <div className="flex flex-col mt-5 ml-10 mb-5 mr-10">
                 <Text className="font-bold mb-4" fontSize='30px'>
@@ -98,11 +107,10 @@ export default function UserHelpRequests() {
                 <Requests request={headers} drop={1} />
                 {error && <Text color="red">{error}</Text>}
                 <div>
-                    {filteredRequests.map(request => (
-                        <Requests key={request.p_id} request={request} drop={0} />
+                    {filteredRequests.map(req => (
+                        <Requests key={req.p_id} request={req} drop={0} />
                     ))}
                 </div>
-
             </div>
         </div>
     );

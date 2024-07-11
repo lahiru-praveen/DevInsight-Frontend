@@ -17,13 +17,13 @@ import {
   Image,
   AlertDialog,AlertDialogBody,AlertDialogFooter,AlertDialogHeader,AlertDialogContent,AlertDialogOverlay,
 } from '@chakra-ui/react';
-import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { TbFaceId } from 'react-icons/tb';
 import { IoPersonRemove, IoPersonAddSharp, IoSettingsOutline, IoInformationCircleOutline } from 'react-icons/io5';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import gemini from '../../assets/Gemini.png';
 import gpt from '../../assets/Gpt.png';
+import BackButton from '../../components/Profile_page/BackButton';
 
 const Settings = () => {
   const [profile, setProfile] = useState({
@@ -45,6 +45,7 @@ const Settings = () => {
 
   const cancelRef = useRef();
   const navigate = useNavigate();
+ 
 
   const [llm, setLlm] = useState(sessionStorage.getItem('llm') || 'gemini');
 
@@ -81,25 +82,7 @@ const Settings = () => {
     }
   };
 
-  const handleConnectLinkedIn = async () => {
-    try {
-      const linkedinUrl = 'https://www.linkedin.com/feed/';
-      window.open(linkedinUrl, '_blank', 'noopener,noreferrer');
-    } catch (error) {
-      console.error('Error connecting LinkedIn:', error);
-      alert('Failed to connect LinkedIn.');
-    }
-  };
 
-  const handleConnectGitHub = async () => {
-    try {
-      const githubUrl = 'https://github.com/';
-      window.open(githubUrl, '_blank', 'noopener,noreferrer');
-    } catch (error) {
-      console.error('Error connecting GitHub:', error);
-      alert('Failed to connect GitHub.');
-    }
-  };
 
   const handleDeactivate = async (email, token) => {
     try {
@@ -147,9 +130,16 @@ const Settings = () => {
     setLlm(value);
   };
 
+
+
   return (
-    <Box position="relative" className="bg-gray-100 shadow-lg rounded-lg p-6 max-w-xl mx-auto mt-8">
-      <Stack spacing={6}>
+    <>
+    <Box>
+      <BackButton />
+    </Box>
+     
+    <Box position="relative" className="bg-gray-100 shadow-lg rounded-lg p-6 max-w-xl mx-auto ">
+      <Stack spacing={4}>
         <Flex alignItems="center">
           <IoSettingsOutline size="32" style={{ marginRight: '8px' }} />
           <Text fontSize="3xl" fontWeight="bold">Settings</Text>
@@ -312,6 +302,7 @@ const Settings = () => {
         </AlertDialogOverlay>
       </AlertDialog>
     </Box>
+    </>
   );
 };
 

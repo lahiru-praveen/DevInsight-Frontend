@@ -27,7 +27,7 @@
     "cropperjs": "^1.6.2",
     "emailjs-com": "^3.2.0",
     "eslint-plugin-node": "^11.1.0",
-    "face-api.js": "^0.22.2",
+    "face-api.js": "^0.20.0",
     "framer-motion": "^11.2.11",
     "highlight.js": "^11.9.0",
     "postcss-cli": "^11.0.0",

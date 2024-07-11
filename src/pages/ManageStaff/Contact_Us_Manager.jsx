@@ -13,12 +13,7 @@ import {
   Select,
   Box,
 } from '@chakra-ui/react';
-
 import MailSentImg from '../../assets/email.gif';
-import BackButton from '../../components/Profile_page/BackButton';
-import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
-import NavBarQAE from "../../components/dashboard/NavBarQAE.jsx";
-
 
 const ContactUs = () => {
   const [name, setName] = useState('');
@@ -27,7 +22,6 @@ const ContactUs = () => {
   const [message, setMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
-  const role = sessionStorage.getItem('role');
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -69,17 +63,8 @@ const ContactUs = () => {
 
 
   return (
-      <div className="flex flex-col h-screen ">
-      <div>
-        {role === 'Developer' ?
-            <NavBarUser button1={false} button2={false} button3={false} button4={false}/> :
-            <NavBarQAE button1={false} button2={false} button3={false} button4={false} button5={false}/>
-        };
-      </div>
       <section className="bg-white">
-       <Box>
-      <BackButton />
-    </Box>
+       
         <div className="flex flex-col lg:flex-row mx-auto max-w-screen-md py-8 lg:py-16 px-4">
           <div className="flex-1 bg-gray-000 text-black p-8 rounded-lg">
             <Box textAlign="left">
@@ -172,7 +157,7 @@ const ContactUs = () => {
                 <label htmlFor="subject"
                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Subject</label>
                 <Select id="subject" value={subject} onChange={(e) => setSubject(e.target.value)}
-                        className="block p-3 w-full text-sm text-gray-400 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 bg-gray-700 dark:border-gray-600 placeholder-gray-10 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
+                        className="block p-3 w-full text-sm text-gray-400 bg-gray-7 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 bg-gray-700 dark:border-gray-600 placeholder-gray-10 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light"
                         placeholder="Let us know how we can help you" isRequired>
                   <option value="General Inquiry" className="text-gray-900">General Inquiry</option>
                   <option value="Support" className="text-gray-900">Support</option>
@@ -194,7 +179,6 @@ const ContactUs = () => {
           </div>
         </div>
       </section>
-      </div>
   );
 };
 
