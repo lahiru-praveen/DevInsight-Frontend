@@ -187,22 +187,22 @@ export default function ForgotPassword() {
           </Button>
         </Stack>
 
-          <p>Enter the 6-digit otp</p>
+        <p>Enter the 6-digit otp</p>
 
-          <FormControl>
-            <Stack direction="row" spacing={2}>
-              <PinInput>
-                {code.map((digit, index) => (
-                  <PinInputField
-                    key={index}
-                    value={digit}
-                    onChange={(e) => handleCodeChange(e.target.value, index)}
-                  />
-                ))}
-              </PinInput>
-            </Stack>
+        <FormControl>
+          <Stack direction="row" spacing={4} justify="center">
+            <PinInput>
+              {code.map((digit, index) => (
+                <PinInputField
+                  key={index}
+                  value={digit}
+                  onChange={(e) => handleCodeChange(e.target.value, index)}
+                />
+              ))}
+            </PinInput>
+           
+          </Stack>
           </FormControl>
-
           <Stack spacing={6}>
             <Button
               bg={isCodeFilled ? 'blue.500' : 'blue.200'}
@@ -213,7 +213,7 @@ export default function ForgotPassword() {
               Verify
             </Button>
           </Stack>
-
+      
           {successMessage && (
             <Alert status="success">
               <AlertIcon />
@@ -240,6 +240,7 @@ export default function ForgotPassword() {
             </Button>
           </div>
         </Stack>
+      
       </Flex>
     </Flex>
   );

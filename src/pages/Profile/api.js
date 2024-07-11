@@ -1,3 +1,4 @@
+
 import axios from 'axios';
 
 // Function to get user profile data
@@ -22,7 +23,6 @@ export const createUserProfile = async (email, profileData, token) => {
     console.log(response.data);
   } catch (error) {
     throw error.response.data;
-    
   }
 };
 
@@ -50,3 +50,4 @@ export const uploadProfilePicture = async (email, file, token) => {
     throw error;
   }
 };
+
