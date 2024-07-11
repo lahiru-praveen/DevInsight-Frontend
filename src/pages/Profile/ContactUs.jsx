@@ -15,8 +15,10 @@ import {
 } from '@chakra-ui/react';
 
 import MailSentImg from '../../assets/email.gif';
+import BackButton from '../../components/Profile_page/BackButton';
 import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
 import NavBarQAE from "../../components/dashboard/NavBarQAE.jsx";
+
 
 const ContactUs = () => {
   const [name, setName] = useState('');
@@ -75,7 +77,9 @@ const ContactUs = () => {
         };
       </div>
       <section className="bg-white">
-       
+       <Box>
+      <BackButton />
+    </Box>
         <div className="flex flex-col lg:flex-row mx-auto max-w-screen-md py-8 lg:py-16 px-4">
           <div className="flex-1 bg-gray-000 text-black p-8 rounded-lg">
             <Box textAlign="left">
