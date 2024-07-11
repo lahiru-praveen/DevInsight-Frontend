@@ -1,26 +1,6 @@
 import logo from "../../assets/Devinsight.png";
 import React, { useState, useEffect } from 'react';
-import {
-    Flex,
-    Avatar,
-    Wrap,
-    WrapItem,
-    Button,
-    Text,
-    Menu,
-    MenuButton,
-    MenuList,
-    MenuItem,
-    MenuDivider,
-    AlertDialog,
-    AlertDialogBody,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogContent,
-    AlertDialogOverlay,
-    Tabs, TabList, Tab, Box,
-} from '@chakra-ui/react';
-import { AvatarBadge } from '@chakra-ui/react';
+import {Flex, Avatar, Wrap, WrapItem, Button, Text, Menu, MenuButton, MenuList, MenuItem, MenuDivider, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Tabs, TabList, Tab, Box,} from '@chakra-ui/react';
 import { Link, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 

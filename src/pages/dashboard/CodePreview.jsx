@@ -25,10 +25,11 @@ export default function CodePreview() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
+    console.log(projectID);
+
     const { state } = location;
     let { code, mode, language, description, projectName, user } = state || {};
     const mode_value = mode;
-
 
 
     const prName = projectName
@@ -74,7 +75,7 @@ export default function CodePreview() {
 
     useEffect(() => {
         if (reviewContent !== '' && suggestionContent !== '' && referLinksContent !== '') {
-            navigate('/cr', { state: { reviewContent: reviewContent, selectedFileName: selectedFileName, suggestionContent: suggestionContent, referLinksContent: referLinksContent, projectName: prName, language: Language, description: description_value, pID: projectID, user: user } });
+            navigate('/cr', { state: { reviewContent: reviewContent, selectedFileName: selectedFileName, suggestionContent: suggestionContent, referLinksContent: referLinksContent, projectName: prName, language: Language, description: description_value, user: user } });
         }
     }, [referLinksContent]);
 

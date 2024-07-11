@@ -71,6 +71,8 @@ const SubmissionModal = ({ isOpen, onClose, p_name, code , des , entity_id}) => 
                                 <TabList>
                                     <Tab>Code</Tab>
                                     <Tab>Review</Tab>
+                                    <Tab>Suggestions</Tab>
+                                    <Tab>Refer Links</Tab>
                                     <Tab>Help Requests</Tab>
                                 </TabList>
                             </div>
@@ -83,7 +85,7 @@ const SubmissionModal = ({ isOpen, onClose, p_name, code , des , entity_id}) => 
                                                 <Text>{des}</Text>
                                             </Box>
                                             <Text className="text-xl font-bold mr-2">Code - </Text>
-                                            <Box bg='white'  p={4} className="mt-2 mb-8">
+                                            <Box bg='white' p={4} className="mt-2 mb-8">
                                                 <pre>{code}</pre>
                                             </Box>
                                         </div>
@@ -96,12 +98,24 @@ const SubmissionModal = ({ isOpen, onClose, p_name, code , des , entity_id}) => 
                                             <Box bg='white' p={4} color='black' className="mt-2 mb-8">
                                                 <pre>{reviewContent}</pre>
                                             </Box>
+                                        </div>
+                                    </TabPanel>
+                                </div>
+                                <div>
+                                    <TabPanel>
+                                        <div className="font-bold bg-[#EBEBEB] color-[#898989] p-10 m-2">
                                             <Text className="text-xl font-bold mr-2">Suggestions - </Text>
-                                            <Box bg='white'  p={4} className="mt-2 mb-8">
+                                            <Box bg='white' p={4} className="mt-2 mb-8">
                                                 <pre>{suggestionContent}</pre>
                                             </Box>
+                                        </div>
+                                    </TabPanel>
+                                </div>
+                                <div>
+                                    <TabPanel>
+                                        <div className="font-bold bg-[#EBEBEB] color-[#898989] p-10 m-2">
                                             <Text className="text-xl font-bold mr-2">Reference Links - </Text>
-                                            <Box bg='white'  p={4} className="mt-2 mb-8">
+                                            <Box bg='white' p={4} className="mt-2 mb-8">
                                                 <pre>{referLinksContent}</pre>
                                             </Box>
                                         </div>
