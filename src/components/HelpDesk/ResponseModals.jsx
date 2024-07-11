@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import axios from "axios";
 import {useEffect, useState} from "react";
 
-const RequestModal = ({ isOpen, onClose, p_name, subject , request , r_id, p_id}) => {
+const ResponseModal = ({ isOpen, onClose, p_name, subject , request , r_id, p_id,response_content}) => {
     const [isDeleting, setIsDeleting] = useState(false);
     const [responseContent, setResponseContent] = useState('');
     const user = sessionStorage.getItem('email');
@@ -93,7 +93,7 @@ const RequestModal = ({ isOpen, onClose, p_name, subject , request , r_id, p_id}
     );
 };
 
-RequestModal.propTypes = {
+ResponseModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     p_name: PropTypes.string.isRequired,
@@ -103,4 +103,4 @@ RequestModal.propTypes = {
     p_id: PropTypes.number.isRequired,
 };
 
-export default RequestModal;
+export default ResponseModal;

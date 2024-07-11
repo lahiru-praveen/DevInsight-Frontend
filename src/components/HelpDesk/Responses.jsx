@@ -6,10 +6,10 @@ import { Icon } from "@chakra-ui/icons";
 import { FcExpand } from 'react-icons/fc';
 import { VscBlank } from 'react-icons/vsc';
 import RequestModal from '../HelpDesk/RequestModals.jsx';
-
-export default function Requests({ request, drop }) {
+import ResponseModals from "./ResponseModals.jsx";
+export default function Responses({ request, drop }) {
     const [isModalOpen, setModalOpen] = useState(false);
-    const { p_id, p_name, r_id, r_subject, r_content, r_status, date } = request;
+    const { user, response_content, response_status, response_date } = response;
 
     const dropType = drop === 0
         ? <Icon as={FcExpand} boxSize={25} className="mr-2" onClick={() => setModalOpen(true)} style={{ cursor: 'pointer' }} />
@@ -46,7 +46,7 @@ export default function Requests({ request, drop }) {
                             <Text fontWeight="bold" fontSize="16px">{date}</Text>
                         </CardHeader>
                         <CardHeader>
-                            <ToolTip tooltip="Expand the submission">
+                            <ToolTip tooltip="Expand the response">
                                 {dropType}
                             </ToolTip>
                         </CardHeader>
@@ -58,15 +58,14 @@ export default function Requests({ request, drop }) {
     );
 }
 
-Requests.propTypes = {
+Responses.propTypes = {
     request: PropTypes.shape({
         p_id: PropTypes.number.isRequired,
-        p_name: PropTypes.string.isRequired,
         r_id: PropTypes.number.isRequired,
-        r_subject: PropTypes.string.isRequired,
-        r_content: PropTypes.string.isRequired,
-        r_status: PropTypes.string.isRequired,
-        date: PropTypes.string.isRequired,
+        user: PropTypes.string.isRequired,
+        response_content: PropTypes.string.isRequired,
+        response_status: PropTypes.string.isRequired,
+        reponse_date: PropTypes.string.isRequired,
     }).isRequired,
     drop: PropTypes.number.isRequired
 };

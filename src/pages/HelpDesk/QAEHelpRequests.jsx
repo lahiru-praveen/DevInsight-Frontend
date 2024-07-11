@@ -3,10 +3,12 @@ import { Text, Input, Select } from "@chakra-ui/react";
 import Requests from "../../components/HelpDesk/Requests.jsx";
 import axios from "axios";
 import { useEffect, useState } from "react";
-
+import Responses from "../../components/HelpDesk/Responses.jsx";
 export default function UserHelpRequests() {
     const [request, setRequest] = useState([]);
+    const [response, setResponse] = useState([]);
     const [filteredRequests, setFilteredRequests] = useState([]);
+    const [filteredResponses, setFilteredResponses] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOrder, setSortOrder] = useState("asc");
     const [error, setError] = useState(null);
@@ -65,12 +67,14 @@ export default function UserHelpRequests() {
     // Static headers
     const headers = {
         p_id: "Project ID",
-        p_name: "Submission/Project Name",
-        user:"",
+        user:"User",
         r_id: "Request ID",
         r_subject: "Subject",
         r_content: "Request",
+        response_content: "Request",
         date: "Requested Date",
+        response_date: "Responded Date",
+
     };
 
     return (
@@ -100,6 +104,13 @@ export default function UserHelpRequests() {
                 <div>
                     {filteredRequests.map(request => (
                         <Requests key={request.p_id} request={request} drop={0} />
+                    ))}
+                </div>
+                <Responses request={headers} drop={1} />
+                {error && <Text color="red">{error}</Text>}
+                <div>
+                    {filteredResponses.map(request => (
+                        <Responses key={request.p_id} request={request} drop={0} />
                     ))}
                 </div>
 
