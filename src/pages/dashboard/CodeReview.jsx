@@ -57,6 +57,25 @@ export default function CodeReview() {
         }
     };
 
+    const sendReviewDataToBackend = async () => {
+        try {
+            const response = await axios.post("http://localhost:8000/review-data", {
+                selectedFileContent,
+                reviewContent,
+                suggestionContent,
+                referLinksContent,
+            });
+            console.log("Data sent successfully:", response.data);
+        } catch (error) {
+            console.error("Error sending review data:", error);
+        }
+    };
+
+    const handleChatQAButtonClick = () => {
+        onOpen();
+        sendReviewDataToBackend();
+    };
+
     const handleAskHelp = async () => {
         try {
             navigate('/ah', {state: {projectName: projectName, code: selectedFileContent, review: reviewContent, suggestions: suggestionContent, referLinks: referLinksContent, fileName: selectedFileName,mode: mode,language: language, description:description}});
@@ -178,7 +197,7 @@ export default function CodeReview() {
                                         </Tooltip>
                                         
                                         <Tooltip hasArrow label='Ask questions from chatQA' bg='blue.200' placement='bottom'>
-                                            <Button colorScheme="teal" size="lg" className="w-48" onClick={onOpen}>
+                                            <Button colorScheme="teal" size="lg" className="w-48" onClick={handleChatQAButtonClick}>
                                                 <TiSocialGithubCircular className="mr-2" /> Ask From ChatQA
                                             </Button>
                                         </Tooltip>
