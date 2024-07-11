@@ -34,7 +34,6 @@ import ChangePassword from "./pages/Profile/ChangePassword.jsx";
 import Orgnizationpage from "./pages/Organization_2/organizationpage.jsx";
 import SignUpInvite from "./pages/Login/SignUpInvitaion.jsx";
 import ForgotPassword from "./pages/Login/ForgotPassword.jsx";
-
 import ForgotPasswordmanager from "./pages/Login/ForgotPasswordmanager.jsx";
 import ForgotPasswordAndResentmanager from "./pages/Login/ForgotPasswordAndResetmanager.jsx";
 
@@ -81,7 +80,6 @@ export default function App() {
                     <Route path="/change-password" element={<ChangePassword />}/>                    
                     <Route path="/opage" element={<Orgnizationpage/>}/>
                     <Route path="/SignUpInvite" element={<SignUpInvite/>}/>
-                 
                 </Routes>
                 </AuthProvider>
             </CodeProvider>
