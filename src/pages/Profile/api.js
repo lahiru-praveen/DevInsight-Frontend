@@ -20,7 +20,7 @@ export const createUserProfile = async (email, profileData, token) => {
       headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
-    console.log(response.data);
+    
   } catch (error) {
     throw error.response.data;
   }
