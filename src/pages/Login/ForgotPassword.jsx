@@ -187,7 +187,6 @@ export default function ForgotPassword() {
           </Button>
         </Stack>
 
-        <p>Enter the 6-digit otp</p>
 
         <FormControl>
           <Stack direction="row" spacing={4} justify="center">
@@ -200,12 +199,9 @@ export default function ForgotPassword() {
                 />
               ))}
             </PinInput>
-
+           
           </Stack>
           </FormControl>
-
-         
-
           <Stack spacing={6}>
             <Button
               bg={isCodeFilled ? 'blue.500' : 'blue.200'}
@@ -216,7 +212,7 @@ export default function ForgotPassword() {
               Verify
             </Button>
           </Stack>
-
+      
           {successMessage && (
             <Alert status="success">
               <AlertIcon />
@@ -243,6 +239,7 @@ export default function ForgotPassword() {
             </Button>
           </div>
         </Stack>
+      
       </Flex>
     </Flex>
   );

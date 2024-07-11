@@ -82,9 +82,9 @@ export default function App() {
                     <Route path="/change-password" element={<ChangePassword/>}/>
                     <Route path="/change-password-m" element={<ChangePasswordManager/>}/>
                     <Route path="/change-password-m" element={<ChangePasswordManager/>}/>
-                     <Route path="/opage" element={<Orgnizationpage/>}/>
+                    <Route path="/opage" element={<Orgnizationpage/>}/>
                     <Route path="/login-blocked" element={<LoginBlocked/>}/>
-                    
+                    <Route path="/SignUpInvite" element={<SignUpInvite/>}/>
                 </Routes>
                 </AuthProvider>
             </CodeProvider>
