@@ -28,7 +28,7 @@ import { FiUpload } from 'react-icons/fi';
 import { getUserProfile, createUserProfile } from './api';
 import 'cropperjs/dist/cropper.css';
 
-const predefinedSkills = ['Python', 'JavaScript', 'Java', 'HTML', 'CSS','C', 'C#', 'C++', 'PHP', 'Ruby', 'Swift', 'Go','TypeScript'];
+const predefinedSkills = ['python', 'javascript', 'java', 'html', 'c','cs', 'cpp', 'php', 'ruby', 'swift', 'go', 'typescript','css'];
 
 const EditProfile = ({ token, isOpen, onClose, onSave }) => {
   const [profile, setProfile] = useState({
@@ -56,6 +56,7 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
         const email = sessionStorage.getItem('email');
         const token = sessionStorage.getItem('access_token');
         const data = await getUserProfile(email, token);
+        console.log(data);
         setProfile(data);
       } catch (error) {
         setError(error.detail);

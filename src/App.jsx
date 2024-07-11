@@ -34,9 +34,10 @@ import ChangePassword from "./pages/Profile/ChangePassword.jsx";
 import Orgnizationpage from "./pages/Organization_2/organizationpage.jsx";
 import SignUpInvite from "./pages/Login/SignUpInvitaion.jsx";
 import ForgotPassword from "./pages/Login/ForgotPassword.jsx";
-
 import ForgotPasswordmanager from "./pages/Login/ForgotPasswordmanager.jsx";
 import ForgotPasswordAndResentmanager from "./pages/Login/ForgotPasswordAndResetmanager.jsx";
+import ChangePasswordManager from "./pages/ManageStaff/ChangePasswordManager.jsx";
+import LoginBlocked from "./pages/Login/LoginBlockedpage.jsx";
 
 
 
@@ -78,10 +79,12 @@ export default function App() {
                     <Route path="/face-login" element={<LoginFace/>}/>
                     <Route path="/face-register" element={<RegisterFace/>}/>
                     <Route path="/fingerprint-register" element={<FingerprintLogin/>}/>
-                    <Route path="/change-password" element={<ChangePassword />}/>                    
-                    <Route path="/opage" element={<Orgnizationpage/>}/>
-                    <Route path="/SignUpInvite" element={<SignUpInvite/>}/>
-                    <Route path="/ep2" element={<EditProfile2/>}/>
+                    <Route path="/change-password" element={<ChangePassword/>}/>
+                    <Route path="/change-password-m" element={<ChangePasswordManager/>}/>
+                    <Route path="/change-password-m" element={<ChangePasswordManager/>}/>
+                     <Route path="/opage" element={<Orgnizationpage/>}/>
+                    <Route path="/login-blocked" element={<LoginBlocked/>}/>
+                    
                 </Routes>
                 </AuthProvider>
             </CodeProvider>

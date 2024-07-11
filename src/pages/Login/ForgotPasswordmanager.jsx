@@ -21,7 +21,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import emailjs from 'emailjs-com';
 import logo from '../../assets/devsign.png';
-import image from '../../assets/fp.jpg';
+
 import image2 from '../../assets/fpm.svg';
 
 export default function ForgotPassword() {
