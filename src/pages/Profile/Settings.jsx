@@ -211,12 +211,12 @@ const Settings = () => {
         <Box>
           <Text fontSize="xl" fontWeight="bold" mb={3}>Account Settings</Text>
           <Stack>
-          <Tooltip hasArrow label='This can be temporary. Your account will be disabled.your account data will stay in our database as it is.' bg='gray.100' color='black'>
+          <Tooltip hasArrow label='This can be temporary. Your account will be disabled.your account data will stay in our database as it is.' bg='blue.200' color='black'>
             <Button colorScheme="teal" size="sm" variant="outline" onClick={onDeactivateAlertOpen}>
               Deactivate Account
             </Button>
             </Tooltip>
-            <Tooltip hasArrow label='This is permanent. When you delete your account you won&apos;t be able to retrieve the content or intromation you&apos;ve add on DevInsight.' bg='gray.100' color='black'>
+            <Tooltip hasArrow label='This is permanent. When you delete your account you won&apos;t be able to retrieve the content or intromation you&apos;ve add on DevInsight.' bg='blue.200' color='black'>
 
             <Button colorScheme="red" size="sm" variant="outline" onClick={onDeleteAlertOpen}>
               Delete Account

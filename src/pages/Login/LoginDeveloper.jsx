@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import {Button, FormControl, Flex, Input, Stack, Text, useColorModeValue, Alert, AlertIcon, Box, Spacer,} from '@chakra-ui/react';
+import {Button, FormControl, Flex, Input, Stack, Text, useColorModeValue, Alert, Spinner, Box, Spacer,} from '@chakra-ui/react';
 import logo from '../../assets/devsign.png';
 import image from '../../assets/S.png'; 
 import { BiFingerprint } from 'react-icons/bi';
@@ -110,7 +110,7 @@ export default function LoginDeveloper() {
                 <Stack spacing={6} w={'full'} maxW={'md'}>
                     {showLoggingInAlert && (
                         <Alert status="info">
-                            <AlertIcon />
+                           <Spinner thickness='4px' speed='0.65s' emptyColor='gray.200' color='blue.500' size='md' />
                             Logging in...
                         </Alert>
                     )}
