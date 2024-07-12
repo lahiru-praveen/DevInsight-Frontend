@@ -12,12 +12,13 @@ import {
     Text,
     useColorModeValue,
     Alert,
-    AlertIcon,
+    Spinner,
     Box,
     Spacer,
 } from '@chakra-ui/react';
 import logo from '../../assets/devsign.png';
 import gif from '../../assets/T.gif';
+import BackButton from '../../components/Profile_page/BackButton';
 
 export default function LoginManager() {
     const [adminEmail, setAdminEmail] = useState('');
@@ -68,6 +69,9 @@ export default function LoginManager() {
     return (
         <>
         <Flex minH={'100vh'}>
+        <Box>
+      <BackButton />
+    </Box>
          {/* Left Side */}
          <Box
                 flex={1}
@@ -100,13 +104,13 @@ export default function LoginManager() {
 
                     {showLoggingInAlert && (
                         <Alert status="info">
-                            <AlertIcon />
+                            <Spinner thickness='4px' speed='0.65s' emptyColor='gray.200' color='blue.500' size='md' />
                             Logging in...
                         </Alert>
                     )}
                     
                     <Text fontSize="4xl" fontWeight="bold">
-                         Welcome!
+                         Hello!
                     </Text>   
                  <Text fontSize="2xl" >  Login as an Organization.</Text>
                      

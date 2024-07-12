@@ -248,8 +248,10 @@ const ProfileAndSkills = ({ profile, onUpdateProfile, token }) => {
   };
 
   return (
+    <>
+    
     <Flex width="100%" height="100vh">
-      <Box>
+      <Box ml={-5} mt={-5}>
       <BackButton />
     </Box>
     <Box className=" p-6 flex flex-col" width="100%" mt="10"> 
@@ -308,7 +310,7 @@ const ProfileAndSkills = ({ profile, onUpdateProfile, token }) => {
                     </Text>
                   </Box><br/><br/>
                   <Flex><Text fontSize="md" color="gray.700" ml={4} mr={2}>Years of Experiance</Text>
-                  <Text>
+                  <Text fontSize="md" color="blue.700" as="b">
                   {profile.experience}
                   </Text> 
                    </Flex>
@@ -384,6 +386,7 @@ const ProfileAndSkills = ({ profile, onUpdateProfile, token }) => {
       />
     </Box>
     </Flex>
+    </>
   );
 };
 

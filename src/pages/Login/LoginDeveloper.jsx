@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import {Button, FormControl, Flex, Input, Stack, Text, useColorModeValue, Alert, AlertIcon, Box, Spacer,} from '@chakra-ui/react';
+import {Button, FormControl, Flex, Input, Stack, Text, useColorModeValue, Alert, Spinner, Box, Spacer,} from '@chakra-ui/react';
 import logo from '../../assets/devsign.png';
 import image from '../../assets/S.png'; 
 import { BiFingerprint } from 'react-icons/bi';
+import BackButton from '../../components/Profile_page/BackButton';
 
 export default function LoginDeveloper() {
     const [email, setEmail] = useState('');
@@ -77,6 +78,9 @@ export default function LoginDeveloper() {
 
     return (
         <Flex minH={'100vh'}>
+        <Box>
+          <BackButton />
+         </Box>
             {/* Left Side */}
             <Box
                 flex={1}
@@ -106,7 +110,7 @@ export default function LoginDeveloper() {
                 <Stack spacing={6} w={'full'} maxW={'md'}>
                     {showLoggingInAlert && (
                         <Alert status="info">
-                            <AlertIcon />
+                           <Spinner thickness='4px' speed='0.65s' emptyColor='gray.200' color='blue.500' size='md' />
                             Logging in...
                         </Alert>
                     )}

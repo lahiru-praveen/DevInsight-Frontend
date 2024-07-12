@@ -10,7 +10,6 @@ import LoginBoth from "./pages/Login/LoginBoth.jsx";
 import SignUpDemo from "./pages/Login/SignUpDemo.jsx";
 import QAEHelpRequests from "./pages/HelpDesk/QAEHelpRequests.jsx";
 import Landing from "./pages/Landing/Landing.jsx";
-import QAECodePreview from "./pages/./HelpDesk/QAECodePreview.jsx";
 import UserHelpRequests from "./pages/HelpDesk/UserHelpRequests.jsx";
 import CreateOrg from "./pages/Login/OrganizationCreateAccount.jsx";
 import EditProfile from "./pages/Profile/EditProfile.jsx";
@@ -53,7 +52,6 @@ export default function App() {
                     <Route path="/cp" element={<CodePreview/>}/>
                     <Route path="/qhr" element={<QAEHelpRequests/>} />
                     <Route path="/uhr" element={<UserHelpRequests/>} />
-                    <Route path="/qcp" element={<QAECodePreview/>} />
                     <Route path="/login-developer" element={<LoginDeveloper/>}/>
                     <Route path="/login-manager" element={<LoginManager/>}/>
                     <Route path="/login-both" element={<LoginBoth/>}/>

@@ -4,9 +4,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Webcam from 'react-webcam';
-import { Center, Box, Button, Text, Flex, Heading,useColorModeValue, } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
+import { Center, Box, Button, Text, Flex, Heading,useColorModeValue,Link } from '@chakra-ui/react';
+import {  useNavigate } from 'react-router-dom';
 import image from '../../assets/facelogin.gif';
+import { IoArrowBackCircleSharp } from "react-icons/io5";
+
 
 function LoginFace() {
   const [message, setMessage] = useState('');
@@ -48,9 +50,15 @@ function LoginFace() {
   };
 
   return (
-   
-     
-    <Box justify="center" align="center"  minHeight="100vh" mt="-20"  p={10}>
+   <>
+     <Box p={2} >
+      <Link to="/login-developer">
+     <Button leftIcon={<IoArrowBackCircleSharp />} variant="ghost">
+        Go Back
+      </Button>
+      </Link>
+    </Box>
+    <Box justify="center" align="center"  minHeight="100vh" mt="-20"  p={2}>
         <Flex flex={1} direction="column" align="center" bg="white">
         <Box
         
@@ -93,7 +101,7 @@ function LoginFace() {
             </Box>
         </Flex>
     </Box>
-    
+    </> 
 );
 }
 
