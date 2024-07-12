@@ -1,4 +1,4 @@
-import {Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Tabs, TabList, Tab, TabPanels, TabPanel, Text, Box,} from '@chakra-ui/react';
+import {Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Tabs, TabList, Tab, TabPanels, TabPanel, Text, Box, useDisclosure, useToast} from '@chakra-ui/react';
 import PropTypes from 'prop-types';
 import axios from "axios";
 import {useEffect, useState} from "react";
@@ -9,6 +9,8 @@ const SubmissionModal = ({ isOpen, onClose, p_name, code , des , entity_id}) => 
     const [suggestionContent, setSuggestionContent] = useState('');
     const [referLinksContent, setReferLinksContent] = useState('');
     const user = sessionStorage.getItem('email');
+    const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onClose: onConfirmClose } = useDisclosure();
+    const toast = useToast()
 
     useEffect(() => {
         const fetchData = async () => {
@@ -34,29 +36,50 @@ const SubmissionModal = ({ isOpen, onClose, p_name, code , des , entity_id}) => 
 
 
     const handleDelete = async () => {
-        const confirmed = window.confirm("\u26A0 \t" + " RECORD DELETION\n\n"+"Are you sure you want to delete this code submission?");
         setIsDeleting(true);
         try {
-            if (confirmed) {
-                const response = await axios.delete("http://localhost:8000/delete-sub", {data: { entity_id, user }});
-                if (response.status === 200) {
-                    alert("Submission Deleted Successfully");
-                    onClose(); // Close the modal after deletion
-                    window.location.reload();
-                } else {
-                    // Handle deletion failure
-                    console.error("Delete failed:", response.data);
-                }
+            const response = await axios.delete("http://localhost:8000/delete-sub", {data: { entity_id, user }});
+            if (response.status === 200) {
+                onClose(); // Close the modal after deletion
+                window.location.reload();
+                toast({
+                    title: 'Delete Successful.',
+                    description: "Your submission deleted successfully.",
+                    status: 'success',
+                    duration: 5000,
+                    isClosable: true,
+                  });
+            } else {
+                // Handle deletion failure
+                console.error("Delete failed:", response.data);
+                toast({
+                    title: 'Delete Failed.',
+                    description: "Your submission deleted failed.",
+                    status: 'error',
+                    duration: 5000,
+                    isClosable: true,
+                  });
             }
         } catch (error) {
             console.error("An error occurred while deleting:", error);
+            toast({
+                title: 'Delete Failed.',
+                description: "Your submission deleted failed.",
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+              });
         } finally {
             setIsDeleting(false);
+            onConfirmClose();
         }
     };
+    
 
 
     return (
+
+        <>      
         <Modal isOpen={isOpen} onClose={onClose} size={'fit'} closeOnOverlayClick={false}>
             <ModalOverlay />
             <ModalContent>
@@ -135,7 +158,7 @@ const SubmissionModal = ({ isOpen, onClose, p_name, code , des , entity_id}) => 
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <Button colorScheme="red" className="mr-4" onClick={handleDelete} isLoading={isDeleting}>
+                    <Button colorScheme="red" className="mr-4" onClick={onConfirmOpen} isLoading={isDeleting}>
                         Delete
                     </Button>
                     <Button colorScheme="blue" onClick={onClose}>
@@ -144,6 +167,25 @@ const SubmissionModal = ({ isOpen, onClose, p_name, code , des , entity_id}) => 
                 </ModalFooter>
             </ModalContent>
         </Modal>
+        <Modal isOpen={isConfirmOpen} onClose={onConfirmClose}>
+        <ModalOverlay />
+        <ModalContent>
+            <ModalHeader>Confirm Deletion</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+                <Text>Are you sure you want to delete this code submission?</Text>
+            </ModalBody>
+            <ModalFooter>
+                <Button colorScheme="red" onClick={handleDelete} isLoading={isDeleting}>
+                    Delete
+                </Button>
+                <Button colorScheme="blue" onClick={onConfirmClose} ml={3}>
+                    Cancel
+                </Button>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>
+    </>  
     );
 };
 
