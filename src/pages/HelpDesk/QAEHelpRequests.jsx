@@ -35,20 +35,30 @@ export default function UserHelpRequests() {
         fetchData();
     }, [user]);
 
-
     const filterAndSortResponses = useCallback(debounce(() => {
         let filtered = response;
         if (searchQuery) {
             filtered = response.filter(req =>
-                req.p_name.toLowerCase().includes(searchQuery.toLowerCase())
+                req.user.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                req.req_subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                req.req_content.toLowerCase().includes(searchQuery.toLowerCase())
             );
         }
 
         filtered.sort((a, b) => {
-            const dateA = new Date(a.date);
-            const dateB = new Date(b.date);
-            return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+            const userComparison = a.user.localeCompare(b.user);
+            if (userComparison !== 0) return userComparison;
+
+            const subjectComparison = a.req_subject.localeCompare(b.req_subject);
+            if (subjectComparison !== 0) return subjectComparison;
+
+            const requestIdComparison = (a.p_id + a.r_id).localeCompare(b.p_id + b.r_id);
+            return requestIdComparison;
         });
+
+        if (sortOrder === "desc") {
+            filtered.reverse();
+        }
 
         setFilteredResponses(filtered);
     }, 300), [searchQuery, sortOrder, response]);
@@ -88,7 +98,7 @@ export default function UserHelpRequests() {
                 </Text>
                 <div className="flex mb-8">
                     <Input
-                        placeholder="Search by project name"
+                        placeholder="Search by user, subject or request"
                         value={searchQuery}
                         onChange={handleSearchChange}
                         mr={4}

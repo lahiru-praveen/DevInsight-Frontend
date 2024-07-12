@@ -5,7 +5,7 @@ import {useEffect, useState} from "react";
 import {MdDriveFolderUpload} from "react-icons/md";
 
 
-const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, response}) => {
+const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, response, response_content}) => {
     const [isDeleting, setIsDeleting] = useState(false);
     const [codeContent, setCodeContent] = useState('');
     const [reviewContent, setReviewContent] = useState('');
@@ -141,17 +141,17 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
                                     <Tab>Suggestions</Tab>
                                     <Tab>Refer Links</Tab>
                                 </TabList>
-                                <TabPanels>
-                                    <TabPanel>
+                                <TabPanels className="h-full">
+                                    <TabPanel className="h-full overflow-auto">
                                         <pre>{codeContent}</pre>
                                     </TabPanel>
-                                    <TabPanel>
+                                    <TabPanel className="h-full overflow-auto">
                                         <pre>{reviewContent}</pre>
                                     </TabPanel>
-                                    <TabPanel>
+                                    <TabPanel className="h-full overflow-auto">
                                         <pre>{suggestionContent}</pre>
                                     </TabPanel>
-                                    <TabPanel>
+                                    <TabPanel className="h-full overflow-auto">
                                         <pre>{referLinksContent}</pre>
                                     </TabPanel>
                                 </TabPanels>
@@ -161,6 +161,8 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
                             <p>Subject: {subject} </p>
 
                             <p>Request: {request}</p>
+
+                            <p>Response Sent: {response_content}</p>
 
                             {isTextBoxVisible ? (
                                 <form className="w-full" onSubmit={handleSubmit}>
@@ -277,6 +279,8 @@ ResponseModal.propTypes = {
     r_id: PropTypes.number.isRequired,
     p_id: PropTypes.number.isRequired,
     response: PropTypes.string.isRequired,
+    response_content: PropTypes.string.isRequired,
+
 };
 
 export default ResponseModal;
