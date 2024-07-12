@@ -107,7 +107,7 @@ export default function CodeSubmissions() {
                 {/* Map over filtered and sorted submissions and render Submissions component */}
                 <div>
                     {filteredSubmissions.map(submission => (
-                        <Submissions key={submission.p_id} submission={submission} drop={0} />
+                        <Submissions key={submission.p_id} submission={submission} drop={0} user={user} />
                     ))}
                 </div>
 

@@ -39,11 +39,12 @@ export default function UserHelpRequests() {
         fetchData();
     }, [user]);
 
-    const filterAndSortSubmissions = useCallback(debounce(() => {
+    const filterAndSortRequests = useCallback(debounce(() => {
         let filtered = request;
         if (searchQuery) {
             filtered = request.filter(req =>
-                req.p_name.toLowerCase().includes(searchQuery.toLowerCase())
+                req.p_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                req.r_subject.toLowerCase().includes(searchQuery.toLowerCase())
             );
         }
 
@@ -57,8 +58,8 @@ export default function UserHelpRequests() {
     }, 300), [searchQuery, sortOrder, request]);
 
     useEffect(() => {
-        filterAndSortSubmissions();
-    }, [searchQuery, sortOrder, filterAndSortSubmissions]);
+        filterAndSortRequests();
+    }, [searchQuery, sortOrder, filterAndSortRequests]);
 
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
@@ -93,7 +94,7 @@ export default function UserHelpRequests() {
                 </Text>
                 <div className="flex mb-8">
                     <Input
-                        placeholder="Search by project name"
+                        placeholder="Search by project name or request or subject"
                         value={searchQuery}
                         onChange={handleSearchChange}
                         mr={4}
@@ -104,11 +105,11 @@ export default function UserHelpRequests() {
                     </Select>
                 </div>
                 {/* Render static headers */}
-                <Requests request={headers} drop={1} />
+                <Requests request={headers} drop={1}/>
                 {error && <Text color="red">{error}</Text>}
                 <div>
-                    {filteredRequests.map(req => (
-                        <Requests key={req.p_id} request={req} drop={0} />
+                    {filteredRequests.map((req) => (
+                        <Requests key={`${req.p_id}-${req.r_id}`} request={req} drop={0}/>
                     ))}
                 </div>
             </div>

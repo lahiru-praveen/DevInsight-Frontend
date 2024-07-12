@@ -10,7 +10,6 @@ import LoginBoth from "./pages/Login/LoginBoth.jsx";
 import SignUpDemo from "./pages/Login/SignUpDemo.jsx";
 import QAEHelpRequests from "./pages/HelpDesk/QAEHelpRequests.jsx";
 import Landing from "./pages/Landing/Landing.jsx";
-import QAECodePreview from "./pages/./HelpDesk/QAECodePreview.jsx";
 import UserHelpRequests from "./pages/HelpDesk/UserHelpRequests.jsx";
 import CreateOrg from "./pages/Login/OrganizationCreateAccount.jsx";
 import EditProfile from "./pages/Profile/EditProfile.jsx";
@@ -22,7 +21,6 @@ import CodeSubmissions from "./pages/dashboard/CodeSubmissions.jsx";
 import ForgotPasswordAndReset from "./pages/Login/ForgotPasswordAndReset.jsx";
 import VerifyEmail from "./pages/Login/VerifyEmail.jsx";
 import AskHelp from "./pages/HelpDesk/AskHelp.jsx";
-import UserResponsePreview from "./pages/HelpDesk/UserResponsePreview.jsx";
 import ManagerProfile from "./pages/MangerProfile/ManagerProfile.jsx";
 import AccSuccess from "./pages/CreateOrg/AccSuccess.jsx";
 import InvalidPage from "./pages/CreateOrg/Invalidpage.jsx";
@@ -54,7 +52,6 @@ export default function App() {
                     <Route path="/cp" element={<CodePreview/>}/>
                     <Route path="/qhr" element={<QAEHelpRequests/>} />
                     <Route path="/uhr" element={<UserHelpRequests/>} />
-                    <Route path="/qcp" element={<QAECodePreview/>} />
                     <Route path="/login-developer" element={<LoginDeveloper/>}/>
                     <Route path="/login-manager" element={<LoginManager/>}/>
                     <Route path="/login-both" element={<LoginBoth/>}/>
@@ -71,8 +68,7 @@ export default function App() {
                     <Route path="/Contact-us-manager" element={<ContactUsManager/>}/>
                     <Route path="/cs" element={<CodeSubmissions/>}/>
                     <Route path="/ah" element={<AskHelp/>}/>
-                    <Route path="/urp" element={<UserResponsePreview/>}/>
-                    <Route path="/mp" element={<ManagerProfile/>}/> 
+                    <Route path="/mp" element={<ManagerProfile/>}/>
                     <Route path="/successpage" element={<AccSuccess/>}/>
                     <Route path="/invalidpage" element={<InvalidPage/>}/>
                     <Route path="/fpr" element={<ForgotPasswordAndReset/>}/>
