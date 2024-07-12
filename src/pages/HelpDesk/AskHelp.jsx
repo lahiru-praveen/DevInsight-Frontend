@@ -1,9 +1,28 @@
 import {useEffect, useState} from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+
+import {
+    Tabs,
+    TabList,
+    TabPanels,
+    Tab,
+    TabPanel,
+    Button,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    useDisclosure,
+    Icon,
+    useToast
+} from "@chakra-ui/react";
 import axios from 'axios';
 import NavBarQAE from "../../components/dashboard/NavBarQAE.jsx";
+import {MdDriveFolderUpload} from "react-icons/md";
 
 function AskHelp() {
     const location = useLocation();
@@ -12,11 +31,11 @@ function AskHelp() {
     const role = sessionStorage.getItem('role');
     const [requestSubject, setRequestSubject] = useState('');
     const [requestText, setRequestText] = useState('');
-    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const user = sessionStorage.getItem('email');
     const [projectID, setProjectID] = useState('');
-
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const toast = useToast();
 
     const handleSubjectChange = (event) => {
         setRequestSubject(event.target.value);
@@ -24,7 +43,9 @@ function AskHelp() {
 
     const handleRequestChange = (event) => {
         setRequestText(event.target.value);
+
     };
+
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -33,7 +54,7 @@ function AskHelp() {
             return;
         }
         setErrorMessage('');
-        setShowConfirmationModal(true);
+        onOpen();
     };
 
     useEffect(() => {
@@ -79,7 +100,13 @@ function AskHelp() {
 
             setRequestSubject('');
             setRequestText('');
-            setShowConfirmationModal(false);
+            toast({
+                title: "Action successful",
+                description: "Request submitted successfully",
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+            });
 
             navigate('/cr', { state: { reviewContent:review, selectedFileName:fileName, mode:mode, suggestionContent:suggestions, referLinksContent:referLinks, projectName:projectName, language:language, description:description } });
         } catch (error) {
@@ -87,6 +114,13 @@ function AskHelp() {
             if (error.response) {
                 console.error('Error details:', error.response.data); // Log error details
                 setErrorMessage(`Error: ${error.response.data.message}` || 'Failed to save request');
+                toast({
+                    title: "Action failure.",
+                    description: "System failed to submit the request",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                });
             } else {
                 setErrorMessage('Failed to save request');
             }
@@ -103,7 +137,7 @@ function AskHelp() {
             </div>
             <div className="grid grid-cols-2 divide-x py-4  mx-4">
                 <div className="bg-gray-200 rounded-lg">
-                    <Tabs className="grid grid-cols-2 divide-x py-4 ml-4" variant="enclosed" colorScheme="blue" height={"1100"}>
+                    <Tabs isFitted className="grid grid-cols-2 divide-x py-4 ml-4" variant="enclosed" colorScheme="blue" height={"1100"}>
                         <TabList>
                             <Tab>Preview</Tab>
                             <Tab>Review</Tab>
@@ -133,7 +167,7 @@ function AskHelp() {
                         <form className="w-full" onSubmit={handleSubmit}>
                             <div className="mb-8 mt-10">
                                 <input
-                                    className="shadow appearance-none border rounded w-full h-12 py-2 px-3 text-gray-700 leading-tight
+                                    className="shadow appearance-none border rounded w-full h-full py-2 px-3 text-gray-700 leading-tight
                                         focus:outline-none focus:shadow-outline mb-3"
                                     id="subject"
                                     type="text"
@@ -141,45 +175,55 @@ function AskHelp() {
                                     value={requestSubject}
                                     onChange={handleSubjectChange}
                                 />
-                                <input
+                                <textarea
                                     className="shadow appearance-none border rounded w-full h-80 py-2 px-3 text-gray-700 leading-tight
-                                        focus:outline-none focus:shadow-outline"
+        focus:outline-none focus:shadow-outline"
                                     id="request"
-                                    type="text"
                                     placeholder="Enter the request"
                                     value={requestText}
                                     onChange={handleRequestChange}
-                                />
+                                    rows={10} // You can adjust the number of rows to increase the height
+                                ></textarea>
+
                             </div>
                             {errorMessage && (
                                 <div className="text-red-500 mb-4">
                                     {errorMessage}
                                 </div>
                             )}
-                            <div className="flex items-center justify-between">
-                                <button
-                                    className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                    type="submit"
+                            <div className="flex items-center justify-end">
+
+                                <Button
+                                    isDisabled={!requestSubject || !requestText}
+                                    border='2px'
+                                    size="lg"
+                                    colorScheme='blue'
+                                    className="w-64"
+                                    type={"submit"}
                                 >
-                                    Submit
-                                </button>
+
+
+                                <Icon as={MdDriveFolderUpload} boxSize={6} color='white' className="mr-2"/>Submit
+                                </Button>
+
                             </div>
                         </form>
-                        {showConfirmationModal && (
-                            <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-50">
-                                <div className="bg-white rounded-lg text-2xl shadow-lg p-8 w-100">
+                        <Modal isOpen={isOpen} onClose={onClose}>
+                            <ModalOverlay />
+                            <ModalContent>
+                                <ModalHeader>Confirm Submission</ModalHeader>
+                                <ModalCloseButton />
+                                <ModalBody>
                                     <p>Are you sure you want to submit?</p>
-                                    <div className="mt-4 flex justify-end">
-                                        <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={confirmSubmission}>
-                                            Yes
-                                        </button>
-                                        <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md" onClick={() => setShowConfirmationModal(false)}>
-                                            No
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+                                </ModalBody>
+                                <ModalFooter>
+                                    <Button colorScheme="blue" mr={3} onClick={confirmSubmission}>
+                                        Yes
+                                    </Button>
+                                    <Button variant="ghost" onClick={onClose}>No</Button>
+                                </ModalFooter>
+                            </ModalContent>
+                        </Modal>
                     </div>
                 </div>
             </div>
