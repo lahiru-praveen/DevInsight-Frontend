@@ -1,12 +1,16 @@
 // LoginBoth.jsx
 import React from 'react';
-import { Box, Button, Text, VStack, useColorModeValue, Link } from '@chakra-ui/react';
+import { Box, Button, Text, useColorModeValue, Link } from '@chakra-ui/react';
 import logo from '../../assets/devsign.png';
+import BackButton from '../../components/Profile_page/BackButton';
 
 
 const LoginBoth = () => {
   return (
     <>
+    <Box>
+      <BackButton />
+    </Box>
     <center> 
     <Box mt={40}>
     <img src={logo} height={200} width={200} alt={'DevInsightLOGO'} />

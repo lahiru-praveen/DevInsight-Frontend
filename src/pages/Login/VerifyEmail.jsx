@@ -23,6 +23,7 @@ import axios from 'axios';
 import emailjs from 'emailjs-com';
 import logo from '../../assets/devsign.png';
 import image from '../../assets/email.png';
+import BackButton from '../../components/Profile_page/BackButton';
 
 export default function VerifyEmail() {
     const [isVerified, setIsVerified] = useState(false);
@@ -124,7 +125,12 @@ export default function VerifyEmail() {
     );
 
     return (
+        <>
+        <Box>
+      <BackButton />
+    </Box>
         <Flex minH={'100vh'}>
+           
             {/* left box */}
             <Box
                 flex={1}
@@ -204,6 +210,6 @@ export default function VerifyEmail() {
             </Stack>
         </Flex>
         </Flex>
-
+        </>
     );
 }
