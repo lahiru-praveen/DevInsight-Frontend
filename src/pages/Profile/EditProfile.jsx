@@ -308,7 +308,7 @@ const ProfileAndSkills = ({ profile, onUpdateProfile, token }) => {
                     </Text>
                   </Box><br/><br/>
                   <Flex><Text fontSize="md" color="gray.700" ml={4} mr={2}>Years of Experiance</Text>
-                  <Text>
+                  <Text fontSize="md" color="blue.700" as="b">
                   {profile.experience}
                   </Text> 
                    </Flex>

@@ -5,6 +5,7 @@ import {Button, FormControl, Flex, Input, Stack, Text, useColorModeValue, Alert,
 import logo from '../../assets/devsign.png';
 import image from '../../assets/S.png'; 
 import { BiFingerprint } from 'react-icons/bi';
+import BackButton from '../../components/Profile_page/BackButton';
 
 export default function LoginDeveloper() {
     const [email, setEmail] = useState('');
@@ -77,6 +78,9 @@ export default function LoginDeveloper() {
 
     return (
         <Flex minH={'100vh'}>
+        <Box>
+          <BackButton />
+         </Box>
             {/* Left Side */}
             <Box
                 flex={1}

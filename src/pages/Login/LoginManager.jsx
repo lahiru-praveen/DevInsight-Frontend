@@ -18,6 +18,7 @@ import {
 } from '@chakra-ui/react';
 import logo from '../../assets/devsign.png';
 import gif from '../../assets/T.gif';
+import BackButton from '../../components/Profile_page/BackButton';
 
 export default function LoginManager() {
     const [adminEmail, setAdminEmail] = useState('');
@@ -68,6 +69,9 @@ export default function LoginManager() {
     return (
         <>
         <Flex minH={'100vh'}>
+        <Box>
+      <BackButton />
+    </Box>
          {/* Left Side */}
          <Box
                 flex={1}
