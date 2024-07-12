@@ -12,7 +12,7 @@ import {
     Text,
     useColorModeValue,
     Alert,
-    AlertIcon,
+    Spinner,
     Box,
     Spacer,
 } from '@chakra-ui/react';
@@ -104,13 +104,13 @@ export default function LoginManager() {
 
                     {showLoggingInAlert && (
                         <Alert status="info">
-                            <AlertIcon />
+                            <Spinner thickness='4px' speed='0.65s' emptyColor='gray.200' color='blue.500' size='md' />
                             Logging in...
                         </Alert>
                     )}
                     
                     <Text fontSize="4xl" fontWeight="bold">
-                         Welcome!
+                         Hello!
                     </Text>   
                  <Text fontSize="2xl" >  Login as an Organization.</Text>
                      
