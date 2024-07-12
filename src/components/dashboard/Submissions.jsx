@@ -3,15 +3,18 @@ import { Card, Text, Flex, CardHeader} from '@chakra-ui/react';
 import { BsFileEarmarkMedicalFill } from 'react-icons/bs';
 import PropTypes from 'prop-types';
 import { FaCode } from 'react-icons/fa';
-import { FcAssistant, FcCancel, FcDisapprove, FcExpand, FcFile, FcSms } from 'react-icons/fc';
+import { FcExpand, FcFile, FcSms } from 'react-icons/fc';
 import { VscBlank } from 'react-icons/vsc';
 import { IoPeople } from 'react-icons/io5';
 import SubmissionModal from './SubmissionModal.jsx';
 import { Icon } from "@chakra-ui/icons";
 import axios from "axios";
 import ToolTip from "../../context/ToolTip.jsx";
+import { GoCodeSquare } from "react-icons/go";
+import { FcDoNotInsert } from "react-icons/fc";
+import { BsFillDashSquareFill } from "react-icons/bs";
 
-export default function Submissions({ submission, drop }) {
+export default function Submissions({ submission, drop, user }) {
     const [isModalOpen, setModalOpen] = useState(false);
     const { _id, p_id, p_name, f_name, submission_date, language, description, code, mode } = submission;
     const [reqId, setReqId] = useState(""); // State to store req_id
@@ -32,7 +35,7 @@ export default function Submissions({ submission, drop }) {
     const file_name = f_name === '' ?
         <div className="ml-5">
             <ToolTip tooltip="No any file here">
-                <Icon as={FcSms} boxSize={25} className="mr-2" />
+                <Icon as={GoCodeSquare} color='blue.500' boxSize={25} className="mr-2" />
             </ToolTip>
         </div>
         : (f_name);
@@ -45,18 +48,18 @@ export default function Submissions({ submission, drop }) {
         </ToolTip>
         : (reqId === "" ?
                 <ToolTip tooltip="No any questons for QAE">
-                    <Icon as={FcCancel} boxSize={25} className="mr-2" />
+                    <Icon as={BsFillDashSquareFill} color='blue.100' boxSize={25} className="mr-2" />
                 </ToolTip>
                 :
                 <ToolTip tooltip="Asked help from QAE">
-                    <Icon as={FcAssistant} boxSize={25} className="mr-2" />
+                    <Icon as={FcSms} boxSize={25} className="mr-2" />
                 </ToolTip>
         );
 
     const lan = language === "Not given" || language === "not mentioned" ?
         <div className="ml-5">
             <ToolTip tooltip='Language not given' >
-                <Icon as={FcDisapprove} boxSize={25} className="mr-2" />
+                <Icon as={FcDoNotInsert} boxSize={25} className="mr-2" />
             </ToolTip>
         </div>
         : language;
@@ -64,7 +67,7 @@ export default function Submissions({ submission, drop }) {
     const des = description === "Not given" || description === "" ?
         <div className="ml-5">
             <ToolTip tooltip='No any description given'>
-                <Icon as={FcDisapprove} boxSize={25} className="mr-2" />
+                <Icon as={FcDoNotInsert} boxSize={25} className="mr-2" />
             </ToolTip>
         </div>
         : description;
@@ -72,7 +75,13 @@ export default function Submissions({ submission, drop }) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const result = await axios.get(`http://localhost:8000/get-request-id/${p_id}`);
+                console.log(user);
+                console.log(p_id);
+                const result = await axios.get(`http://localhost:8000/get-request-id/${p_id}`, {
+                    params: {
+                        user: user,
+                    },
+                });
                 console.log("Fetch Result: ", result); // Log the entire response
                 if (result.data !== null) {
                     setReqId(result.data); // Set the req_id in state
@@ -149,5 +158,6 @@ Submissions.propTypes = {
         mode: PropTypes.number.isRequired,
         code: PropTypes.string.isRequired,
     }).isRequired,
-    drop: PropTypes.number.isRequired
+    drop: PropTypes.number.isRequired,
+    user: PropTypes.string.isRequired
 };
