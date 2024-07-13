@@ -2,6 +2,22 @@ import {Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalB
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import ChakraUIRenderer from 'chakra-ui-markdown-renderer';
+import ReactMarkdown from 'react-markdown';
+
+const newTheme = {
+    p: props => {
+        const { children } = props;
+        return (
+            <Text mb={2} fontSize={'18px'} fontWeight='light'>
+                {children}
+            </Text>
+            
+            
+            
+        );
+    },
+};
 
 const SubmissionModal = ({ isOpen, onClose, p_name, code, des, entity_id }) => {
     const [isDeleting, setIsDeleting] = useState(false);
@@ -114,45 +130,55 @@ const SubmissionModal = ({ isOpen, onClose, p_name, code, des, entity_id }) => {
                                 ))}
                             </TabList>
                             <TabPanels>
-                                <TabPanel>
-                                    <div className="font-bold bg-[#EBEBEB] color-[#898989] p-10 m-2">
-                                        <Text className="text-xl font-bold mr-2">Description - </Text>
-                                        <Box bg="white" p={4} color="black" className="mt-2 mb-8">
-                                            <Text>{des}</Text>
+                            <TabPanel>
+                                <div className="bg-[#EBEBEB] color-[#898989] p-4 m-2 rounded-md">
+                                    <Text className="text-xl font-bold mr-2">Description - </Text>
+                                    <Box bg="white" p={4} color="black" className="mt-2 mb-8 rounded-md">
+                                        <Text>{des}</Text>
+                                    </Box>
+                                    <Text className="text-xl font-bold mr-2">Code - </Text>
+                                    <Box bg="white" p={4} className="mt-2 mb-8 rounded-md">
+                                        <Box className="overflow-x-auto">
+                                        
+                                        <pre>{code}</pre>
+                                        
                                         </Box>
-                                        <Text className="text-xl font-bold mr-2">Code - </Text>
-                                        <Box bg="white" p={4} className="mt-2 mb-8">
-                                            <pre>{code}</pre>
-                                        </Box>
-                                    </div>
-                                </TabPanel>
+                                    </Box>
+                                </div>
+                            </TabPanel>
                                 <TabPanel>
-                                    <div className="font-bold bg-[#EBEBEB] color-[#898989] p-10 m-2">
+                                    <div className="bg-[#EBEBEB] color-[#898989] p-4 m-2 rounded-md">
                                         <Text className="text-xl font-bold mr-2">Review - </Text>
-                                        <Box bg="white" p={4} color="black" className="mt-2 mb-8">
-                                            <pre>{reviewContent}</pre>
+                                        <Box bg="white" p={4}  className="mt-2 mb-8 overflow-x-auto rounded-md">
+                                        <ReactMarkdown components={ChakraUIRenderer(newTheme)} skipHtml>
+                                        {reviewContent}
+                                        </ReactMarkdown>
                                         </Box>
                                     </div>
                                 </TabPanel>
                                 <TabPanel>
-                                    <div className="font-bold bg-[#EBEBEB] color-[#898989] p-10 m-2">
+                                    <div className="bg-[#EBEBEB] color-[#898989] p-4 m-2 rounded-md">
                                         <Text className="text-xl font-bold mr-2">Suggestions - </Text>
-                                        <Box bg="white" p={4} className="mt-2 mb-8">
-                                            <pre>{suggestionContent}</pre>
+                                        <Box bg="white" p={4} className="mt-2 mb-8 overflow-x-auto rounded-md">
+                                            <ReactMarkdown components={ChakraUIRenderer(newTheme)} skipHtml>  
+                                            {suggestionContent}
+                                            </ReactMarkdown>
                                         </Box>
                                     </div>
                                 </TabPanel>
                                 <TabPanel>
-                                    <div className="font-bold bg-[#EBEBEB] color-[#898989] p-10 m-2">
+                                    <div className="bg-[#EBEBEB] color-[#898989] p-4 m-2 rounded-md">
                                         <Text className="text-xl font-bold mr-2">Reference Links - </Text>
-                                        <Box bg="white" p={4} className="mt-2 mb-8">
-                                            <pre>{referLinksContent}</pre>
+                                        <Box bg="white" p={4} className="mt-2 mb-8 overflow-x-auto rounded-md">
+                                            <ReactMarkdown components={ChakraUIRenderer(newTheme)} skipHtml>  
+                                            {referLinksContent}
+                                            </ReactMarkdown>
                                         </Box>
                                     </div>
                                 </TabPanel>
                                 {requests.map((request) => (
                                     <TabPanel key={request.r_id}>
-                                        <div className="font-bold bg-[#EBEBEB] color-[#898989] p-10 m-2">
+                                        <div className="bg-[#EBEBEB] color-[#898989] p-10 m-2">
                                             <Text className="text-xl font-bold mr-2">{request.r_subject} </Text>
                                             <Box bg="white" p={4} color="black" className="mt-2 mb-10">
                                                 <pre>{request.r_content}</pre>
