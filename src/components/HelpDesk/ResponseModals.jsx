@@ -5,6 +5,7 @@ import {useEffect, useState} from "react";
 import {MdDriveFolderUpload} from "react-icons/md";
 import ChakraUIRenderer from 'chakra-ui-markdown-renderer';
 import ReactMarkdown from 'react-markdown';
+import { useNavigate } from "react-router-dom";
 
 const newTheme = {
     p: props => {
@@ -21,31 +22,32 @@ const newTheme = {
 };
 
 
-const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, response, response_content}) => {
+const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, response }) => {
     const [isDeleting, setIsDeleting] = useState(false);
     const [codeContent, setCodeContent] = useState('');
     const [reviewContent, setReviewContent] = useState('');
     const [suggestionContent, setSuggestionContent] = useState('');
     const [referLinksContent, setReferLinksContent] = useState('');
+    const [responseContent, setResponseContent] = useState(response || '');
+    const navigate = useNavigate();
+
     const user = sessionStorage.getItem('email');
     const [isTextBoxVisible, setIsTextBoxVisible] = useState(false);
-    const [responseText, setResponseText] = useState('');
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [showForwardConfirmationModal, setShowForwardConfirmationModal] = useState(false);
-    const [showOptionsModal, setShowOptionsModal] = useState(false); // New state for options modal
+    const [showOptionsModal, setShowOptionsModal] = useState(false);
 
     const handleButtonClick = () => {
         setIsTextBoxVisible(true);
     };
 
     const handleTextBoxChange = (event) => {
-        setResponseText(event.target.value);
+        setResponseContent(event.target.value);
     };
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if (!responseText) {
-            // If response text is empty, show an error message
+        if (!responseContent) {
             alert('Response text cannot be empty.');
             return;
         }
@@ -53,13 +55,20 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
     };
 
     const confirmSubmission = async () => {
+        setShowOptionsModal(false);
+        onClose();
+        navigate('/qhr');  // Redirect to QHR page after forwarding the request
+
         try {
             const response = await axios.post(
-                'http://localhost:8000/api/sam/',
-                { "response_text": responseText },
+                'http://localhost:8000/pre-responds',
+                { "response_text": responseContent, "p_id": p_id, "r_id": r_id, "user": user },
                 { headers: { 'Content-Type': 'application/json' } }
             );
             console.log('Response saved successfully:', response.data);
+            setResponseContent(responseContent);
+            onClose();
+            navigate('/qhr');  // Redirect to QHR page after submission
         } catch (error) {
             console.error('Failed to save response:', error);
             console.error('Error details:', error.response);
@@ -77,7 +86,7 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
 
     const confirmForward = () => {
         setShowForwardConfirmationModal(false);
-        setShowOptionsModal(true); // Show the options modal when forwarding
+        setShowOptionsModal(true);
     };
 
     const cancelForward = () => {
@@ -85,18 +94,17 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
     };
 
     const handleOptionSubmit = (selectedOption) => {
-        // Handle submission of the selected option here
         console.log('Selected Option:', selectedOption);
         setShowOptionsModal(false);
+        onClose();
+        navigate('/qhr');  // Redirect to QHR page after forwarding the request
     };
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const result = await axios.get(`http://localhost:8000/get-review/${p_id}`, {
-                    params: {
-                        user: user
-                    }
+                    params: { user: user }
                 });
                 console.log("Fetch Result: ", result);
                 const { code, review, suggestions, reference_links } = result.data;
@@ -113,9 +121,8 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
         }
     }, [isOpen, p_id, user]);
 
-
     const handleDelete = async () => {
-        const confirmed = window.confirm("\u26A0 \t" + " RECORD DELETION\n\n"+"Are you sure you want to delete this code submission?");
+        const confirmed = window.confirm("\u26A0 \t" + " RECORD DELETION\n\n" + "Are you sure you want to delete this code submission?");
         setIsDeleting(true);
         try {
             if (confirmed) {
@@ -124,10 +131,9 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
                 });
                 if (response.status === 200) {
                     alert("Submission Deleted Successfully");
-                    onClose(); // Close the modal after deletion
+                    onClose();
                     window.location.reload();
                 } else {
-                    // Handle deletion failure
                     console.error("Delete failed:", response.data);
                 }
             }
@@ -137,7 +143,6 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
             setIsDeleting(false);
         }
     };
-
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} size={'fit'} closeOnOverlayClick={false}>
@@ -183,57 +188,61 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
                         </div>
                         <div className="px-4 bg-gray-200 rounded-lg mx-4 py-4">
                             <p>Subject: {subject} </p>
-
                             <p>Request: {request}</p>
+                            <p>Response: </p>
 
-                            <p>Response Sent: {response_content}</p>
-
-                            {isTextBoxVisible ? (
-                                <form className="w-full" onSubmit={handleSubmit}>
-                                    <div className="mb-8 mt-10">
-                                        <input
-                                            className="shadow appearance-none border rounded w-full h-80 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            id="response"
-                                            type="text"
-                                            placeholder="Enter response"
-                                            value={response}
-                                            onChange={handleTextBoxChange}
-                                            maxLength={100}
-                                        />
-                                    </div>
-                                    <div className="flex items-center justify-between">
-                                        <Tooltip hasArrow
-                                                 label={!responseText ? 'Response text cannot be empty.' : 'Submit the codes/files'}
-                                                 bg={!responseText ? 'red.200' : 'blue.200'} placement='bottom'>
-                                            <Button
-                                                isDisabled={!responseText}
-                                                border='2px'
-                                                size="lg"
-                                                colorScheme={!responseText ? 'red' : 'blue'}
-                                                className="w-64"
-                                                type={"submit"}
-                                            >
-                                                <Icon as={MdDriveFolderUpload} boxSize={6} color='white'
-                                                      className="mr-2"/>Submit
-                                            </Button>
-                                        </Tooltip>
-                                    </div>
-                                </form>
+                            {response ? (
+                                <p>{response}</p>
                             ) : (
-                                <div className="grid grid-cols-2 divide-x py-4 px-4 mx-4">
-                                    <p
-                                        className="mt-10 flex items-center space-x-5 p-2 text-white w-50 rounded-lg bg-blue-500 mr-5"
-                                        onClick={handleButtonClick}
-                                    >
-                                        Send Response
-                                    </p>
-                                    <p
-                                        className="mt-10 flex items-center space-x-5 p-2 text-white w-50 rounded-lg bg-blue-500"
-                                        onClick={handleForwardButtonClick}
-                                    >
-                                        Forward to another QAE
-                                    </p>
-                                </div>
+                                <>
+                                    {isTextBoxVisible ? (
+                                        <form className="w-full" onSubmit={handleSubmit}>
+                                            <div className="mb-8 mt-10">
+                                                <textarea
+                                                    className="shadow appearance-none border rounded w-full h-80 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                    id="response"
+                                                    placeholder="Enter response"
+                                                    value={responseContent}
+                                                    onChange={handleTextBoxChange}
+                                                    maxLength={100}
+                                                />
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <Tooltip hasArrow
+                                                         label={!responseContent ? 'Response text cannot be empty.' : 'Submit the response'}
+                                                         bg={!responseContent ? 'red.200' : 'blue.200'}
+                                                         placement='bottom'>
+                                                    <Button
+                                                        isDisabled={!responseContent}
+                                                        border='2px'
+                                                        size="lg"
+                                                        colorScheme={!responseContent ? 'red' : 'blue'}
+                                                        className="w-64"
+                                                        type={"submit"}
+                                                    >
+                                                        <Icon as={MdDriveFolderUpload} boxSize={6} color='white'
+                                                              className="mr-2" />Submit
+                                                    </Button>
+                                                </Tooltip>
+                                            </div>
+                                        </form>
+                                    ) : (
+                                        <div className="grid grid-cols-2 divide-x py-4 px-4 mx-4">
+                                            <p
+                                                className="mt-10 flex items-center space-x-5 p-2 text-white w-50 rounded-lg bg-blue-500 mr-5"
+                                                onClick={handleButtonClick}
+                                            >
+                                                Send Response
+                                            </p>
+                                            <p
+                                                className="mt-10 flex items-center space-x-5 p-2 text-white w-50 rounded-lg bg-blue-500"
+                                                onClick={handleForwardButtonClick}
+                                            >
+                                                Forward to another QAE
+                                            </p>
+                                        </div>
+                                    )}
+                                </>
                             )}
                         </div>
                     </div>
@@ -242,10 +251,14 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
                             <div className="bg-white rounded-lg text-2xl shadow-lg p-8 w-100">
                                 <p>Are you sure you want to submit?</p>
                                 <div className="mt-4 flex justify-end">
-                                    <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={confirmSubmission}>
-                                        <a href="/qhr">Yes</a>
+                                    <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md"
+                                            onClick={confirmSubmission}
+                                    >
+                                        Yes
                                     </button>
-                                    <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md" onClick={cancelSubmission}>No</button>
+                                    <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md"
+                                            onClick={cancelSubmission}
+                                    >No</button>
                                 </div>
                             </div>
                         </div>
@@ -269,22 +282,16 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
                         <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-50">
                             <div className="bg-white rounded-lg text-2xl shadow-lg p-8 w-100">
                                 <p>Select a valid reason to forward the request:</p>
-                                <div className="mt-4"><a href="/qhr">
-                                    <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={() => handleOptionSubmit('Option 1')}>Unavailable</button>
-                                    <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={() => handleOptionSubmit('Option 2')}>Not my field</button>
-                                    <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={() => handleOptionSubmit('Option 3')}>Request is not clear</button>
-                                    {/*<button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={() => handleOptionSubmit('Option 4')}>Option 4</button>*/}
-                                    {/*<button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={() => handleOptionSubmit('Option 5')}>Option 5</button>*/}
-                                </a>
+                                <div className="mt-4">
+                                    <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={() => handleOptionSubmit('Unavailable')}>Unavailable</button>
+                                    <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={() => handleOptionSubmit('Not my field')}>Not my field</button>
+                                    <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={() => handleOptionSubmit('Request is not clear')}>Request is not clear</button>
                                 </div>
                             </div>
                         </div>
                     )}
                 </ModalBody>
                 <ModalFooter>
-                    <Button colorScheme="red" className="mr-4" onClick={handleDelete} isLoading={isDeleting}>
-                        Delete
-                    </Button>
                     <Button colorScheme="blue" onClick={onClose}>
                         Close
                     </Button>
@@ -302,9 +309,7 @@ ResponseModal.propTypes = {
     request: PropTypes.string.isRequired,
     r_id: PropTypes.number.isRequired,
     p_id: PropTypes.number.isRequired,
-    response: PropTypes.string.isRequired,
-    response_content: PropTypes.string.isRequired,
-
+    response: PropTypes.string,
 };
 
 export default ResponseModal;
