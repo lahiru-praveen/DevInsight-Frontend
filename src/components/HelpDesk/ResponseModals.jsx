@@ -1,26 +1,26 @@
-import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalCloseButton,
-    ModalBody,
-    ModalFooter,
-    Button,
-    Text,
-    Tabs,
-    TabList,
-    Tab,
-    TabPanels,
-    TabPanel,
-    Tooltip,
-    Icon,
-} from '@chakra-ui/react';
+import {Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Text, Tabs, TabList, Tab, TabPanels, TabPanel, Tooltip, Icon, Box } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { MdDriveFolderUpload } from "react-icons/md";
+import {useEffect, useState} from "react";
+import {MdDriveFolderUpload} from "react-icons/md";
+import ChakraUIRenderer from 'chakra-ui-markdown-renderer';
+import ReactMarkdown from 'react-markdown';
 import { useNavigate } from "react-router-dom";
+
+const newTheme = {
+    p: props => {
+        const { children } = props;
+        return (
+            <Text mb={2} fontSize={'18px'} fontWeight='light'>
+                {children}
+            </Text>
+            
+            
+            
+        );
+    },
+};
+
 
 const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, response }) => {
     const [isDeleting, setIsDeleting] = useState(false);
@@ -162,18 +162,26 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
                                     <Tab>Suggestions</Tab>
                                     <Tab>Refer Links</Tab>
                                 </TabList>
-                                <TabPanels className="h-full">
-                                    <TabPanel className="h-full overflow-auto">
+                                <TabPanels className="h-full" >
+                                    <TabPanel className=" h-full overflow-auto">
+                                        <Box p={4} m={0}>   
                                         <pre>{codeContent}</pre>
+                                        </Box>
                                     </TabPanel>
                                     <TabPanel className="h-full overflow-auto">
-                                        <pre>{reviewContent}</pre>
+                                        <ReactMarkdown components={ChakraUIRenderer(newTheme)} skipHtml>
+                                        {reviewContent}
+                                        </ReactMarkdown>
                                     </TabPanel>
                                     <TabPanel className="h-full overflow-auto">
-                                        <pre>{suggestionContent}</pre>
+                                        <ReactMarkdown components={ChakraUIRenderer(newTheme)} skipHtml>
+                                        {suggestionContent}
+                                        </ReactMarkdown>
                                     </TabPanel>
                                     <TabPanel className="h-full overflow-auto">
-                                        <pre>{referLinksContent}</pre>
+                                        <ReactMarkdown components={ChakraUIRenderer(newTheme)} skipHtml>
+                                        {referLinksContent}
+                                        </ReactMarkdown>
                                     </TabPanel>
                                 </TabPanels>
                             </Tabs>
