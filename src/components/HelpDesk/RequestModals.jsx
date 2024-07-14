@@ -149,9 +149,9 @@ const RequestModal = ({ isOpen, onClose, p_name, subject, request, r_id, p_id })
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <Button colorScheme="red" className="mr-4" onClick={handleDelete} isLoading={isDeleting}>
-                        Delete
-                    </Button>
+                    {/*<Button colorScheme="red" className="mr-4" onClick={handleDelete} isLoading={isDeleting}>*/}
+                    {/*    Delete*/}
+                    {/*</Button>*/}
                     <Button colorScheme="blue" onClick={onClose}>
                         Close
                     </Button>
