@@ -5,7 +5,6 @@ import ToolTip from "../../context/ToolTip.jsx";
 import { Icon } from "@chakra-ui/icons";
 import { FcAdvance } from "react-icons/fc";
 import { VscBlank } from 'react-icons/vsc';
-import RequestModal from '../HelpDesk/RequestModals.jsx';
 import ResponseModal from "./ResponseModals.jsx";
 
 export default function Responses({ response, drop }) {
@@ -17,7 +16,7 @@ export default function Responses({ response, drop }) {
         : <Icon as={VscBlank} boxSize={25} className="mr-2" />;
 
     const getStatusColor = (status) => {
-        return status === 'Pending' ? 'red.500' : status === 'Completed' ? 'green.500' : 'black';
+        return status === 'Not responded' ? 'red.500' : status === 'Responded' ? 'green.500' : 'black';
     };
 
     return (

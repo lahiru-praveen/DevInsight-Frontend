@@ -9,7 +9,7 @@ import RequestModal from '../HelpDesk/RequestModals.jsx';
 
 export default function Requests({ request, drop }) {
     const [isModalOpen, setModalOpen] = useState(false);
-    const { p_id, p_name, r_id, r_subject, r_content, r_status, date } = request;
+    const { p_id, p_name, r_id, r_subject, r_content, r_status, date, qae } = request;
 
     const dropType = drop === 0
         ? <Icon as={FcExpand} boxSize={25} className="mr-2" onClick={() => setModalOpen(true)} style={{ cursor: 'pointer' }} />
@@ -37,7 +37,10 @@ export default function Requests({ request, drop }) {
                             <Text fontWeight="bold" fontSize="16px">{r_subject}</Text>
                         </CardHeader>
                         <CardHeader mr={4} w="500px">
-                            <Text fontWeight="bold" w="500px" fontSize="16px" isTruncated>{r_content}</Text>
+                            <Text fontWeight="bold" w="200px" fontSize="16px" isTruncated>{r_content}</Text>
+                        </CardHeader>
+                        <CardHeader mr={4} w="500px">
+                            <Text fontWeight="bold" fontSize="16px" isTruncated>{qae}</Text>
                         </CardHeader>
                         <CardHeader mr={4} w="150px">
                             <Text fontWeight="bold" fontSize="16px" color={getStatusColor(r_status)}>{r_status}</Text>
@@ -53,7 +56,7 @@ export default function Requests({ request, drop }) {
                     </Flex>
                 </Card>
             </div>
-            <RequestModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} p_name={p_name} subject={r_subject} request={r_content} r_id={r_id} p_id={p_id}/>
+            <RequestModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} p_name={p_name} subject={r_subject} request={r_content} r_id={r_id} p_id={p_id} qae={qae}/>
         </>
     );
 }
@@ -67,6 +70,7 @@ Requests.propTypes = {
         r_content: PropTypes.string.isRequired,
         r_status: PropTypes.string.isRequired,
         date: PropTypes.string.isRequired,
+        qae: PropTypes.string.isRequired
     }).isRequired,
     drop: PropTypes.number.isRequired
 };
