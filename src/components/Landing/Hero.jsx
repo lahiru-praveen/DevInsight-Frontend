@@ -34,8 +34,9 @@ const Hero = () => {
         style={{
           backgroundImage: `url(${prallex})`,
           backgroundSize: 'cover',
-          backgroundPosition: 'top center',
-          height: `${scrollY + window.innerHeight}px`,
+          backgroundPosition: 'center',
+          height: '100vh',
+          transform: `translateY(${scrollY * 0.5}px) scale(${1 + scrollY / 1000})`,
           zIndex: -1,
         }}
       />
@@ -48,7 +49,7 @@ const Hero = () => {
           Enhance Your Code with DevInsight
         </h1>
           </div>
-          <p className="py-2 text-lg text-gray-600 w-4/5">
+          <p className="py-2 text-lg text-gray-600 w-4/5 font-medium">
           Welcome to DevInsight, the premier platform for code reviews. Our intuitive and collaborative environment empowers developers to refine their code, enhance performance, and ensure quality. Join a community of passionate coders and elevate your projects with insightful feedback and expert advice.
 
           </p>

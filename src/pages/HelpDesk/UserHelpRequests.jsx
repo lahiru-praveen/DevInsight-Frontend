@@ -102,7 +102,7 @@ export default function UserHelpRequests() {
                 }
             </div>
             <div className="flex flex-col mt-5 ml-10 mb-5 mr-10">
-                <Text className="font-bold mb-4" fontSize='30px'>
+                <Text className="font-bold mb-4" fontSize='30px' color="gray.500">
                     Requests
                 </Text>
                 <div className="flex mb-8">

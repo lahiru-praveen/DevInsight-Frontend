@@ -81,7 +81,6 @@ const RequestModal = ({ isOpen, onClose, p_name, subject, request, r_id, p_id })
             onPopoverClose();
         } catch (error) {
             console.error("Error submitting feedback:", error);
-            alert("Failed to submit feedback");
         }
     };
 

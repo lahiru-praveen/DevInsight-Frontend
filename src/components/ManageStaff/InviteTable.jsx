@@ -92,6 +92,7 @@ export const InviteTable = () => {
         duration: 5000,
         isClosable: true,
       });
+      fetchInviteTable();
     } catch (error) {
       console.error("Error deleting invite:", error);
       toast({
