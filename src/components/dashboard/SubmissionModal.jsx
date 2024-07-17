@@ -187,7 +187,7 @@ const SubmissionModal = ({ isOpen, onClose, p_name, code, des, entity_id }) => {
                                                 .filter((res) => res.r_id === request.r_id)
                                                 .map((res) => (
                                                     <div key={res.r_id}>
-                                                        {res.response_status === 'Completed' ?
+                                                        {res.response_status === 'Responded' ?
                                                             <Text color="green" fontSize='xl' className="mr-2 mb-4">Response Status - {res.response_status}</Text> :
                                                             <Text color='red' fontSize='xl' className="mr-2 mb-4">Response Status - {res.response_status}</Text>
                                                         }
