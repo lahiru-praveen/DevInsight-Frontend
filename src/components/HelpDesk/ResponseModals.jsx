@@ -20,7 +20,7 @@ const newTheme = {
     },
 };
 
-const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, response }) => {
+const ResponseModal = ({ isOpen, onClose, dev_user, p_id, p_name, r_id, subject, request, response }) => {
     const [setIsDeleting] = useState(false);
     const [codeContent, setCodeContent] = useState('');
     const [reviewContent, setReviewContent] = useState('');
@@ -108,7 +108,7 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
             const response = await axios.post(
                 'http://localhost:8000/save-response',
                 {
-                    user: user,
+                    user: dev_user,
                     p_id: p_id,
                     r_id: r_id,
                     response_content: response_content
@@ -130,6 +130,7 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
                 isClosable: true,
             });
             navigate('/qhr');  // Redirect to QHR page after submission
+            window.location.reload();
             onClose();
         } catch (error) {
             if (error.response) {
@@ -213,7 +214,7 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
         const fetchData = async () => {
             try {
                 const result = await axios.get(`http://localhost:8000/get-review/${p_id}`, {
-                    params: { user: user }
+                    params: { user: dev_user }
                 });
                 console.log("Fetch Result: ", result);
                 const { code, review, suggestions, reference_links } = result.data;
@@ -458,6 +459,7 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
 ResponseModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
+    dev_user: PropTypes.string.isRequired,
     p_id: PropTypes.string.isRequired,
     p_name: PropTypes.string.isRequired,
     r_id: PropTypes.string.isRequired,
