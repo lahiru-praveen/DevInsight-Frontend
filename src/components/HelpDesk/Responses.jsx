@@ -5,7 +5,6 @@ import ToolTip from "../../context/ToolTip.jsx";
 import { Icon } from "@chakra-ui/icons";
 import { FcAdvance } from "react-icons/fc";
 import { VscBlank } from 'react-icons/vsc';
-import RequestModal from '../HelpDesk/RequestModals.jsx';
 import ResponseModal from "./ResponseModals.jsx";
 
 export default function Responses({ response, drop }) {
@@ -17,37 +16,37 @@ export default function Responses({ response, drop }) {
         : <Icon as={VscBlank} boxSize={25} className="mr-2" />;
 
     const getStatusColor = (status) => {
-        return status === 'Pending' ? 'red.500' : status === 'Completed' ? 'green.500' : 'black';
+        return status === 'Not responded' ? 'red.500' : status === 'Responded' ? 'green.500' : 'black';
     };
 
     return (
         <>
             <div>
-                <Card>
-                    <Flex flexDirection="row" bg="#EBEBEB" mb={2} mt={1}>
+                <Card bg="#f5f5f5" mb={2} mt={1} borderRadius="md">
+                    <Flex flexDirection="row">
                         <CardHeader mr={4} w="300px">
-                            <Text fontWeight="bold" w="300px" fontSize="16px" isTruncated>{user}</Text>
+                            <Text fontWeight="500" w="300px" fontSize="16px" color="gray.700" isTruncated>{user}</Text>
                         </CardHeader>
                         <CardHeader mr={4} w="300px">
-                            <Text fontWeight="bold" fontSize="16px">{p_name}</Text>
+                            <Text fontWeight="500" fontSize="16px" color="gray.700">{p_name}</Text>
                         </CardHeader>
                         <CardHeader mr={4} w="150px">
-                            <Text fontWeight="bold" fontSize="16px">{req_id}</Text>
+                            <Text fontWeight="500" fontSize="16px" color="gray.700">{req_id}</Text>
                         </CardHeader>
                         <CardHeader mr={4} w="150px">
-                            <Text fontWeight="bold" fontSize="12px">{req_date}</Text>
+                            <Text fontWeight="500" fontSize="12px" color="gray.700">{req_date}</Text>
                         </CardHeader>
                         <CardHeader mr={4} w="300px">
-                            <Text fontWeight="bold" fontSize="16px">{req_subject}</Text>
+                            <Text fontWeight="500" fontSize="16px" color="gray.700">{req_subject}</Text>
                         </CardHeader>
                         <CardHeader mr={4} w="400px">
-                            <Text fontWeight="bold" w="400px" fontSize="16px" isTruncated>{req_content}</Text>
+                            <Text fontWeight="500" w="400px" fontSize="16px" color="gray.700" isTruncated>{req_content}</Text>
                         </CardHeader>
                         <CardHeader mr={4} w="200px">
-                            <Text fontWeight="bold" fontSize="16px" color={getStatusColor(res_status)}>{res_status}</Text>
+                            <Text fontWeight="500" fontSize="16px"  color={getStatusColor(res_status)}>{res_status}</Text>
                         </CardHeader>
                         <CardHeader mr={4} w="150px">
-                            <Text fontWeight="bold" fontSize="12px">{res_date}</Text>
+                            <Text fontWeight="500" fontSize="12px" color="gray.700">{res_date}</Text>
                         </CardHeader>
                         <CardHeader>
                             <ToolTip tooltip="Expand the Request">

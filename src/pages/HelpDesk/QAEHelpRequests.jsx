@@ -9,7 +9,8 @@ export default function UserHelpRequests() {
     const [response, setResponse] = useState([]);
     const [filteredResponses, setFilteredResponses] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
-    const [sortOrder, setSortOrder] = useState("asc");
+    const [sortOrder, setSortOrder] = useState("desc");
+    const [responseStatusFilter, setResponseStatusFilter] = useState(""); // Added state for response status filter
     const [error, setError] = useState(null);
     const user = sessionStorage.getItem('email');
 
@@ -37,35 +38,37 @@ export default function UserHelpRequests() {
 
     const filterAndSortResponses = useCallback(debounce(() => {
         let filtered = response;
+
+        // Apply search query filtering
         if (searchQuery) {
-            filtered = response.filter(req =>
+            filtered = filtered.filter(req =>
                 req.user.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 req.req_subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 req.req_content.toLowerCase().includes(searchQuery.toLowerCase())
             );
         }
 
-        filtered.sort((a, b) => {
-            const userComparison = a.user.localeCompare(b.user);
-            if (userComparison !== 0) return userComparison;
-
-            const subjectComparison = a.req_subject.localeCompare(b.req_subject);
-            if (subjectComparison !== 0) return subjectComparison;
-
-            const requestIdComparison = (a.p_id + a.r_id).localeCompare(b.p_id + b.r_id);
-            return requestIdComparison;
-        });
-
-        if (sortOrder === "desc") {
-            filtered.reverse();
+        // Apply response status filtering
+        if (responseStatusFilter) {
+            filtered = filtered.filter(req => req.res_status === responseStatusFilter);
         }
 
+        // Sort responses
+        filtered.sort((a, b) => {
+            const dateComparison = new Date(a.req_date) - new Date(b.req_date);
+            if (sortOrder === "asc") {
+                return dateComparison;
+            } else {
+                return -dateComparison;
+            }
+        });
+
         setFilteredResponses(filtered);
-    }, 300), [searchQuery, sortOrder, response]);
+    }, 300), [searchQuery, sortOrder, response, responseStatusFilter]);
 
     useEffect(() => {
         filterAndSortResponses();
-    }, [searchQuery, sortOrder, filterAndSortResponses]);
+    }, [searchQuery, sortOrder, response, responseStatusFilter, filterAndSortResponses]);
 
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
@@ -73,6 +76,10 @@ export default function UserHelpRequests() {
 
     const handleSortOrderChange = (event) => {
         setSortOrder(event.target.value);
+    };
+
+    const handleResponseStatusFilterChange = (event) => {
+        setResponseStatusFilter(event.target.value);
     };
 
     // Static headers
@@ -90,10 +97,10 @@ export default function UserHelpRequests() {
     return (
         <div className="flex flex-col h-screen">
             <div>
-                <NavBarQAE button1={false} button2={false} button3={false} button4={false} button5={false}/>
+                <NavBarQAE button1={false} button2={false} button3={false} button4={false} button5={false} />
             </div>
             <div className="flex flex-col mt-5 ml-10 mb-5 mr-10">
-                <Text className="font-bold mb-4" fontSize='30px'>
+                <Text className="font-bold mb-4" fontSize='30px' color="gray.500">
                     Responses
                 </Text>
                 <div className="flex mb-8">
@@ -103,9 +110,14 @@ export default function UserHelpRequests() {
                         onChange={handleSearchChange}
                         mr={4}
                     />
-                    <Select value={sortOrder} onChange={handleSortOrderChange} width="150px">
-                        <option value="asc">Sort by Date (Previous)</option>
-                        <option value="desc">Sort by Date (Latest)</option>
+                    <Select value={sortOrder} onChange={handleSortOrderChange} width="400px" mr={4}>
+                        <option value="desc">Sort by Requested Date (Latest)</option>
+                        <option value="asc">Sort by Requested Date (Previous)</option>
+                    </Select>
+                    <Select value={responseStatusFilter} onChange={handleResponseStatusFilterChange} width="200px">
+                        <option value="">All Statuses</option>
+                        <option value="Responded">Responded</option>
+                        <option value="Not responded">Not responded</option>
                     </Select>
                 </div>
                 {/* Render static headers */}

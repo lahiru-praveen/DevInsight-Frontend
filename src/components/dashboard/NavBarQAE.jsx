@@ -123,7 +123,7 @@ export default function NavBarQAE({ button1, button2, button3, button4, button5 
                                 <Tab as={Link} to="/db" isDisabled={button1}
                                      colorScheme={location.pathname === '/db' ? 'blue' : 'gray'}>Dashboard</Tab>
                                 <Tab as={Link} to="/qhr" isDisabled={button5}
-                                     colorScheme={location.pathname === '/cu' ? 'blue' : 'gray'}>Requests</Tab>
+                                     colorScheme={location.pathname === '/qhr' ? 'blue' : 'gray'}>Requests</Tab>
                                 <Tab as={Link} to="/cs" isDisabled={button2}
                                      colorScheme={location.pathname === '/cs' ? 'blue' : 'gray'}>Submissions</Tab>
                                 <Tab as={Link} to="/uhr" isDisabled={button3}
