@@ -111,6 +111,10 @@ export default function ForgotPassword() {
   };
 
   return (
+    <>
+    <Box>
+      <BackButton />
+    </Box>
     <Flex minH={'100vh'}>
      {/* Left Side */}
      <Box
@@ -234,7 +238,8 @@ export default function ForgotPassword() {
         </div>
       </Stack>
     </Flex>
-    </Flex>  
+    </Flex> 
+    </> 
   );
 
 

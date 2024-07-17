@@ -1,21 +1,19 @@
-
-
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import Webcam from 'react-webcam';
-import { Center, Box, Button, Text, Flex, Heading,useColorModeValue,Link } from '@chakra-ui/react';
-import {  useNavigate } from 'react-router-dom';
-import image from '../../assets/facelogin.gif';
+import { Box, Button, Text, Flex, Heading, useColorModeValue, Link, Spinner, Image } from '@chakra-ui/react';
 import { IoArrowBackCircleSharp } from "react-icons/io5";
-
+import { Link as RouterLink , useNavigate } from 'react-router-dom';
+import image from '../../assets/facelogin.gif';
 
 function LoginFace() {
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
   const webcamRef = React.useRef(null);
   const navigate = useNavigate();
 
   const capture = async () => {
+    setLoading(true);
     const imageSrc = webcamRef.current.getScreenshot();
     const file = dataURLtoFile(imageSrc, 'login_face.png');
 
@@ -23,22 +21,26 @@ function LoginFace() {
     formData.append('file', file);
 
     try {
-        const response = await axios.post('http://localhost:8000/login_face', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
+      const response = await axios.post('http://localhost:8000/login_face', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
-        setMessage(response.data.message);
-        const { email, password, access_token } = response.data.user;
-        sessionStorage.setItem('email', email);
-        sessionStorage.setItem('password', password);
-        sessionStorage.setItem('access_token', access_token);
-        navigate('/db');
+      setMessage(response.data.message);
+      const { email, password, access_token, companyEmail, role } = response.data.user;
+      sessionStorage.setItem('email', email);
+      sessionStorage.setItem('password', password);
+      sessionStorage.setItem('access_token', access_token);
+      sessionStorage.setItem('companyEmail', companyEmail);
+      sessionStorage.setItem('role', role);
+      navigate('/db');
     } catch (error) {
-        setMessage(error.response?.data?.detail || 'An error occurred');
+      setMessage(error.response?.data?.detail || 'An error occurred');
+    } finally {
+      setLoading(false);
     }
-};
+  };
 
   const dataURLtoFile = (dataurl, filename) => {
     let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
@@ -50,59 +52,66 @@ function LoginFace() {
   };
 
   return (
-   <>
-     <Box p={2} >
-      <Link to="/login-developer">
-     <Button leftIcon={<IoArrowBackCircleSharp />} variant="ghost">
-        Go Back
-      </Button>
-      </Link>
-    </Box>
-    <Box justify="center" align="center"  minHeight="100vh" mt="-20"  p={2}>
-        <Flex flex={1} direction="column" align="center" bg="white">
-        <Box
-        
+    <>
+    <RouterLink to="/login-developer" style={{ alignSelf: 'flex-start' }}>
+          <Button leftIcon={<IoArrowBackCircleSharp />} variant="ghost" color="black">
+            Go Back
+          </Button>
+        </RouterLink>
+      <Box 
+        backgroundSize="cover"
+        backgroundPosition="center"
+        minHeight="100vh"
         display="flex"
         flexDirection="column"
         alignItems="center"
         justifyContent="center"
-        bg={useColorModeValue('white.700')}
       >
-        
-        <img src={image} width="300" height="300"/>
-      </Box>
-            <Box position="relative" mb={4}>
-            <Heading as="h2" size="xl" mt="-10">Login with Face</Heading>
-            </Box>
+         
 
-            <Box
-                className="phone-frame"
-                position="relative"
-                border="2px solid #ccc"
-                borderRadius="20px"
-                overflow="hidden"
-                boxShadow="0 0 10px rgba(0, 0, 0, 0.1)"
-                maxWidth="500px"
-                width="100%"
-                mb={4}
+        <Box 
+          bg={useColorModeValue('white', 'gray.700')}
+          p={4}
+          borderRadius="lg"
+          boxShadow="lg"
+          textAlign="center"
+          maxWidth="500px"
+          width="100%"
+        >
+          <Box mb={-5} mt={-10}>
+            <Image src={image} alt="Face Login" boxSize="150px" mx="auto" />
+          </Box>
+
+          <Heading as="h3"  mb={6}>Login with Face</Heading>
+
+          <Box mb={4}>
+            <Webcam
+              audio={false}
+              ref={webcamRef}
+              screenshotFormat="image/jpeg"
+              className="rounded-lg overflow-hidden"
+              videoConstraints={{ width: 640, height: 480 }}
+              style={{ borderRadius: '10px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }}
+            />
+          </Box>
+
+          <Box>
+            <Button
+              colorScheme="blue"
+              onClick={capture}
+              size="lg"
+              width="full"
+              isLoading={loading}
+              spinner={<Spinner size="sm" color="white" />}
             >
-                <Webcam
-                    audio={false}
-                    ref={webcamRef}
-                    screenshotFormat="image/jpeg"
-                    className="rounded-lg overflow-hidden"
-                    videoConstraints={{ width: 500, height: 300 }}
-                />
-            </Box>
-
-            <Box position="relative" textAlign="center">
-                <Button colorScheme="blue" onClick={capture}  size="md" width="60">Login</Button>
-                <Text>{message}</Text>
-            </Box>
-        </Flex>
-    </Box>
-    </> 
-);
+              {loading ? '' : 'Login'}
+            </Button>
+            <Text mt={4} color="red.500">{message}</Text>
+          </Box>
+        </Box>
+      </Box>
+    </>
+  );
 }
 
 export default LoginFace;

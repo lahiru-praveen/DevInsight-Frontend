@@ -28,6 +28,7 @@ import { FiUpload } from 'react-icons/fi';
 import { getUserProfile, createUserProfile } from './api';
 import 'cropperjs/dist/cropper.css';
 import BackButton from '../../components/Profile_page/BackButton';
+import {IoInformationCircleOutline } from 'react-icons/io5';
 
 const predefinedSkills = ['python', 'javascript', 'java', 'html', 'c','cs', 'cpp', 'php', 'ruby', 'swift', 'go', 'typescript','css'];
 
@@ -50,6 +51,8 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
 
   const [file, setFile] = useState(null);
   const [error, setError] = useState(null);
+
+  sessionStorage.setItem('companyEmail', profile.companyEmail);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -97,6 +100,7 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
     if (file) {
       if (file.size > 1048576) { // Check if file size exceeds 1MB
         setError('Image size should be less than 1MB');
+        setProfile((prevProfile) => ({ ...prevProfile, profilePicture: null })); // Clear the profile picture
         return;
       }
       const reader = new FileReader();
@@ -138,6 +142,7 @@ const EditProfile = ({ token, isOpen, onClose, onSave }) => {
                   />
                 </Box>
               )}
+              <Button size="xs" leftIcon={<IoInformationCircleOutline />} variant="ghost" mb={3}>Image size should be less than 1MB</Button>
               <Input
                 type="file"
                 accept="image/*"
