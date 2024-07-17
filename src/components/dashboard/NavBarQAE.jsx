@@ -5,7 +5,6 @@ import {Flex, Avatar, Wrap, WrapItem, Button, Text, Menu, MenuButton, MenuList, 
   Portal,
   PopoverTrigger,
   PopoverContent,
-  PopoverHeader,
   PopoverBody,
   PopoverArrow,
   PopoverCloseButton,
@@ -25,7 +24,7 @@ export default function NavBarQAE({ button1, button2, button3, button4, button5 
         switch (location.pathname) {
             case '/db':
                 return 0;
-            case 'qhr':
+            case '/qhr':
                 return 1
             case '/cs':
                 return 2;
@@ -33,6 +32,8 @@ export default function NavBarQAE({ button1, button2, button3, button4, button5 
                 return 3;
             case '/cu':
                 return 4;
+            case '/contact-manager':
+                return 4
             default:
                 return -1;
         }
@@ -132,10 +133,11 @@ export default function NavBarQAE({ button1, button2, button3, button4, button5 
                                 <Popover placement='right-start'>
                                             <PopoverTrigger>
                                             <Tab isDisabled={button4}
-                                               colorScheme={location.pathname === '/cu' ? 'blue' : 'gray'}>Contact</Tab>
+                                               colorScheme={location.pathname === '/cu' || location.pathname === '/contact-manager' ? 'blue' : 'gray'}>Contact</Tab>
                                             </PopoverTrigger>
                                             <Portal>
                                                 <PopoverContent width="200px" height="100px" >
+
                                                 <PopoverArrow />
                                                 <PopoverCloseButton />
                                                 <PopoverBody>
