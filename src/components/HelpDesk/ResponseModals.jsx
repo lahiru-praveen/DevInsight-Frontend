@@ -21,7 +21,7 @@ const newTheme = {
 };
 
 const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, response }) => {
-    const [isDeleting, setIsDeleting] = useState(false);
+    const [setIsDeleting] = useState(false);
     const [codeContent, setCodeContent] = useState('');
     const [reviewContent, setReviewContent] = useState('');
     const [suggestionContent, setSuggestionContent] = useState('');
@@ -37,7 +37,7 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
     const navigate = useNavigate();
     const toast = useToast(); // Toast hook for notifications
 
-    const names = ['lahirupraveen43@gmail.com', 'buwanekamara@gmail.com', 'ramajinignanasuthan@gmail.com']; // Example names
+    const names = ['lahirupraveen43@gmail.com', 'kamal007@gmail.com', 'ramajinignanasuthan@gmail.com']; // Example names
 
     const handleButtonClick = () => {
         setIsTextBoxVisible(true);
@@ -62,16 +62,57 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
         setShowConfirmationModal(true);
     };
 
+    // const confirmSubmission = async () => {
+    //     setShowConfirmationModal(false);
+    //     try {
+    //         const response = await axios.post(
+    //             'http://localhost:8000/save-response',
+    //             {
+    //                 response_content: response_content,
+    //                 p_id: p_id,
+    //                 r_id: r_id,
+    //                 user: user
+    //             },
+    //             {
+    //                 headers: {
+    //                     'Content-Type': 'application/json'
+    //                 }
+    //             }
+    //         );
+    //         console.log('Response saved successfully:', response.data);
+    //         setResponseContent(response_content);
+    //         toast({
+    //             title: "Response Submitted",
+    //             description: "Your response has been successfully submitted.",
+    //             status: "success",
+    //             duration: 5000,
+    //             isClosable: true,
+    //         });
+    //         navigate('/qhr');  // Redirect to QHR page after submission
+    //         onClose();
+    //     } catch (error) {
+    //         console.error('Failed to save response:', error);
+    //         toast({
+    //             title: "Submission Failed",
+    //             description: "There was an error submitting your response.",
+    //             status: "error",
+    //             duration: 5000,
+    //             isClosable: true,
+    //         });
+    //     }
+    // };
+
     const confirmSubmission = async () => {
         setShowConfirmationModal(false);
         try {
             const response = await axios.post(
                 'http://localhost:8000/save-response',
                 {
-                    response_content: response_content,
+                    user: user,
                     p_id: p_id,
                     r_id: r_id,
-                    user: user
+                    response_content: response_content
+
                 },
                 {
                     headers: {
@@ -81,7 +122,6 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
             );
             console.log('Response saved successfully:', response.data);
             setResponseContent(response_content);
-            onClose();
             toast({
                 title: "Response Submitted",
                 description: "Your response has been successfully submitted.",
@@ -90,8 +130,17 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
                 isClosable: true,
             });
             navigate('/qhr');  // Redirect to QHR page after submission
+            onClose();
         } catch (error) {
-            console.error('Failed to save response:', error);
+            if (error.response) {
+                console.error('Error Response Data:', error.response.data);
+                console.error('Error Response Status:', error.response.status);
+                console.error('Error Response Headers:', error.response.headers);
+            } else if (error.request) {
+                console.error('Error Request:', error.request);
+            } else {
+                console.error('Error Message:', error.message);
+            }
             toast({
                 title: "Submission Failed",
                 description: "There was an error submitting your response.",
@@ -119,46 +168,46 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
         setShowForwardConfirmationModal(false);
     };
 
-    const handleOptionSubmit = async () => {
-        setShowOptionsModal(false);
-        try {
-            const response = await axios.post(
-                'http://localhost:8000/forward-request',
-                {
-                    selectedName: selectedName,
-                    p_id: p_id,
-                    r_id: r_id,
-                    user: user
-                },
-                {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }
-            );
-            console.log('Request forwarded successfully:', response.data);
-            onClose();
-            toast({
-                title: "Forwarding Failed",
-                description: "There was an error forwarding the request.",
-                status: "error",
-                duration: 5000,
-                isClosable: true,
-            });
-            navigate('/qhr');  // Redirect to QHR page after forwarding the request
-        } catch (error) {
-            console.error('Failed to forward request:', error);
-
-            toast({
-                title: "Request Forwarded",
-                description: `The request has been forwarded to: ${selectedName}.`,
-                status: "success",
-                duration: 5000,
-                isClosable: true,
-            });
-
-        }
-    };
+    // const handleOptionSubmit = async () => {
+    //     setShowOptionsModal(false);
+    //     try {
+    //         const response = await axios.post(
+    //             'http://localhost:8000/forward-request',
+    //             {
+    //                 selectedName: selectedName,
+    //                 p_id: p_id,
+    //                 r_id: r_id,
+    //                 user: user
+    //             },
+    //             {
+    //                 headers: {
+    //                     'Content-Type': 'application/json'
+    //                 }
+    //             }
+    //         );
+    //         // console.log('Request forwarded successfully:', response.data);
+    //         onClose();
+    //         toast({
+    //             title: "Forwarding Failed",
+    //             description: "There was an error forwarding the request.",
+    //             status: "error",
+    //             duration: 5000,
+    //             isClosable: true,
+    //         });
+    //         navigate('/qhr');  // Redirect to QHR page after forwarding the request
+    //     } catch (error) {
+    //         console.error('Failed to forward request:', error);
+    //
+    //         toast({
+    //             title: "Request Forwarded",
+    //             description: `The request has been forwarded to: ${selectedName}.`,
+    //             status: "success",
+    //             duration: 5000,
+    //             isClosable: true,
+    //         });
+    //
+    //     }
+    // };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -392,7 +441,6 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
                     <ModalFooter>
                         <Button
                             colorScheme="blue"
-                            onClick={handleOptionSubmit}
                             isDisabled={!selectedName}
                         >
                             Forward
