@@ -3,19 +3,23 @@ import { Card, Text, Flex, CardHeader} from '@chakra-ui/react';
 import { BsFileEarmarkMedicalFill } from 'react-icons/bs';
 import PropTypes from 'prop-types';
 import { FaCode } from 'react-icons/fa';
-import { FcAssistant, FcCancel, FcDisapprove, FcExpand, FcFile, FcSms } from 'react-icons/fc';
+import { FcExpand, FcFile, FcSms } from 'react-icons/fc';
 import { VscBlank } from 'react-icons/vsc';
 import { IoPeople } from 'react-icons/io5';
 import SubmissionModal from './SubmissionModal.jsx';
 import { Icon } from "@chakra-ui/icons";
 import axios from "axios";
 import ToolTip from "../../context/ToolTip.jsx";
+import { GoCodeSquare } from "react-icons/go";
+import { FcDoNotInsert } from "react-icons/fc";
+import { BsFillDashSquareFill } from "react-icons/bs";
 
-export default function Submissions({ submission, drop }) {
+export default function Submissions({ submission, drop, user }) {
     const [isModalOpen, setModalOpen] = useState(false);
     const { _id, p_id, p_name, f_name, submission_date, language, description, code, mode } = submission;
     const [reqId, setReqId] = useState(""); // State to store req_id
     console.log(_id);
+
     const typeIcon = mode === 1 ?
         (<ToolTip tooltip='Code Upload'>
             <Icon as={FaCode} boxSize={25} color='blue.200' className="mr-2" />
@@ -29,9 +33,11 @@ export default function Submissions({ submission, drop }) {
             </ToolTip>));
 
     const file_name = f_name === '' ?
-        <ToolTip tooltip="No any file here">
-            <Icon as={FcSms} boxSize={25} className="mr-2" />
-        </ToolTip>
+        <div className="ml-5">
+            <ToolTip tooltip="No any file here">
+                <Icon as={GoCodeSquare} color='blue.500' boxSize={25} className="mr-2" />
+            </ToolTip>
+        </div>
         : (f_name);
 
     const dropType = drop === 0 ? <Icon as={FcExpand} boxSize={25} className="mr-2" onClick={() => setModalOpen(true)} style={{ cursor: 'pointer' }} /> : <Icon as={VscBlank} boxSize={25} className="mr-2" />;
@@ -42,30 +48,40 @@ export default function Submissions({ submission, drop }) {
         </ToolTip>
         : (reqId === "" ?
                 <ToolTip tooltip="No any questons for QAE">
-                    <Icon as={FcCancel} boxSize={25} className="mr-2" />
+                    <Icon as={BsFillDashSquareFill} color='blue.100' boxSize={25} className="mr-2" />
                 </ToolTip>
                 :
                 <ToolTip tooltip="Asked help from QAE">
-                    <Icon as={FcAssistant} boxSize={25} className="mr-2" />
+                    <Icon as={FcSms} boxSize={25} className="mr-2" />
                 </ToolTip>
         );
 
-    const lan = language === "Not given" ?
-        <ToolTip tooltip='Language not given' >
-            <Icon as={FcDisapprove} boxSize={25} className="mr-2" />
-        </ToolTip>
-
+    const lan = language === "Not given" || language === "not mentioned" ?
+        <div className="ml-5">
+            <ToolTip tooltip='Language not given' >
+                <Icon as={FcDoNotInsert} boxSize={25} className="mr-2" />
+            </ToolTip>
+        </div>
         : language;
-    const des = description === "Not given" ?
-        <ToolTip tooltip='No any description given'>
-            <Icon as={FcDisapprove} title="This is" boxSize={25} className="mr-2" />
-        </ToolTip>
+
+    const des = description === "Not given" || description === "" ?
+        <div className="ml-5">
+            <ToolTip tooltip='No any description given'>
+                <Icon as={FcDoNotInsert} boxSize={25} className="mr-2" />
+            </ToolTip>
+        </div>
         : description;
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const result = await axios.get(`http://localhost:8000/get-request-id/${p_id}`); // Assuming p_id is the project id
+                console.log(user);
+                console.log(p_id);
+                const result = await axios.get(`http://localhost:8000/get-request-id/${p_id}`, {
+                    params: {
+                        user: user,
+                    },
+                });
                 console.log("Fetch Result: ", result); // Log the entire response
                 if (result.data !== null) {
                     setReqId(result.data); // Set the req_id in state
@@ -80,28 +96,28 @@ export default function Submissions({ submission, drop }) {
     return (
         <>
             <div>
-                <Card>
-                    <Flex flexDirection="row" className="bg-[#EBEBEB] mb-2 mt-1">
-                        <CardHeader className="mr-4 w-[100px]">
+                <Card bg="#f5f5f5" mb={2} mt={1} borderRadius="md">
+                    <Flex flexDirection="row"  >
+                        <CardHeader className="mr-4 w-[50px]" >
                             {typeIcon}
                         </CardHeader>
                         <CardHeader className="mr-4 w-[150px]">
-                            <Text className="font-bold" fontSize="16px">{p_id}</Text>
+                            <Text fontWeight="500" fontSize="16px" color="gray.700">{p_id}</Text>
                         </CardHeader>
-                        <CardHeader className="mr-4 w-[250px]">
-                            <Text className="font-bold" fontSize="16px">{p_name}</Text>
-                        </CardHeader>
-                        <CardHeader className="mr-4 w-[250px]">
-                            <Text className="font-bold" fontSize="16px">{file_name}</Text>
+                        <CardHeader className="mr-4 w-[350px]">
+                            <Text fontWeight="500" fontSize="16px" color="gray.700">{p_name}</Text>
                         </CardHeader>
                         <CardHeader className="mr-4 w-[300px]">
-                            <Text className="font-bold" fontSize="16px">{submission_date}</Text>
+                            <Text fontWeight="500" fontSize="16px" color="gray.700">{file_name}</Text>
                         </CardHeader>
                         <CardHeader className="mr-4 w-[200px]">
-                            <Text className="font-bold" fontSize="16px">{lan}</Text>
+                            <Text fontWeight="500" fontSize="16px" color="gray.700">{submission_date}</Text>
+                        </CardHeader>
+                        <CardHeader className="mr-4 w-[200px]">
+                            <Text fontWeight="500" fontSize="16px" color="gray.700">{lan}</Text>
                         </CardHeader>
                         <CardHeader className="mr-4 w-[600px]">
-                            <Text className="font-bold" fontSize="16px">{des}</Text>
+                            <Text className="w-[600px]" fontWeight="500" fontSize="16px" color="gray.700" isTruncated>{des}</Text>
                         </CardHeader>
                         <CardHeader>
                             {helpType}
@@ -142,5 +158,6 @@ Submissions.propTypes = {
         mode: PropTypes.number.isRequired,
         code: PropTypes.string.isRequired,
     }).isRequired,
-    drop: PropTypes.number.isRequired
+    drop: PropTypes.number.isRequired,
+    user: PropTypes.string.isRequired
 };

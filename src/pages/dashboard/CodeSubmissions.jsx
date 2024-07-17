@@ -4,6 +4,7 @@ import { Text, Input, Select } from "@chakra-ui/react";
 import Submissions from "../../components/dashboard/Submissions.jsx";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import NavBarQAE from "../../components/dashboard/NavBarQAE.jsx";
 
 export default function CodeSubmissions() {
     const [submissions, setSubmissions] = useState([]);
@@ -11,11 +12,17 @@ export default function CodeSubmissions() {
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOrder, setSortOrder] = useState("asc");
     const [error, setError] = useState(null);
+    const user = sessionStorage.getItem('email');
+    const role = sessionStorage.getItem('role');
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const result = await axios.get('http://localhost:8000/pre-sub');
+                const result = await axios.get('http://localhost:8000/pre-sub', {
+                    params: {
+                        user: user
+                    }
+                });
                 console.log("Fetch Result: ", result); // Log the entire response
                 if (result.status === 200 && result.data) {
                     setSubmissions(result.data);
@@ -73,10 +80,13 @@ export default function CodeSubmissions() {
     return (
         <div className="flex flex-col h-screen">
             <div>
-                <NavBarUser button1={false} button2={false} button3={false} button4={false} />
+                {role === 'Developer' ?
+                    <NavBarUser button1={false} button2={false} button3={false} button4={false}/> :
+                    <NavBarQAE button1={false} button2={false} button3={false} button4={false} button5={false}/>
+                };
             </div>
             <div className="flex flex-col mt-5 ml-10 mb-5 mr-10">
-                <Text className="font-bold mb-4" fontSize='30px'>
+                <Text className="font-bold mb-4" fontSize='30px' color="gray.500">
                     Submission
                 </Text>
                 <div className="flex mb-8">
@@ -97,7 +107,7 @@ export default function CodeSubmissions() {
                 {/* Map over filtered and sorted submissions and render Submissions component */}
                 <div>
                     {filteredSubmissions.map(submission => (
-                        <Submissions key={submission.p_id} submission={submission} drop={0} />
+                        <Submissions key={submission.p_id} submission={submission} drop={0} user={user} />
                     ))}
                 </div>
 

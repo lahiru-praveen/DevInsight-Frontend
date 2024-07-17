@@ -1,686 +1,162 @@
-// //
-// // import { useState } from 'react';
-// // import QAECPNav from "../../components/QAE/QAECPNav.jsx";
-// // import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
-// // import axios from 'axios';
-// //
-// // function AskHelp() {
-// //     const [typedText, setTypedText] = useState('');
-// //     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-// //
-// // //     // Function to handle text box change
-// // //     const handleTextBoxChange = (event) => {
-// // //         setTypedText(event.target.value);
-// // //     };
-// // //
-// // //     // Function to handle form submit
-// //     const handleSubmit = async (event) => {
-// //         event.preventDefault();
-// //         // Show confirmation modal
-// //         setShowConfirmationModal(true);
-// //     };
-// //
-// //     // Function to confirm submission
-// //     const confirmSubmission = async () => {
-// //         try {
-// //             // Send a POST request to the server to save the typed text
-// //             const response = await axios.post(
-// //                 'http://localhost:8000/api/sam/',
-// //                 { "response_text": typedText },
-// //                 { headers: { 'Content-Type': 'application/json' } }
-// //             );
-// //             console.log('Response saved successfully:', response.data);
-// //             // Clear the input field after successful submission
-// //             setTypedText('');
-// //             // Close the confirmation modal
-// //             setShowConfirmationModal(false);
-// //         } catch (error) {
-// //             console.error('Failed to save response:', error);
-// //             // Log error details
-// //             console.error('Error details:', error.response);
-// //         }
-// //     };
-//
-// //     // Function to cancel submission
-// //     const cancelSubmission = () => {
-// //         // Close the confirmation modal
-// //         setShowConfirmationModal(false);
-// //     };
-// //
-// //     // Sample code text
-// //     const codeText = `def divide(x, y):
-// //     try:
-// //         result = x / y
-// //     except ZeroDivisionError:
-// //         return "Error! Division by zero."
-// //     else:
-// //         return result
-// //
-// // # Handling invalid operation choice
-// // if operation_choice not in ('1', '2', '3', '4'):
-// //     print("Invalid input. Please choose a valid operation (1/2/3/4).")
-// //     continue`;
-// //
-// //     // Split the code text by newline characters
-// //     const codeLines = codeText.split('\n');
-// //
-// //     return (
-// //         <div className="text-2xl">
-// //             <QAECPNav />
-// //             <div className="grid grid-cols-2 divide-x py-4 px-4 mx-4">
-// //                 <div className="bg-gray-200 rounded-lg ">
-// //                     <Tabs variant="enclosed" colorScheme="blue" height={"1100"}>
-// //                         <TabList>
-// //                             <Tab>Preview</Tab>
-// //                             <Tab>Review</Tab>
-// //                         </TabList>
-// //                         <TabPanels>
-// //                             <TabPanel>
-// //                                 {/* Render each line of code in a separate <pre> element */}
-// //                                 {codeLines.map((line, index) => (
-// //                                     <pre key={index}>{line}</pre>
-// //                                 ))}
-// //                             </TabPanel>
-// //                             <TabPanel>
-// //                                 <p>Reviewed Code</p>
-// //                             </TabPanel>
-// //                         </TabPanels>
-// //                     </Tabs>
-// //                 </div>
-// //                 <div className="px-4 bg-gray-200 rounded-lg mx-4 py-4">
-// //                     <p>
-// //                         Type below the Request:
-// //                     </p>
-// //                     {/* Render the text box and submit button */}
-// //                     <form className="w-full" onSubmit={handleSubmit}>
-// //                         <div className="mb-8 mt-10 ">
-// //                             <input
-// //                                 className="shadow appearance-none border rounded w-full h-80 py-2 px-3 text-gray-700 leading-tight
-// //                                      focus:outline-none focus:shadow-outline"
-// //                                 id="response"
-// //                                 type="text"
-// //                                 placeholder="Enter The Request"
-// //                                 value={typedText}
-// //                                 onChange={handleTextBoxChange}
-// //                             />
-// //                         </div>
-// //                         <div className="flex items-center justify-between">
-// //                             <button
-// //                                 className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-// //                                 type="submit"
-// //                             >
-// //                                 Submit
-// //                             </button>
-// //                         </div>
-// //                     </form>
-// //                 </div>
-// //             </div>
-// //             {/* Confirmation modal */}
-// //             {showConfirmationModal && (
-// //                 <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-50">
-// //                     <div className="bg-white rounded-lg text-2xl shadow-lg p-8 w-100">
-// //                         <p>Are you sure you want to submit?</p>
-// //                         <div className="mt-4 flex justify-end">
-// //                          <a href="/qhr">  <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={confirmSubmission}>Yes</button></a>
-// //                             <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md" onClick={cancelSubmission}>No</button>
-// //                         </div>
-// //                     </div>
-// //                 </div>
-// //             )}
-// //         </div>
-// //     );
-// // }
-// //
-// // export default AskHelp;
-// // import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
-// // import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
-// //
-// // function AskHelp({ codeContent, reviewContent }) {
-// //     return (
-// //         <div>
-// //             <NavBarUser />
-// //             <div className="grid grid-cols-2 divide-x py-4 px-4 mx-4">
-// //                 <div className="bg-gray-200 rounded-lg">
-// //                     <Tabs variant="enclosed" colorScheme="blue" height={"1100"}>
-// //                         <TabList>
-// //                             <Tab>Preview</Tab>
-// //                             <Tab>Review</Tab>
-// //                         </TabList>
-// //                         <TabPanels>
-// //                             <TabPanel>
-// //                                 <pre>{codeContent}</pre>
-// //                             </TabPanel>
-// //                             <TabPanel>
-// //                                 <pre>{reviewContent}</pre>
-// //                             </TabPanel>
-// //                         </TabPanels>
-// //                     </Tabs>
-// //                 </div>
-// //             </div>
-// //         </div>
-// //     );
-// // }
-// //
-// // export default AskHelp;
-// // import { useLocation } from 'react-router-dom';
-// // import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
-// // import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
-// //
-// // function AskHelp() {
-// //     const location = useLocation();
-// //     const { selectedFileContent,reviewContent } = location.state || {};
-// //
-// //     return (
-// //         <div>
-// //             <NavBarUser />
-// //             <div className="grid grid-cols-2 divide-x py-4 px-4 mx-4">
-// //                 <div className="bg-gray-200 rounded-lg">
-// //                     <Tabs variant="enclosed" colorScheme="blue" height={"1100"}>
-// //                         <TabList>
-// //                             <Tab>Preview</Tab>
-// //                             <Tab>Review</Tab>
-// //                         </TabList>
-// //                         <TabPanels>
-// //                             <TabPanel>
-// //                                 <pre>{selectedFileContent}</pre>
-// //                             </TabPanel>
-// //                             <TabPanel>
-// //                                 <pre>{reviewContent}</pre>
-// //                             </TabPanel>
-// //                         </TabPanels>
-// //                     </Tabs>
-// //                 </div>
-// //             </div>
-// //         </div>
-// //     );
-// // }
-// //
-// // export default AskHelp;
-// // import {useState} from "react";
-// // import { useLocation } from 'react-router-dom';
-// // import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
-// // import { Tabs, TabList, TabPanels, Tab, TabPanel} from "@chakra-ui/react";
-// //
-// // function AskHelp() {
-// //     const location = useLocation();
-// //     const { code, review} = location.state || {};
-// //
-// //     const [typedText, setTypedText] = useState('');
-// //     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-// //
-// //     // Function to handle text box change
-// //     const handleTextBoxChange = (event) => {
-// //         setTypedText(event.target.value);
-// //     };
-// //
-// //     // Function to handle form submit
-// //     const handleSubmit = async (event) => {
-// //         event.preventDefault();
-// //         // Show confirmation modal
-// //         setShowConfirmationModal(true);
-// //     };
-// //
-// //
-// //     return (
-// //         <div>
-// //             <NavBarUser />
-// //             <div className="grid grid-cols-2 divide-x py-4 px-4 mx-4">
-// //                 <div className="bg-gray-200 rounded-lg">
-// //                     <Tabs variant="enclosed" colorScheme="blue" height={"1100"}>
-// //                         <TabList>
-// //                             <Tab>Preview</Tab>
-// //                             <Tab>Review</Tab>
-// //                         </TabList>
-// //                         <TabPanels>
-// //                             <TabPanel>
-// //                                 {(code)}
-// //                             </TabPanel>
-// //                             <TabPanel>
-// //                                 {(review)}
-// //                             </TabPanel>
-// //                         </TabPanels>
-// //                     </Tabs>
-// //                 </div>
-// //                 <div className="px-4 bg-gray-200 rounded-lg mx-4 py-4">
-// //                   <div>
-// //                       <p> Type below the request:</p>
-// //                       <form className="w-full" onSubmit={handleSubmit}>
-// //                           <div className="mb-8 mt-10 ">
-// //                               <input
-// //                                   className="shadow appearance-none border rounded w-full h-30 py-2 px-3 text-gray-700 leading-tight
-// //                                                                 focus:outline-none focus:shadow-outline mb-3"
-// //                                   id="response"
-// //                                   type="text"
-// //                                   placeholder="Enter a subject for your request"
-// //                                   value={typedText}
-// //                                   onChange={handleTextBoxChange}
-// //                               />
-// //                               <input
-// //                                   className="shadow appearance-none border rounded w-full h-80 py-2 px-3 text-gray-700 leading-tight
-// //                                                                 focus:outline-none focus:shadow-outline"
-// //                                   id="response"
-// //                                   type="text"
-// //                                   placeholder="Enter the request"
-// //                                   value={typedText}
-// //                                   onChange={handleTextBoxChange}
-// //                               />
-// //                           </div>
-// //                           <div className="flex items-center justify-between">
-// //                               <button
-// //                                   className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-// //                                   type="submit"
-// //                               >
-// //                                   Submit
-// //                               </button>
-// //                           </div>
-// //                       </form>
-// //                       {/* Confirmation modal */}
-// //                                    {showConfirmationModal && (
-// //                  <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-50">
-// //                      <div className="bg-white rounded-lg text-2xl shadow-lg p-8 w-100">
-// //                          <p>Are you sure you want to submit?</p>
-// //                          <div className="mt-4 flex justify-end">
-// //                           <a href="/qhr">  <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" >Yes</button></a>
-// //                              <a href="/ah"> <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md" >No</button></a>
-// //                          </div>
-// //                      </div>
-// //                  </div>
-// //              )}
-// //                   </div>
-// //                 </div>
-// //             </div>
-// //
-// //         </div>
-// //     );
-// // }
-// //
-// // export default AskHelp;
-// import { useState } from "react";
-// import { useLocation } from 'react-router-dom';
-// import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
-// import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
-// import axios from 'axios';
-//
-// function AskHelp() {
-//     const location = useLocation();
-//     const {   code, review } = location.state || {};
-//
-//     const [subjectText, setSubjectText] = useState('');
-//     const [requestText, setRequestText] = useState('');
-//     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-//     const [errorMessage, setErrorMessage] = useState('');
-//
-//     // Function to handle text box change
-//     const handleSubjectChange = (event) => {
-//         setSubjectText(event.target.value);
-//     };
-//
-//     const handleRequestChange = (event) => {
-//         setRequestText(event.target.value);
-//     };
-//
-//     // Function to handle form submit
-//     const handleSubmit = async (event) => {
-//         event.preventDefault();
-//         if (!subjectText || !requestText) {
-//             setErrorMessage("Please fill in both the subject and the request to submit.");
-//             return;
-//         }
-//         // Hide error message and show confirmation modal
-//         setErrorMessage('');
-//         setShowConfirmationModal(true);
-//     };
-//
-//     // Function to confirm submission
-//     const confirmSubmission = async () => {
-//         try {
-//             // Send a POST request to the server to save the typed text
-//             const response = await axios.post(
-//                 'http://localhost:8000/api/sam/',
-//                 { "requestText": requestText },
-//                 { headers: { 'Content-Type': 'application/json' } }
-//             );
-//             console.log(response);
-//             // Clear the input field after successful submission
-//             // setRequestText('');
-//             // Close the confirmation modal
-//             // setShowConfirmationModal(false);
-//         } catch (error) {
-//             console.error('Failed to save response:', error);
-//             // Log error details
-//             console.error('Error details:', error.response);
-//         }
-//     };
-//
-//     return (
-//         <div>
-//             <NavBarUser button4={false} button2={false} button3={false} button1={false}/>
-//             <div className="grid grid-cols-2 divide-x py-4 px-4 mx-4">
-//                 <div className="bg-gray-200 rounded-lg">
-//                     <Tabs variant="enclosed" colorScheme="blue" height={"1100"}>
-//                         <TabList>
-//                             <Tab>Preview</Tab>
-//                             <Tab>Review</Tab>
-//                         </TabList>
-//                         <TabPanels>
-//                             <TabPanel>
-//                                 <pre>{code}</pre>
-//                             </TabPanel>
-//                             <TabPanel>
-//                                 <pre>{review}</pre>
-//                             </TabPanel>
-//                         </TabPanels>
-//                     </Tabs>
-//                 </div>
-//                 <div className="px-4 bg-gray-200 rounded-lg mx-4 py-4">
-//                     <div>
-//                         <p>Type below the request:</p>
-//                         <form className="w-full" onSubmit={handleSubmit}>
-//                             <div className="mb-8 mt-10">
-//                                 <input
-//                                     className="shadow appearance-none border rounded w-full h-12 py-2 px-3 text-gray-700 leading-tight
-//                                         focus:outline-none focus:shadow-outline mb-3"
-//                                     id="subject"
-//                                     type="text"
-//                                     placeholder="Enter a subject for your request"
-//                                     value={subjectText}
-//                                     onChange={handleSubjectChange}
-//                                 />
-//                                 <input
-//                                     className="shadow appearance-none border rounded w-full h-80 py-2 px-3 text-gray-700 leading-tight
-//                                         focus:outline-none focus:shadow-outline"
-//                                     id="request"
-//                                     type="text"
-//                                     placeholder="Enter the request"
-//                                     value={requestText}
-//                                     onChange={handleRequestChange}
-//                                 />
-//                             </div>
-//                             {errorMessage && (
-//                                 <div className="text-red-500 mb-4">
-//                                     {errorMessage}
-//                                 </div>
-//                             )}
-//                             <div className="flex items-center justify-between">
-//                                 <button
-//                                     className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-//                                     type="submit"
-//                                 >
-//                                     Submit
-//                                 </button>
-//                             </div>
-//                         </form>
-//                         {/* Confirmation modal */}
-//                         {showConfirmationModal && (
-//                             <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-50">
-//                                 <div className="bg-white rounded-lg text-2xl shadow-lg p-8 w-100">
-//                                     <p>Are you sure you want to submit?</p>
-//                                     <div className="mt-4 flex justify-end">
-//                                         <a href="/uhr">
-//                                             <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={confirmSubmission}>
-//                                                 Yes
-//                                             </button>
-//                                         </a>
-//                                         <a href="/ah">
-//                                             <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md">
-//                                                 No
-//                                             </button>
-//                                         </a>
-//                                     </div>
-//                                 </div>
-//                             </div>
-//                         )}
-//                     </div>
-//                 </div>
-//             </div>
-//         </div>
-//     );
-// }
-//
-// export default AskHelp;
-// import { useState } from "react";
-// import { useLocation } from 'react-router-dom';
-// import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
-// import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
-// import axios from 'axios';
-//
-// function AskHelp() {
-//     const location = useLocation();
-//     const { code, review } = location.state || {};
-//
-//     const [subjectText, setSubjectText] = useState('');
-//     const [requestText, setRequestText] = useState('');
-//     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-//     const [errorMessage, setErrorMessage] = useState('');
-//
-//     // Function to handle text box change
-//     const handleSubjectChange = (event) => {
-//         setSubjectText(event.target.value);
-//     };
-//
-//     const handleRequestChange = (event) => {
-//         setRequestText(event.target.value);
-//     };
-//
-//     // Function to handle form submit
-//     const handleSubmit = async (event) => {
-//         event.preventDefault();
-//         if (!subjectText || !requestText) {
-//             setErrorMessage("Please fill in both the subject and the request to submit.");
-//             return;
-//         }
-//         // Hide error message and show confirmation modal
-//         setErrorMessage('');
-//         setShowConfirmationModal(true);
-//     };
-//
-//     // Function to confirm submission
-//     const confirmSubmission = async () => {
-//         try {
-//             // Send a POST request to the server to save the typed text
-//             const response = await axios.post(
-//                 'http://localhost:8000/request',
-//                 { requestText },
-//                 { headers: { 'Content-Type': 'application/json' } }
-//             );
-//             console.log(response);
-//
-//             // Clear the input field after successful submission
-//             setRequestText('');
-//             // Close the confirmation modal
-//             setShowConfirmationModal(false);
-//         } catch (error) {
-//             console.error('Failed to save response:', error);
-//             // Log error details
-//             console.error('Error details:', error.response);
-//         }
-//     };
-//
-//     return (
-//         <div>
-//             <NavBarUser button4={false} button2={false} button3={false} button1={false}/>
-//             <div className="grid grid-cols-2 divide-x py-4 px-4 mx-4">
-//                 <div className="bg-gray-200 rounded-lg">
-//                     <Tabs variant="enclosed" colorScheme="blue" height={"1100"}>
-//                         <TabList>
-//                             <Tab>Preview</Tab>
-//                             <Tab>Review</Tab>
-//                         </TabList>
-//                         <TabPanels>
-//                             <TabPanel>
-//                                 <pre>{code}</pre>
-//                             </TabPanel>
-//                             <TabPanel>
-//                                 <pre>{review}</pre>
-//                             </TabPanel>
-//                         </TabPanels>
-//                     </Tabs>
-//                 </div>
-//                 <div className="px-4 bg-gray-200 rounded-lg mx-4 py-4">
-//                     <div>
-//                         <p>Type below the request:</p>
-//                         <form className="w-full" onSubmit={handleSubmit}>
-//                             <div className="mb-8 mt-10">
-//                                 <input
-//                                     className="shadow appearance-none border rounded w-full h-12 py-2 px-3 text-gray-700 leading-tight
-//                                         focus:outline-none focus:shadow-outline mb-3"
-//                                     id="subject"
-//                                     type="text"
-//                                     placeholder="Enter a subject for your request"
-//                                     value={subjectText}
-//                                     onChange={handleSubjectChange}
-//                                 />
-//                                 <input
-//                                     className="shadow appearance-none border rounded w-full h-80 py-2 px-3 text-gray-700 leading-tight
-//                                         focus:outline-none focus:shadow-outline"
-//                                     id="request"
-//                                     type="text"
-//                                     placeholder="Enter the request"
-//                                     value={requestText}
-//                                     onChange={handleRequestChange}
-//                                 />
-//                             </div>
-//                             {errorMessage && (
-//                                 <div className="text-red-500 mb-4">
-//                                     {errorMessage}
-//                                 </div>
-//                             )}
-//                             <div className="flex items-center justify-between">
-//                                 <button
-//                                     className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-//                                     type="submit"
-//                                 >
-//                                     Submit
-//                                 </button>
-//                             </div>
-//                         </form>
-//                         {/* Confirmation modal */}
-//                         {showConfirmationModal && (
-//                             <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-50">
-//                                 <div className="bg-white rounded-lg text-2xl shadow-lg p-8 w-100">
-//                                     <p>Are you sure you want to submit?</p>
-//                                     <div className="mt-4 flex justify-end">
-//                                        <a href="/uhr"> <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={confirmSubmission}>
-//                                             Yes
-//                                         </button></a>
-//                                         <a href="/ah"> <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md" onClick={() => setShowConfirmationModal(false)}>
-//                                             No
-//                                         </button></a>
-//                                     </div>
-//                                 </div>
-//                             </div>
-//                         )}
-//                     </div>
-//                 </div>
-//             </div>
-//         </div>
-//     );
-// }
-//
-// export default AskHelp;
-import { useState } from "react";
-import { useLocation } from 'react-router-dom';
+import {useEffect, useState} from "react";
+import { useLocation, useNavigate } from 'react-router-dom';
 import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+
+import {
+    Tabs,
+    TabList,
+    TabPanels,
+    Tab,
+    TabPanel,
+    Button,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    useDisclosure,
+    Icon,
+    useToast
+} from "@chakra-ui/react";
 import axios from 'axios';
+import NavBarQAE from "../../components/dashboard/NavBarQAE.jsx";
+import {MdDriveFolderUpload} from "react-icons/md";
 
 function AskHelp() {
     const location = useLocation();
-    const {
-        projectID,
-        projectName,
-        fileName,
-        language,
-        description,
-        mode,
-        code,
-        review
-    } = location.state || {};
-
-    const [subjectText, setSubjectText] = useState('');
+    const navigate = useNavigate();
+    const {projectName, code, review, suggestions, referLinks, fileName ,mode,language, description} = location.state || {};
+    const role = sessionStorage.getItem('role');
+    const [requestSubject, setRequestSubject] = useState('');
     const [requestText, setRequestText] = useState('');
-    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const user = sessionStorage.getItem('email');
+    const [projectID, setProjectID] = useState('');
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const toast = useToast();
 
-    // Function to handle text box change
     const handleSubjectChange = (event) => {
-        setSubjectText(event.target.value);
+        setRequestSubject(event.target.value);
     };
 
     const handleRequestChange = (event) => {
         setRequestText(event.target.value);
+
     };
 
-    // Function to handle form submit
+
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if (!subjectText || !requestText) {
+        if (!requestSubject || !requestText) {
             setErrorMessage("Please fill in both the subject and the request to submit.");
             return;
         }
-        // Hide error message and show confirmation modal
         setErrorMessage('');
-        setShowConfirmationModal(true);
+        onOpen();
     };
 
-    // Function to confirm submission
+    useEffect(() => {
+        const fetchProjectID = async () => {
+            try {
+                const new_p_id = await axios.get("http://localhost:8000/get-latest-p-id", {
+                    params: {
+                        user: user
+                    }
+                });
+                setProjectID(new_p_id.data);
+            } catch (error) {
+                console.error("Error fetching the project ID:", error);
+            }
+        };
+
+        fetchProjectID().then(r => console.log(r));
+    }, [user]);
+
     const confirmSubmission = async () => {
         try {
-            // Create the request payload
-            const requestData = {
-                projectID,
-                projectName,
-                fileName,
-                language,
-                description,
-                mode,
-                code,
-                review,
-                subjectText,
-                requestText
-            };
-            // const response = await axios.post(
-            //     'http://localhost:8000/request',
-            //     { requestText },
-            //     { headers: { 'Content-Type': 'application/json' } }
-            // );
 
-            // Send a POST request to the server to save the typed text
+            const requestData = {
+                user:user,
+                p_id:projectID,
+                p_name:projectName,
+                r_id:0,
+                r_subject:requestSubject,
+                r_content:requestText,
+                qae:"",
+                r_status:"Pending"
+            };
+
+            console.log("Sending request data:", requestData); // Log payload data
+
             const response = await axios.post(
-                'http://localhost:8000/request',
+                "http://localhost:8000/request",
                 requestData,
                 { headers: { 'Content-Type': 'application/json' } }
             );
-            console.log(response);
 
-            // Clear the input fields after successful submission
-            setSubjectText('');
+            console.log("Server response:", response.data); // Log server response
+
+            setRequestSubject('');
             setRequestText('');
-            // Close the confirmation modal
-            setShowConfirmationModal(false);
+            toast({
+                title: "Request submitted",
+                description: "Your request has been successfully submitted",
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+            });
+
+            navigate('/cr', { state: { reviewContent:review, selectedFileName:fileName, mode:mode, suggestionContent:suggestions, referLinksContent:referLinks, projectName:projectName, language:language, description:description } });
         } catch (error) {
-            console.error('Failed to save response:', error);
-            // Log error details
-            console.error('Error details:', error.response);
+            console.error('Failed to save request:', error);
+            if (error.response) {
+                console.error('Error details:', error.response.data); // Log error details
+                setErrorMessage(`Error: ${error.response.data.message}` || 'Failed to save request');
+                toast({
+                    title: "Request failure.",
+                    description: "System failed to submit the request",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                });
+            } else {
+                setErrorMessage('Failed to save request');
+            }
         }
     };
 
     return (
         <div>
-            <NavBarUser button4={false} button2={false} button3={false} button1={false}/>
-            <div className="grid grid-cols-2 divide-x py-4 px-4 mx-4">
+            <div>
+                {role === 'Developer' ?
+                    <NavBarUser button1={false} button2={true} button3={true} button4={true}/> :
+                    <NavBarQAE button1={false} button2={true} button3={true} button4={true} button5={true}/>
+                };
+            </div>
+            <div className="grid grid-cols-2 divide-x py-4  mx-4">
                 <div className="bg-gray-200 rounded-lg">
-                    <Tabs variant="enclosed" colorScheme="blue" height={"1100"}>
+                    <Tabs isFitted className="grid grid-cols-2 divide-x py-4 ml-4" variant="enclosed" colorScheme="blue" height={"1100"}>
                         <TabList>
                             <Tab>Preview</Tab>
                             <Tab>Review</Tab>
+                            <Tab>Suggestions</Tab>
+                            <Tab>Reference Links</Tab>
                         </TabList>
-                        <TabPanels>
-                            <TabPanel>
+                        <TabPanels className="h-full">
+                            <TabPanel className="h-full overflow-auto">
+
                                 <pre>{code}</pre>
                             </TabPanel>
-                            <TabPanel>
+                            <TabPanel className="h-full overflow-auto">
                                 <pre>{review}</pre>
+                            </TabPanel>
+                            <TabPanel className="h-full overflow-auto">
+                                <pre>{suggestions}</pre>
+                            </TabPanel>
+                            <TabPanel className="h-full overflow-auto">
+                                <pre>{referLinks}</pre>
                             </TabPanel>
                         </TabPanels>
                     </Tabs>
@@ -691,54 +167,63 @@ function AskHelp() {
                         <form className="w-full" onSubmit={handleSubmit}>
                             <div className="mb-8 mt-10">
                                 <input
-                                    className="shadow appearance-none border rounded w-full h-12 py-2 px-3 text-gray-700 leading-tight
+                                    className="shadow appearance-none border rounded w-full h-full py-2 px-3 text-gray-700 leading-tight
                                         focus:outline-none focus:shadow-outline mb-3"
                                     id="subject"
                                     type="text"
                                     placeholder="Enter a subject for your request"
-                                    value={subjectText}
+                                    value={requestSubject}
                                     onChange={handleSubjectChange}
                                 />
-                                <input
+                                <textarea
                                     className="shadow appearance-none border rounded w-full h-80 py-2 px-3 text-gray-700 leading-tight
-                                        focus:outline-none focus:shadow-outline"
+        focus:outline-none focus:shadow-outline"
                                     id="request"
-                                    type="text"
                                     placeholder="Enter the request"
                                     value={requestText}
                                     onChange={handleRequestChange}
-                                />
+                                    rows={10} // You can adjust the number of rows to increase the height
+                                ></textarea>
+
                             </div>
                             {errorMessage && (
                                 <div className="text-red-500 mb-4">
                                     {errorMessage}
                                 </div>
                             )}
-                            <div className="flex items-center justify-between">
-                                <button
-                                    className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                    type="submit"
+                            <div className="flex items-center justify-end">
+
+                                <Button
+                                    isDisabled={!requestSubject || !requestText}
+                                    border='2px'
+                                    size="lg"
+                                    colorScheme='blue'
+                                    className="w-64"
+                                    type={"submit"}
                                 >
-                                    Submit
-                                </button>
+
+
+                                <Icon as={MdDriveFolderUpload} boxSize={6} color='white' className="mr-2"/>Submit
+                                </Button>
+
                             </div>
                         </form>
-                        {/* Confirmation modal */}
-                        {showConfirmationModal && (
-                            <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-50">
-                                <div className="bg-white rounded-lg text-2xl shadow-lg p-8 w-100">
+                        <Modal isOpen={isOpen} onClose={onClose}>
+                            <ModalOverlay />
+                            <ModalContent>
+                                <ModalHeader>Confirm Submission</ModalHeader>
+                                <ModalCloseButton />
+                                <ModalBody>
                                     <p>Are you sure you want to submit?</p>
-                                    <div className="mt-4 flex justify-end">
-                                        <a href="/uhr"> <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={confirmSubmission}>
-                                            Yes
-                                        </button></a>
-                                        <a href="/ah"> <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md" onClick={() => setShowConfirmationModal(false)}>
-                                            No
-                                        </button></a>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+                                </ModalBody>
+                                <ModalFooter>
+                                    <Button colorScheme="blue" mr={3} onClick={confirmSubmission}>
+                                        Yes
+                                    </Button>
+                                    <Button variant="ghost" onClick={onClose}>No</Button>
+                                </ModalFooter>
+                            </ModalContent>
+                        </Modal>
                     </div>
                 </div>
             </div>
@@ -747,3 +232,4 @@ function AskHelp() {
 }
 
 export default AskHelp;
+

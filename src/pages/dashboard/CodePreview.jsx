@@ -10,8 +10,9 @@ import { useCode } from '../../context/CodeContext.jsx';
 import LanguageSelectMenu from "../../components/dashboard/LanguageSelectMenu.jsx";
 import {IoHelpCircle, IoHome} from "react-icons/io5";
 import {IoIosArrowForward} from "react-icons/io";
-import {CheckIcon, ChevronRightIcon, Icon, WarningTwoIcon} from "@chakra-ui/icons";
+import {ChevronRightIcon} from "@chakra-ui/icons";
 import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
+import NavBarQAE from "../../components/dashboard/NavBarQAE.jsx";
 
 export default function CodePreview() {
     const { selectedFileContent, setSelectedFileContent } = useCode();
@@ -23,64 +24,28 @@ export default function CodePreview() {
     const [suggestionContent, setSuggestionContent] = useState('');
     const [referLinksContent, setReferLinksContent] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
-    const [availabilityMessage, setAvailabilityMessage] = useState('');
-    const [projectNames, setProjectNames] = useState([]);
     const navigate = useNavigate();
     const location = useLocation();
+    console.log(projectID);
+    const role = sessionStorage.getItem('role');
+
     const { state } = location;
-    let { code, mode, language, description } = state || {};
+    let { code, mode, language, description, projectName, user } = state || {};
     const mode_value = mode;
-    const [Language, setLanguage] = useState(language);
-    const description_value = description;
-    const handleLanguageChange = (language) => {setLanguage(language);};
-    const [prName, setPrName] = useState('')
+
+
+    const prName = projectName
 
     if (language === ""){
         language = "Not given";
     }
+    const [Language, setLanguage] = useState(language);
+    const handleLanguageChange = (language) => {setLanguage(language);};
+
     if (description === ""){
         description = "Not given";
     }
-
-    const handlePrNameChange = (event) => {
-        const newPrName = event.target.value;
-        setPrName(newPrName);
-
-        if (newPrName !== '') {
-            setIsCheckingAvailability(true);
-            setSubmitEnabled(false);
-
-            const formattedNewPrName = newPrName.toLowerCase();
-            const formattedProjectNames = projectNames.map(name => name.toLowerCase());
-
-            const projectExists = formattedProjectNames.includes(formattedNewPrName);
-            if (projectExists) {
-                setAvailabilityMessage(`The project name ${newPrName} already exists on this account.`);
-            } else {
-                setAvailabilityMessage(`${newPrName} is available.`);
-                if (selectedFileContent) {
-                    setSubmitEnabled(true);
-                }
-            }
-            setIsCheckingAvailability(false);
-        } else {
-            setAvailabilityMessage('');
-        }
-    };
-    useEffect(() => {
-        const fetchProjectNames = async () => {
-            try {
-                const response = await axios.get("http://localhost:8000/project-names");
-                setProjectNames(response.data);
-                console.log(response.data);
-            } catch (error) {
-                console.error("Error fetching project names:", error);
-            }
-        };
-
-        fetchProjectNames();
-    }, [code]);
+    const description_value = description;
 
     useEffect(() => {
         if (mode === 1 && code !== '') {
@@ -112,18 +77,20 @@ export default function CodePreview() {
 
     useEffect(() => {
         if (reviewContent !== '' && suggestionContent !== '' && referLinksContent !== '') {
-            navigate('/cr', { state: { reviewContent: reviewContent, selectedFileName: selectedFileName, suggestionContent: suggestionContent, referLinksContent: referLinksContent, projectName: prName, language: Language, description: description_value, pID: projectID } });
+            navigate('/cr', { state: { reviewContent: reviewContent, selectedFileName: selectedFileName, suggestionContent: suggestionContent, referLinksContent: referLinksContent, projectName: prName, language: Language, description: description_value, user: user } });
         }
     }, [referLinksContent]);
 
 
     useEffect(() => {
-        if (prName !== '' && selectedFileContent &&  availabilityMessage.includes('available')) {
+        if (prName !== '' && selectedFileContent ) {
             setSubmitEnabled(true);
         } else {
             setSubmitEnabled(false);
         }
-    }, [prName,selectedFileContent, availabilityMessage]);
+    }, [prName,selectedFileContent]);
+
+
 
     const handleSubmit = async () => {
         setIsModalOpen(true); // Open the modal
@@ -133,7 +100,11 @@ export default function CodePreview() {
                 console.error("Selected file content is empty.");
                 return;
             }
-            const response1 = await axios.post("http://localhost:8000/get-review",{
+            const llm = sessionStorage.getItem('llm');
+            const url = llm === 'gemini' ? "http://localhost:8000/get-review-by-gemini" : "http://localhost:8000/get-review-by-openai";
+
+            const response1 = await axios.post(url, {
+                user: user,
                 p_id: 0,
                 p_name: prName,
                 f_name: selectedFileName,
@@ -143,7 +114,11 @@ export default function CodePreview() {
                 mode: mode_value
             });
 
-            const new_p_id = await axios.get("http://localhost:8000/get-latest-p-id")
+            const new_p_id = await axios.get("http://localhost:8000/get-latest-p-id", {
+                params: {
+                    user: user
+                }
+            });
             setProjectID(new_p_id.data);
 
             const { review, suggestions, refer_link } = response1.data;
@@ -152,9 +127,10 @@ export default function CodePreview() {
             setReferLinksContent(refer_link);
 
             const response2 = await axios.post("http://localhost:8000/add-review",{
+                user: user,
                 p_id: new_p_id.data,
                 code: selectedFileContent,
-                review: review,
+                review: review, 
                 suggestions: suggestions,
                 reference_links: refer_link
             });
@@ -200,7 +176,10 @@ export default function CodePreview() {
     return (
         <div className="flex flex-col h-screen">
             <div>
-                <NavBarUser button1={false} button2={true} button3={true} button4={true}/>
+                {role === 'Developer' ?
+                    <NavBarUser button1={false} button2={true} button3={true} button4={true}/> :
+                    <NavBarQAE button1={false} button2={true} button3={true} button4={true} button5={true}/>
+                };
             </div>
 
             <div className="flex flex-row flex-grow">
@@ -229,18 +208,7 @@ export default function CodePreview() {
                             <Text color="red.400" className="text-xl">*</Text>
                         </div>
                         <div className="mb-4">
-                            <Input value={prName} onChange={handlePrNameChange} focusBorderColor='blue.400' placeholder='Enter a name for Project / Submission' variant='filled'/>
-                            {isCheckingAvailability ? (
-                                <Text className="text-gray-600">Checking availability...</Text>
-                            ) : (
-                                availabilityMessage === `${prName} is available.` ? (
-                                    <Text className="text-green-400 font-bold"><Icon as={CheckIcon} color='green.400' className="mr-2"/>{availabilityMessage}
-                                    </Text>
-                                ) : ( availabilityMessage === `The project name ${prName} already exists on this account.` ? (
-                                    <Text className="text-red-500 font-bold"><Icon as={WarningTwoIcon} color='red.500' className="mr-2"/>{availabilityMessage}
-                                    </Text> ) : ( <Text> </Text> )
-                                )
-                            )}
+                            <Input value={prName} placeholder='{prName}' isDisabled variant='filled'/>
                         </div>
                     </div>
 

@@ -1,19 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from "axios";
 import {
-  Box, Flex, Avatar, Text, Menu, MenuButton, MenuList, MenuItem, MenuDivider, Button,
+  Box, Flex, Text, Menu, MenuButton, MenuList, MenuItem, MenuDivider,Image, Button,
   Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton,
-  useDisclosure
+  useDisclosure, Tabs, Tab , TabList
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
-import Devinsight from '../../assets/Devinsight.png'; // Ensure you have a logo image in this path
+import Devinsight from '../../assets/Devinsight.png';
+
 
 const ManagerNavBar = () => {
-  const user = {
-    firstName: 'Lahiru',
-    lastName: 'Paraveen',
-    email: 'lahirup@gmail.com',
-    photo: 'https://bit.ly/broken-link',
+  const adminEmail = sessionStorage.getItem('email');
+  const company = sessionStorage.getItem('company');
+  const image = sessionStorage.getItem('image');
+
+  const tabIndex = () => {
+    switch (location.pathname) {
+        case '/ms':
+            return 0;
+        case '/cs':
+            return 1;
+        default:
+            return -1;
+    }
   };
+ 
+  
+  useEffect(() => {
+    
+    const fetchCompanyImage = async () => {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/get-organization-image?organization_email=${adminEmail}`);
+        // setCompany(response.data);
+        console.log(response.data)
+        sessionStorage.setItem('image', response.data);
+      } catch (error) {
+        console.error("Error fetching company image:", error);
+      }
+    };
+    fetchCompanyImage();
+  }, [adminEmail]);
+
+  const handleLogoutConfirm = () => {
+   
+    sessionStorage.clear(); // Clear session storage
+    window.location.href = '/login-both'; // Redirect to the signin page
+  };
+
+ 
+
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [logoutConfirmed, setLogoutConfirmed] = useState(false);
@@ -28,36 +63,50 @@ const ManagerNavBar = () => {
         </Box>
 
         <Box textAlign="center" color="gray.600">
-          <Text fontSize="xl" fontWeight="bold">
-            Member Manage Portal
-          </Text>
-        </Box>
+                    <Tabs index={tabIndex()} variant="soft-rounded" colorScheme='blue'>
+                        <TabList>
+                            <Tab as={Link} to="/ms" 
+                                 colorScheme={location.pathname === '/db' ? 'blue' : 'gray'}>Admin Portal</Tab>
+                            <Tab as={Link} to="/Contact-us-manager" 
+                                 colorScheme={location.pathname === '/Contact-us-manager' ? 'blue' : 'gray'}>Help</Tab>
+                            
+                        </TabList>
+                    </Tabs>
+                    </Box>
 
         <Flex alignItems="center">
           <Box textAlign="right" mr={3}>
             <Text fontWeight="bold" color="black">
-              {user.firstName} {user.lastName}
+            {company} 
             </Text>
-            <Text fontSize="sm" color="gray.300">
-              {user.email}
+            <Text fontSize="sm" color="gray.500">
+            {adminEmail}
             </Text>
           </Box>
           <Menu>
             <MenuButton as={Button} rounded={'full'} variant={'link'} cursor={'pointer'} minW={0}>
-              <Avatar size="md" name={`${user.firstName} ${user.lastName}`} src={user.photo} />
+            <Box  width="50px" height="50px" mx="auto">
+                  <Image
+                    src={image}
+                    alt="Logo Preview"
+                    objectFit="cover"
+                    width="100%"
+                    height="100%"
+                    borderRadius="md"
+                  />
+                </Box>
             </MenuButton>
             <MenuList>
               <Box px="4" py="2">
                 <Text fontWeight="bold" color="black">
-                  {user.firstName} {user.lastName}
+                  {company}
                 </Text>
                 <Text fontSize="sm" color="gray.500">
-                  {user.email}
+                  {adminEmail}
                 </Text>
               </Box>
               <MenuDivider />
-              <MenuItem as={Link} to="/mp" >View Profile</MenuItem>
-              <MenuItem as={Link} to="/settings">Settings</MenuItem>
+              <MenuItem as={Link} to="/opage" >Organization</MenuItem>
               <MenuItem onClick={onOpen}>Logout</MenuItem>
             </MenuList>
           </Menu>
@@ -73,11 +122,11 @@ const ManagerNavBar = () => {
             Are you sure you want to logout?
           </ModalBody>
           <ModalFooter>
-            <Link to="/si">
-              <Button colorScheme="red" mr={3}>
+            
+              <Button colorScheme="red" mr={3} onClick={handleLogoutConfirm}>
                 Yes
               </Button>
-            </Link>
+           
             <Button variant="ghost" onClick={onClose}>No</Button>
           </ModalFooter>
         </ModalContent>

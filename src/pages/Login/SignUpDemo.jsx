@@ -1,10 +1,7 @@
-// 
-
 // SignUpDemo.jsx
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
-import emailjs from 'emailjs-com';
 import {
     Button,
     FormControl,
@@ -14,29 +11,61 @@ import {
     useColorModeValue,
     Alert,
     AlertIcon,
+    Box,
+    Spacer,
+    Text,
 } from '@chakra-ui/react';
+
 import logo from '../../assets/devsign.png';
+import image from '../../assets/su.jpg';
 
 export default function SignUp() {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
+    const [company, setCompany] = useState('');
+    const [companyEmail, setCompanyEmail] = useState('');
     const [password, setPassword] = useState('');
     const [reEnterPassword, setReEnterPassword] = useState('');
     const [isFilled, setIsFilled] = useState(false);
     const [passwordError, setPasswordError] = useState('');
     const [message, setMessage] = useState('');
-    const [emailError, setEmailError] = useState('');
+    const [userId, setUserId] = useState('');
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+
+    useEffect(() => {
+        const emailFromQuery = searchParams.get('email');
+        const companyFromQuery = searchParams.get('company');
+        const company_email = searchParams.get('company_email');
+        const verificationCode = searchParams.get('code');
+        
+        if (!verificationCode) {
+            navigate('/verify-email');
+        } 
+        if (emailFromQuery) {                           
+            setEmail(emailFromQuery);
+        }
+        if (companyFromQuery) {
+            setCompany(companyFromQuery);
+        }
+        if (company_email) {
+            setCompanyEmail(company_email);
+        }
+    }, [searchParams]);
 
     const handleFirstNameChange = (event) => {
-        setFirstName(event.target.value);
+        const firstNameValue = event.target.value;
+        setFirstName(firstNameValue);
+        setUsername(`${firstNameValue} ${lastName}`);
         checkIsFilled();
     };
 
     const handleLastNameChange = (event) => {
-        setLastName(event.target.value);
+        const lastNameValue = event.target.value;
+        setLastName(lastNameValue);
+        setUsername(`${firstName} ${lastNameValue}`);
         checkIsFilled();
     };
 
@@ -46,10 +75,10 @@ export default function SignUp() {
     };
 
     const handleEmailChange = (event) => {
-        const emailValue = event.target.value;
-        setEmail(emailValue);
+        const email = event.target.value;
+        setEmail(email);
         checkIsFilled();
-        validateEmail(emailValue);
+        validateEmail(email);
     };
 
     const handlePasswordChange = (event) => {
@@ -71,44 +100,35 @@ export default function SignUp() {
             username !== '' &&
             email !== '' &&
             password !== '' &&
-            reEnterPassword !== ''
+            reEnterPassword !== '' &&
+            company !== ''
         );
     };
 
-    const validateEmail = (emailValue) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(emailValue)) {
-            setEmailError('Please enter a valid email address.');
-        } else {
-            setEmailError('');
-        }
+    const validateEmail = (email) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+    };
+
+    const handleCompanyChange = (event) => {
+        setCompany(event.target.value);
+        checkIsFilled();
     };
 
     const validatePassword = (password, reEnterPassword) => {
-        if (reEnterPassword !== '' && password !== reEnterPassword) {
+        const capitalLetterRegex = /[A-Z]/;
+        const specialCharacterRegex = /[!@#$%^&*(),.?":{}|<>]/;
+
+        if (password.length < 6) {
+            setPasswordError('Password must be at least 6 characters long.');
+        } else if (!capitalLetterRegex.test(password)) {
+            setPasswordError('Password must contain at least one capital letter.');
+        } else if (!specialCharacterRegex.test(password)) {
+            setPasswordError('Password must contain at least one special character.');
+        } else if (reEnterPassword !== '' && password !== reEnterPassword) {
             setPasswordError('Passwords do not match');
         } else {
             setPasswordError('');
-        }
-    };
-
-    const sendVerificationEmail = async (userData) => {
-        const templateParams = {
-            email: userData.email,
-            verification_link: `${window.location.origin}/verify-email?email=${encodeURIComponent(userData.email)}&code=${userData.verificationCode}`,
-        };
-
-        try {
-            await emailjs.send(
-                'YOUR_SERVICE_ID',
-                'YOUR_TEMPLATE_ID',
-                templateParams,
-                'YOUR_USER_ID'
-            );
-            setMessage('Verification email sent! Please check your inbox.');
-        } catch (error) {
-            console.error('Failed to send verification email:', error);
-            setMessage('Failed to send verification email. Please try again.');
         }
     };
 
@@ -117,22 +137,29 @@ export default function SignUp() {
         if (isFilled && password === reEnterPassword) {
             try {
                 const response = await axios.post('http://localhost:8000/signup', {
-                    
                     firstName,
                     lastName,
                     username,
                     email,
                     password,
+                    company,
+                    companyEmail,
+                    experience: 0,
+                    level: "Beginner",
                     role: "Developer",
-                    company: "99x"
+                    skills: [],
+                    face_encoding: [],
+                    profileStatus: "Active",
+                    profilePicture:  " ",
+
                 });
 
-                const { access_token, verificationCode } = response.data;
-                sessionStorage.setItem("token", access_token);
+                const { access_token, user_id, verificationCode } = response.data;
+                sessionStorage.setItem( "token", access_token );
+                setUserId(user_id); // Store user ID in state
+                // localStorage.setItem("email", email);
 
-                await sendVerificationEmail({ email, verificationCode });
-
-                navigate(`/verify-email?email=${encodeURIComponent(email)}`);
+                navigate('/login-developer');
             } catch (error) {
                 if (error.response && error.response.status === 400 && error.response.data.detail === "User already exists") {
                     setMessage("Email is already registered");
@@ -146,12 +173,32 @@ export default function SignUp() {
     };
 
     return (
-        <Flex minH={'100vh'} align={'center'} justify={'center'}>
+        <Flex minH={'100vh'}>
+               {/* Left Side */}
+               <Box
+                flex={1}
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                bg={useColorModeValue('white', 'gray.700')}
+                
+            >
+                <Box mt={20}>
+                    <img src={logo} height={200} width={200} alt={'DevInsightLOGO'} />
+                </Box>
+                <Spacer />
+                <Box>
+                    <img src={image} alt="Sample GIF"  height={600} width={600}/>
+                </Box>
+            </Box>
+
+            {/* Right Side */}
+        <Flex  align={'center'} justify={'center'} flex={1}  bg={useColorModeValue('gray.50')}>
             <Stack
                 spacing={6}
                 w={'full'}
                 maxW={'md'}
-                bg={useColorModeValue('white', 'gray.700')}
                 rounded={'xl'}
                 p={6}
                 my={12}
@@ -162,9 +209,21 @@ export default function SignUp() {
                         {passwordError}
                     </Alert>
                 )}
-                <center>
-                    <img src={logo} height={200} width={200} alt={'DevInsightLOGO'} />
-                </center>
+                {message && (
+                    <Alert status="error">
+                        <AlertIcon />
+                        {message}
+                    </Alert>
+                )}
+                {userId && (
+                    <Alert status="success">
+                        <AlertIcon />
+                        Signup successful! Your user ID is: {userId}
+                    </Alert>
+                )}
+                <Text fontSize="4xl" fontWeight="bold">
+                         Welcome to DevInsight!
+                    </Text>
                 <Flex>
                     <FormControl id="firstName" mr={3} flex={1}>
                         <Input
@@ -194,15 +253,28 @@ export default function SignUp() {
                         onChange={handleUsernameChange}
                     />
                 </FormControl>
-                <FormControl id="email">
-                    <Input
-                        placeholder="Email"
-                        _placeholder={{ color: 'gray.500' }}
-                        type="email"
-                        value={email}
-                        onChange={handleEmailChange}
-                    />
-                </FormControl>
+                <Flex>
+                    <FormControl id="company" flex={1} mr={2}>
+                        <Input
+                            placeholder="Company"
+                            _placeholder={{ color: 'gray.500' }}
+                            type="text"
+                            value={company}
+                            onChange={handleCompanyChange}
+                            isReadOnly
+                        />
+                    </FormControl>
+                    <FormControl id="email" flex={2}>
+                        <Input
+                            placeholder="Email"
+                            _placeholder={{ color: 'gray.500' }}
+                            type="email"
+                            value={email}
+                            onChange={handleEmailChange}
+                            isReadOnly
+                        />
+                    </FormControl>
+                </Flex>
                 <FormControl id="password">
                     <Input
                         placeholder="Password"
@@ -229,8 +301,8 @@ export default function SignUp() {
                         Sign Up
                     </Button>
                 </Stack>
-                <p>{message}</p>
             </Stack>
         </Flex>
+    </Flex>   
     );
 }
