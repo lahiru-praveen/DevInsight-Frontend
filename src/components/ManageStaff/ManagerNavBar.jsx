@@ -107,7 +107,6 @@ const ManagerNavBar = () => {
               </Box>
               <MenuDivider />
               <MenuItem as={Link} to="/opage" >Organization</MenuItem>
-              <MenuItem as={Link} to="/settings">Settings</MenuItem>
               <MenuItem onClick={onOpen}>Logout</MenuItem>
             </MenuList>
           </Menu>

@@ -155,7 +155,7 @@ export default function CodeReview() {
                             <TabPanel>
                                 <div className="flex flex-col " style={{ overflowY: 'auto' }}>
                                     <div className="flex justify-end mb-2">
-                                        <Tooltip hasArrow label='Ask a help from Qauliry Assuarence Engineer' bg='blue.200' placement='bottom'>
+                                        <Tooltip hasArrow label='Ask a help from Quality Assurance Engineer' bg='blue.200' placement='bottom'>
                                             <Button colorScheme="blue" size="lg" className="w-48"
                                                 onClick={handleAskHelp}>
                                                 <BsFillQuestionSquareFill className="mr-2" />Ask the QAE
@@ -182,7 +182,7 @@ export default function CodeReview() {
                                 
                                 <div className="flex flex-col  " >
                                     <div className="flex justify-end mb-2 space-x-2" style={{ overflowY: 'auto' }}>
-                                        <Tooltip hasArrow label='Ask a help from Qauliry Assuarence Engineer' bg='blue.200' placement='bottom'>
+                                        <Tooltip hasArrow label='Ask a help from Quality Assurance Engineer' bg='blue.200' placement='bottom'>
                                             <Button colorScheme="blue" size="lg" className="w-48"
                                                 onClick={handleAskHelp}>
                                                 <BsFillQuestionSquareFill className="mr-2" />Ask the QAE
