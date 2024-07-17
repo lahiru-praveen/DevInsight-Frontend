@@ -56,7 +56,7 @@ export default function Responses({ response, drop }) {
                     </Flex>
                 </Card>
             </div>
-            <ResponseModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} p_id={p_id} p_name={p_name} r_id={req_id} subject={req_subject} request={req_content} response={response_content}  />
+            <ResponseModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} dev_user={user} p_id={p_id} p_name={p_name} r_id={req_id} subject={req_subject} request={req_content} response={response_content}  />
         </>
     );
 }
