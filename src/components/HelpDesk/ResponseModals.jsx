@@ -1,26 +1,21 @@
-import {Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Text, Tabs, TabList, Tab, TabPanels, TabPanel, Tooltip, Icon, Box } from '@chakra-ui/react';
+import {Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Text, Tabs, TabList, Tab, TabPanels, TabPanel, Tooltip, Box, useToast} from '@chakra-ui/react';
 import PropTypes from 'prop-types';
 import axios from "axios";
-import {useEffect, useState} from "react";
-import {MdDriveFolderUpload} from "react-icons/md";
+import { useEffect, useState } from 'react';
 import ChakraUIRenderer from 'chakra-ui-markdown-renderer';
 import ReactMarkdown from 'react-markdown';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 const newTheme = {
-    p: props => {
+    p: (props) => {
         const { children } = props;
         return (
             <Text mb={2} fontSize={'18px'} fontWeight='light'>
                 {children}
             </Text>
-            
-            
-            
         );
     },
 };
-
 
 const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, response }) => {
     const [isDeleting, setIsDeleting] = useState(false);
@@ -28,14 +23,15 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
     const [reviewContent, setReviewContent] = useState('');
     const [suggestionContent, setSuggestionContent] = useState('');
     const [referLinksContent, setReferLinksContent] = useState('');
-    const [responseContent, setResponseContent] = useState(response || '');
-    const navigate = useNavigate();
-
-    const user = sessionStorage.getItem('email');
+    const [response_content, setResponseContent] = useState(response || '');
     const [isTextBoxVisible, setIsTextBoxVisible] = useState(false);
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [showForwardConfirmationModal, setShowForwardConfirmationModal] = useState(false);
     const [showOptionsModal, setShowOptionsModal] = useState(false);
+
+    const user = sessionStorage.getItem('email');
+    const navigate = useNavigate();
+    const toast = useToast(); // Toast hook for notifications
 
     const handleButtonClick = () => {
         setIsTextBoxVisible(true);
@@ -47,33 +43,57 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if (!responseContent) {
-            alert('Response text cannot be empty.');
+        if (!response_content) {
+            toast({
+                title: "Response text cannot be empty.",
+                description: "Please enter a response before submitting.",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            });
             return;
         }
         setShowConfirmationModal(true);
     };
 
     const confirmSubmission = async () => {
-        setShowOptionsModal(false);
-        onClose();
-        navigate('/qhr');  // Redirect to QHR page after forwarding the request
-
+        setShowConfirmationModal(false);
         try {
             const response = await axios.post(
-                'http://localhost:8000/pre-responds',
-                { "response_text": responseContent, "p_id": p_id, "r_id": r_id, "user": user },
-                { headers: { 'Content-Type': 'application/json' } }
+                'http://localhost:8000/save-response',
+                {
+                    response_content: response_content,
+                    p_id: p_id,
+                    r_id: r_id,
+                    user: user
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
             );
             console.log('Response saved successfully:', response.data);
-            setResponseContent(responseContent);
+            setResponseContent(response_content);
             onClose();
+            toast({
+                title: "Response Submitted",
+                description: "Your response has been successfully submitted.",
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+            });
             navigate('/qhr');  // Redirect to QHR page after submission
         } catch (error) {
             console.error('Failed to save response:', error);
-            console.error('Error details:', error.response);
+            toast({
+                title: "Submission Failed",
+                description: "There was an error submitting your response.",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            });
         }
-        setShowConfirmationModal(false);
     };
 
     const cancelSubmission = () => {
@@ -97,6 +117,13 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
         console.log('Selected Option:', selectedOption);
         setShowOptionsModal(false);
         onClose();
+        toast({
+            title: "Request Forwarded",
+            description: `The request has been forwarded due to: ${selectedOption}.`,
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+        });
         navigate('/qhr');  // Redirect to QHR page after forwarding the request
     };
 
@@ -130,7 +157,13 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
                     params: { p_id, user, r_id }
                 });
                 if (response.status === 200) {
-                    alert("Submission Deleted Successfully");
+                    toast({
+                        title: "Submission Deleted",
+                        description: "The submission has been deleted successfully.",
+                        status: "success",
+                        duration: 5000,
+                        isClosable: true,
+                    });
                     onClose();
                     window.location.reload();
                 } else {
@@ -162,37 +195,39 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
                                     <Tab>Suggestions</Tab>
                                     <Tab>Refer Links</Tab>
                                 </TabList>
-                                <TabPanels className="h-full" >
+                                <TabPanels className="h-full">
                                     <TabPanel className=" h-full overflow-auto">
-                                        <Box p={4} m={0}>   
-                                        <pre>{codeContent}</pre>
+                                        <Box p={4} m={0}>
+                                            <pre>{codeContent}</pre>
                                         </Box>
                                     </TabPanel>
                                     <TabPanel className="h-full overflow-auto">
                                         <ReactMarkdown components={ChakraUIRenderer(newTheme)} skipHtml>
-                                        {reviewContent}
+                                            {reviewContent}
                                         </ReactMarkdown>
                                     </TabPanel>
                                     <TabPanel className="h-full overflow-auto">
                                         <ReactMarkdown components={ChakraUIRenderer(newTheme)} skipHtml>
-                                        {suggestionContent}
+                                            {suggestionContent}
                                         </ReactMarkdown>
                                     </TabPanel>
                                     <TabPanel className="h-full overflow-auto">
                                         <ReactMarkdown components={ChakraUIRenderer(newTheme)} skipHtml>
-                                        {referLinksContent}
+                                            {referLinksContent}
                                         </ReactMarkdown>
                                     </TabPanel>
                                 </TabPanels>
                             </Tabs>
                         </div>
                         <div className="px-4 bg-gray-200 rounded-lg mx-4 py-4">
-                            <p>Subject: {subject} </p>
-                            <p>Request: {request}</p>
-                            <p>Response: </p>
+                            <p className="font-bold mb-4">Subject: </p>
+                            <p className="mb-4 ">{subject}</p>
+                            <p className="font-bold mb-4 ">Request: </p>
+                            <p className="mb-4 ">{request}</p>
+                            <p className="font-bold mb-4">Response: </p>
 
                             {response ? (
-                                <p>{response}</p>
+                                <p className="mb-4 ">{response}</p>
                             ) : (
                                 <>
                                     {isTextBoxVisible ? (
@@ -202,101 +237,117 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
                                                     className="shadow appearance-none border rounded w-full h-80 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                                     id="response"
                                                     placeholder="Enter response"
-                                                    value={responseContent}
+                                                    value={response_content}
                                                     onChange={handleTextBoxChange}
                                                     maxLength={100}
                                                 />
                                             </div>
                                             <div className="flex items-center justify-between">
-                                                <Tooltip hasArrow
-                                                         label={!responseContent ? 'Response text cannot be empty.' : 'Submit the response'}
-                                                         bg={!responseContent ? 'red.200' : 'blue.200'}
-                                                         placement='bottom'>
+                                                <Tooltip
+                                                    hasArrow
+                                                    label={!response_content ? 'Response text cannot be empty.' : 'Submit the response'}
+                                                    bg={!response_content ? 'red.200' : 'blue.200'}
+                                                    placement='bottom'
+                                                >
                                                     <Button
-                                                        isDisabled={!responseContent}
+                                                        isDisabled={!response_content}
                                                         border='2px'
-                                                        size="lg"
-                                                        colorScheme={!responseContent ? 'red' : 'blue'}
-                                                        className="w-64"
-                                                        type={"submit"}
+                                                        colorScheme='blue'
+                                                        type="submit"
+                                                        className="mt-4 "
                                                     >
-                                                        <Icon as={MdDriveFolderUpload} boxSize={6} color='white'
-                                                              className="mr-2" />Submit
+                                                        Submit
                                                     </Button>
                                                 </Tooltip>
                                             </div>
                                         </form>
                                     ) : (
-                                        <div className="grid grid-cols-2 divide-x py-4 px-4 mx-4">
-                                            <p
-                                                className="mt-10 flex items-center space-x-5 p-2 text-white w-50 rounded-lg bg-blue-500 mr-5"
-                                                onClick={handleButtonClick}
-                                            >
-                                                Send Response
-                                            </p>
-                                            <p
-                                                className="mt-10 flex items-center space-x-5 p-2 text-white w-50 rounded-lg bg-blue-500"
-                                                onClick={handleForwardButtonClick}
-                                            >
-                                                Forward to another QAE
-                                            </p>
-                                        </div>
+                                        <Button
+                                            border='2px'
+                                            colorScheme='blue'
+                                            onClick={handleButtonClick}
+                                        >
+
+                                            Enter Response
+                                        </Button>
+                                    )}
+                                    <div className="pt-4">
+                                        <Button colorScheme='blue' onClick={handleForwardButtonClick}>Forward</Button>
+                                    </div>
+                                    {showOptionsModal && (
+                                        <Modal
+                                            isOpen={showOptionsModal}
+                                            onClose={() => setShowOptionsModal(false)}
+                                            size='md'
+                                        >
+                                            <ModalOverlay/>
+                                            <ModalContent>
+                                                <ModalHeader>Reason for Forwarding</ModalHeader>
+                                                <ModalCloseButton/>
+                                                <ModalBody>
+                                                    <Button onClick={() => handleOptionSubmit('Technical Issue')}>Technical
+                                                        Issue</Button>
+                                                    <Button onClick={() => handleOptionSubmit('Lack of Resources')}>Lack
+                                                        of Resources</Button>
+                                                    <Button onClick={() => handleOptionSubmit('Others')}>Others</Button>
+                                                </ModalBody>
+                                            </ModalContent>
+                                        </Modal>
                                     )}
                                 </>
                             )}
                         </div>
                     </div>
-                    {showConfirmationModal && (
-                        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-50">
-                            <div className="bg-white rounded-lg text-2xl shadow-lg p-8 w-100">
-                                <p>Are you sure you want to submit?</p>
-                                <div className="mt-4 flex justify-end">
-                                    <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md"
-                                            onClick={confirmSubmission}
-                                    >
-                                        Yes
-                                    </button>
-                                    <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md"
-                                            onClick={cancelSubmission}
-                                    >No</button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {showForwardConfirmationModal && (
-                        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-50">
-                            <div className="bg-white rounded-lg text-2xl shadow-lg p-8 w-100">
-                                <p>Are you sure you want to forward the request to another QAE?</p>
-                                <div className="mt-4 flex justify-end">
-                                    <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={confirmForward}>
-                                        Yes
-                                    </button>
-                                    <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md" onClick={cancelForward}>No</button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {showOptionsModal && (
-                        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-50">
-                            <div className="bg-white rounded-lg text-2xl shadow-lg p-8 w-100">
-                                <p>Select a valid reason to forward the request:</p>
-                                <div className="mt-4">
-                                    <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={() => handleOptionSubmit('Unavailable')}>Unavailable</button>
-                                    <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={() => handleOptionSubmit('Not my field')}>Not my field</button>
-                                    <button className="mr-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={() => handleOptionSubmit('Request is not clear')}>Request is not clear</button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
                 </ModalBody>
                 <ModalFooter>
-                    <Button colorScheme="blue" onClick={onClose}>
+                    <Button colorScheme='blue' mr={3} onClick={handleDelete} isLoading={isDeleting}>
+                        Delete
+                    </Button>
+                    <Button variant='ghost' onClick={onClose}>
                         Close
                     </Button>
                 </ModalFooter>
             </ModalContent>
+
+            {/* Confirmation Modal for submission */}
+            <Modal isOpen={showConfirmationModal} onClose={() => setShowConfirmationModal(false)}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Confirm Submission</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Text>Are you sure you want to submit this response?</Text>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme='blue' mr={3} onClick={confirmSubmission}>
+                            Yes
+                        </Button>
+                        <Button variant='ghost' onClick={() => setShowConfirmationModal(false)}>
+                            No
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+
+            {/* Forward Confirmation Modal */}
+            <Modal isOpen={showForwardConfirmationModal} onClose={() => setShowForwardConfirmationModal(false)}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Confirm Forwarding</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Text>Are you sure you want to forward this request?</Text>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme='blue' mr={3} onClick={confirmForward}>
+                            Yes
+                        </Button>
+                        <Button variant='ghost' onClick={cancelForward}>
+                            No
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
         </Modal>
     );
 };
@@ -304,11 +355,11 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
 ResponseModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
+    p_id: PropTypes.string.isRequired,
     p_name: PropTypes.string.isRequired,
+    r_id: PropTypes.string.isRequired,
     subject: PropTypes.string.isRequired,
     request: PropTypes.string.isRequired,
-    r_id: PropTypes.number.isRequired,
-    p_id: PropTypes.number.isRequired,
     response: PropTypes.string,
 };
 

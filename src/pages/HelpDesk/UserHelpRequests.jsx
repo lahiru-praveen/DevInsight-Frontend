@@ -11,6 +11,7 @@ export default function UserHelpRequests() {
     const [filteredRequests, setFilteredRequests] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOrder, setSortOrder] = useState("asc");
+    const [requestStatusFilter, setRequestStatusFilter] = useState(""); // Added state for request status filter
     const [error, setError] = useState(null);
     const user = sessionStorage.getItem('email');
     const role = sessionStorage.getItem('role');
@@ -19,9 +20,7 @@ export default function UserHelpRequests() {
         const fetchData = async () => {
             try {
                 const result = await axios.get('http://localhost:8000/pre-responses', {
-                    params: {
-                        user: user
-                    }
+                    params: { user: user }
                 });
                 console.log("Fetch Result: ", result.data); // Log the entire response
                 if (result.status === 200 && result.data) {
@@ -36,18 +35,27 @@ export default function UserHelpRequests() {
                 setError("Error fetching data");
             }
         };
+
         fetchData();
     }, [user]);
 
     const filterAndSortRequests = useCallback(debounce(() => {
         let filtered = request;
+
+        // Apply search query filtering
         if (searchQuery) {
-            filtered = request.filter(req =>
+            filtered = filtered.filter(req =>
                 req.p_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 req.r_subject.toLowerCase().includes(searchQuery.toLowerCase())
             );
         }
 
+        // Apply request status filtering
+        if (requestStatusFilter) {
+            filtered = filtered.filter(req => req.r_status === requestStatusFilter);
+        }
+
+        // Sort requests
         filtered.sort((a, b) => {
             const dateA = new Date(a.date);
             const dateB = new Date(b.date);
@@ -55,11 +63,11 @@ export default function UserHelpRequests() {
         });
 
         setFilteredRequests(filtered);
-    }, 300), [searchQuery, sortOrder, request]);
+    }, 300), [searchQuery, sortOrder, request, requestStatusFilter]);
 
     useEffect(() => {
         filterAndSortRequests();
-    }, [searchQuery, sortOrder, filterAndSortRequests]);
+    }, [searchQuery, sortOrder, requestStatusFilter, filterAndSortRequests]);
 
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
@@ -67,6 +75,10 @@ export default function UserHelpRequests() {
 
     const handleSortOrderChange = (event) => {
         setSortOrder(event.target.value);
+    };
+
+    const handleRequestStatusFilterChange = (event) => {
+        setRequestStatusFilter(event.target.value);
     };
 
     // Static headers
@@ -78,6 +90,7 @@ export default function UserHelpRequests() {
         r_content: "Request",
         r_status: "Status",
         date: "Requested Date",
+        qae: "QAE"
     };
 
     return (
@@ -99,9 +112,14 @@ export default function UserHelpRequests() {
                         onChange={handleSearchChange}
                         mr={4}
                     />
-                    <Select value={sortOrder} onChange={handleSortOrderChange} width="150px">
-                        <option value="asc">Sort by Date (Previous)</option>
-                        <option value="desc">Sort by Date (Latest)</option>
+                    <Select value={sortOrder} onChange={handleSortOrderChange} width="300px" mr={4}>
+                        <option value="asc">Sort by Date (Latest)</option>
+                        <option value="desc">Sort by Date (Previous)</option>
+                    </Select>
+                    <Select value={requestStatusFilter} onChange={handleRequestStatusFilterChange} width="200px">
+                        <option value="">All Statuses</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Completed">Completed</option>
                     </Select>
                 </div>
                 {/* Render static headers */}
