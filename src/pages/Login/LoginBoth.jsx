@@ -12,9 +12,13 @@ const LoginBoth = () => {
       <BackButton />
     </Box>
     <center> 
+    <Link to="">
     <Box mt={40}>
+      
     <img src={logo} height={200} width={200} alt={'DevInsightLOGO'} />
+
     </Box>
+    </Link>
     </center>
     <Box className="min-h-screen flex items-center justify-center "mt={-40} >
    
