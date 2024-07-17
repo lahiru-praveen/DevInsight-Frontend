@@ -96,28 +96,28 @@ export default function Submissions({ submission, drop, user }) {
     return (
         <>
             <div>
-                <Card>
-                    <Flex flexDirection="row" className="bg-[#EBEBEB] mb-2 mt-1">
-                        <CardHeader className="mr-4 w-[50px]">
+                <Card bg="#f5f5f5" mb={2} mt={1} borderRadius="md">
+                    <Flex flexDirection="row"  >
+                        <CardHeader className="mr-4 w-[50px]" >
                             {typeIcon}
                         </CardHeader>
                         <CardHeader className="mr-4 w-[150px]">
-                            <Text className="font-bold" fontSize="16px">{p_id}</Text>
+                            <Text fontWeight="500" fontSize="16px" color="gray.700">{p_id}</Text>
                         </CardHeader>
                         <CardHeader className="mr-4 w-[350px]">
-                            <Text className="font-bold" fontSize="16px">{p_name}</Text>
+                            <Text fontWeight="500" fontSize="16px" color="gray.700">{p_name}</Text>
                         </CardHeader>
                         <CardHeader className="mr-4 w-[300px]">
-                            <Text className="font-bold" fontSize="16px">{file_name}</Text>
+                            <Text fontWeight="500" fontSize="16px" color="gray.700">{file_name}</Text>
                         </CardHeader>
                         <CardHeader className="mr-4 w-[200px]">
-                            <Text className="font-bold" fontSize="16px">{submission_date}</Text>
+                            <Text fontWeight="500" fontSize="16px" color="gray.700">{submission_date}</Text>
                         </CardHeader>
                         <CardHeader className="mr-4 w-[200px]">
-                            <Text className="font-bold" fontSize="16px">{lan}</Text>
+                            <Text fontWeight="500" fontSize="16px" color="gray.700">{lan}</Text>
                         </CardHeader>
                         <CardHeader className="mr-4 w-[600px]">
-                            <Text className="font-bold w-[600px]" fontSize="16px" isTruncated>{des}</Text>
+                            <Text className="w-[600px]" fontWeight="500" fontSize="16px" color="gray.700" isTruncated>{des}</Text>
                         </CardHeader>
                         <CardHeader>
                             {helpType}

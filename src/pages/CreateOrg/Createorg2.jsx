@@ -164,7 +164,7 @@ function InteractiveForm() {
                     <form onSubmit={handleSubmit} className="w-full">
                         <VStack spacing={6} align="stretch">
                             <FormControl>
-                                <FormLabel htmlFor="company_name">Organization Name</FormLabel>
+                                <FormLabel htmlFor="company_name">Organization Name (Required)</FormLabel>
                                 <Input
                                     id="company_name"
                                     type="text"
@@ -215,7 +215,7 @@ function InteractiveForm() {
                             )}
     
                             <FormControl>
-                                <FormLabel htmlFor="admin_email">Organization Email</FormLabel>
+                                <FormLabel htmlFor="admin_email">Organization Email (Required)</FormLabel>
                                 <Input
                                     id="admin_email"
                                     name="admin_email"
@@ -232,7 +232,7 @@ function InteractiveForm() {
                             </FormControl>
     
                             <FormControl>
-                                <FormLabel htmlFor="company_address">Organization Address</FormLabel>
+                                <FormLabel htmlFor="company_address">Organization Address (Required)</FormLabel>
                                 <Input
                                     id="company_address"
                                     name="company_address"
@@ -249,7 +249,7 @@ function InteractiveForm() {
                             </FormControl>
     
                             <FormControl>
-                                <FormLabel htmlFor="phone_number">Phone Number</FormLabel>
+                                <FormLabel htmlFor="phone_number">Phone Number (Required)</FormLabel>
                                 <Input
                                     id="phone_number"
                                     name="phone_number"

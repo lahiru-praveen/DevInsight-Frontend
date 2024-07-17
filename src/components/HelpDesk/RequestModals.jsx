@@ -68,6 +68,8 @@ const RequestModal = ({ isOpen, onClose, p_name, subject, request, r_id, p_id })
     };
 
     const submitRating = async () => {
+        onClose(); // Close the modal after deletion
+
         try {
             await axios.post('http://localhost:8000/submit-feedback', {
                 p_id: p_id,
@@ -79,7 +81,6 @@ const RequestModal = ({ isOpen, onClose, p_name, subject, request, r_id, p_id })
             onPopoverClose();
         } catch (error) {
             console.error("Error submitting feedback:", error);
-            alert("Failed to submit feedback");
         }
     };
 
