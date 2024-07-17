@@ -101,8 +101,8 @@ function AskHelp() {
             setRequestSubject('');
             setRequestText('');
             toast({
-                title: "Action successful",
-                description: "Request submitted successfully",
+                title: "Request submitted",
+                description: "Your request has been successfully submitted",
                 status: "success",
                 duration: 5000,
                 isClosable: true,
@@ -115,7 +115,7 @@ function AskHelp() {
                 console.error('Error details:', error.response.data); // Log error details
                 setErrorMessage(`Error: ${error.response.data.message}` || 'Failed to save request');
                 toast({
-                    title: "Action failure.",
+                    title: "Request failure.",
                     description: "System failed to submit the request",
                     status: "error",
                     duration: 5000,
@@ -232,3 +232,4 @@ function AskHelp() {
 }
 
 export default AskHelp;
+
