@@ -254,6 +254,7 @@ const Chatbot = ({ isOpen, onClose }) => {
         </DrawerHeader>
 
         <DrawerBody display="flex" flexDirection="column">
+          
           <VStack spacing={4} w="100%" flex="1" overflowY="auto">
             <Box
               w="100%"
@@ -265,6 +266,7 @@ const Chatbot = ({ isOpen, onClose }) => {
               border="1px"
               borderColor="gray.100"
             >
+               <Text mb={4} color="gray.400" textAlign="center">Welcome to the chat! You can discuss and ask anything about the given code, including code reviews, suggestions, and reference links. Feel free to ask any questions related to programming, and I'll do my best to provide answers and guidance.</Text> {/* Add this line */}
               <VStack spacing={3}>
                 {messages.map((msg, index) => (
                   <Box

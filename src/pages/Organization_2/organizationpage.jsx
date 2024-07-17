@@ -23,6 +23,7 @@ import {
 import { FiUpload } from 'react-icons/fi';
 import { Divider } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
+import BackButton from '../../components/Profile_page/BackButton';
 
 const OrganizationModal = ({ isOpen, onClose, onSave, organization }) => {
   const [name, setName] = useState(organization.company_name);
@@ -164,9 +165,13 @@ const OrganizationDetails = ({ organization, onUpdateOrganization }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
+    <Box bg="gray.100" >
+      <Box ml={-5} mt={-5}>
+      <BackButton />
+    </Box>
     <Box 
       position="relative" 
-      bg="gray.100" 
+      bg="white" 
       shadow="lg" 
       borderRadius="lg" 
       p={6} 
@@ -238,6 +243,7 @@ const OrganizationDetails = ({ organization, onUpdateOrganization }) => {
         onSave={onUpdateOrganization}
         organization={organization}
       />
+    </Box>
     </Box>
   );
 };
