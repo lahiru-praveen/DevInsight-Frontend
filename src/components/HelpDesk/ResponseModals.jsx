@@ -1,4 +1,7 @@
-import {Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Text, Tabs, TabList, Tab, TabPanels, TabPanel, Tooltip, Box, useToast} from '@chakra-ui/react';
+import {
+    Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button,
+    Text, Tabs, TabList, Tab, TabPanels, TabPanel, Tooltip, Box, useToast, Select
+} from '@chakra-ui/react';
 import PropTypes from 'prop-types';
 import axios from "axios";
 import { useEffect, useState } from 'react';
@@ -28,10 +31,13 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [showForwardConfirmationModal, setShowForwardConfirmationModal] = useState(false);
     const [showOptionsModal, setShowOptionsModal] = useState(false);
+    const [selectedName, setSelectedName] = useState('');
 
     const user = sessionStorage.getItem('email');
     const navigate = useNavigate();
     const toast = useToast(); // Toast hook for notifications
+
+    const names = ['lahirupraveen43@gmail.com', 'buwanekamara@gmail.com', 'ramajinignanasuthan@gmail.com']; // Example names
 
     const handleButtonClick = () => {
         setIsTextBoxVisible(true);
@@ -113,18 +119,45 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
         setShowForwardConfirmationModal(false);
     };
 
-    const handleOptionSubmit = (selectedOption) => {
-        console.log('Selected Option:', selectedOption);
+    const handleOptionSubmit = async () => {
         setShowOptionsModal(false);
-        onClose();
-        toast({
-            title: "Request Forwarded",
-            description: `The request has been forwarded due to: ${selectedOption}.`,
-            status: "success",
-            duration: 5000,
-            isClosable: true,
-        });
-        navigate('/qhr');  // Redirect to QHR page after forwarding the request
+        try {
+            const response = await axios.post(
+                'http://localhost:8000/forward-request',
+                {
+                    selectedName: selectedName,
+                    p_id: p_id,
+                    r_id: r_id,
+                    user: user
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            console.log('Request forwarded successfully:', response.data);
+            onClose();
+            toast({
+                title: "Forwarding Failed",
+                description: "There was an error forwarding the request.",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            });
+            navigate('/qhr');  // Redirect to QHR page after forwarding the request
+        } catch (error) {
+            console.error('Failed to forward request:', error);
+
+            toast({
+                title: "Request Forwarded",
+                description: `The request has been forwarded to: ${selectedName}.`,
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+            });
+
+        }
     };
 
     useEffect(() => {
@@ -196,7 +229,7 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
                                     <Tab>Refer Links</Tab>
                                 </TabList>
                                 <TabPanels className="h-full">
-                                    <TabPanel className=" h-full overflow-auto">
+                                    <TabPanel className="h-full overflow-auto">
                                         <Box p={4} m={0}>
                                             <pre>{codeContent}</pre>
                                         </Box>
@@ -221,13 +254,13 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
                         </div>
                         <div className="px-4 bg-gray-200 rounded-lg mx-4 py-4">
                             <p className="font-bold mb-4">Subject: </p>
-                            <p className="mb-4 ">{subject}</p>
-                            <p className="font-bold mb-4 ">Request: </p>
-                            <p className="mb-4 ">{request}</p>
+                            <p className="mb-4">{subject}</p>
+                            <p className="font-bold mb-4">Request: </p>
+                            <p className="mb-4">{request}</p>
                             <p className="font-bold mb-4">Response: </p>
 
                             {response ? (
-                                <p className="mb-4 ">{response}</p>
+                                <p className="mb-4">{response}</p>
                             ) : (
                                 <>
                                     {isTextBoxVisible ? (
@@ -242,7 +275,7 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
                                                     maxLength={100}
                                                 />
                                             </div>
-                                            <div className="flex items-center justify-between">
+                                            <div className="flex items-center justify-between space-x-4">
                                                 <Tooltip
                                                     hasArrow
                                                     label={!response_content ? 'Response text cannot be empty.' : 'Submit the response'}
@@ -254,45 +287,37 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
                                                         border='2px'
                                                         colorScheme='blue'
                                                         type="submit"
-                                                        className="mt-4 "
                                                     >
                                                         Submit
                                                     </Button>
                                                 </Tooltip>
+                                                <Button
+                                                    border='2px'
+                                                    colorScheme='gray'
+                                                    onClick={() => setIsTextBoxVisible(false)}
+                                                >
+                                                    Cancel
+                                                </Button>
                                             </div>
                                         </form>
                                     ) : (
-                                        <Button
-                                            border='2px'
-                                            colorScheme='blue'
-                                            onClick={handleButtonClick}
-                                        >
-
-                                            Enter Response
-                                        </Button>
-                                    )}
-                                    <div className="pt-4">
-                                        <Button colorScheme='blue' onClick={handleForwardButtonClick}>Forward</Button>
-                                    </div>
-                                    {showOptionsModal && (
-                                        <Modal
-                                            isOpen={showOptionsModal}
-                                            onClose={() => setShowOptionsModal(false)}
-                                            size='md'
-                                        >
-                                            <ModalOverlay/>
-                                            <ModalContent>
-                                                <ModalHeader>Reason for Forwarding</ModalHeader>
-                                                <ModalCloseButton/>
-                                                <ModalBody>
-                                                    <Button onClick={() => handleOptionSubmit('Technical Issue')}>Technical
-                                                        Issue</Button>
-                                                    <Button onClick={() => handleOptionSubmit('Lack of Resources')}>Lack
-                                                        of Resources</Button>
-                                                    <Button onClick={() => handleOptionSubmit('Others')}>Others</Button>
-                                                </ModalBody>
-                                            </ModalContent>
-                                        </Modal>
+                                        <>
+                                            <Button
+                                                border='2px'
+                                                colorScheme='blue'
+                                                onClick={handleButtonClick}
+                                            >
+                                                Enter Response
+                                            </Button>
+                                            {!isTextBoxVisible && (
+                                                <Button
+                                                    colorScheme='blue'
+                                                    onClick={handleForwardButtonClick}
+                                                >
+                                                    Forward
+                                                </Button>
+                                            )}
+                                        </>
                                     )}
                                 </>
                             )}
@@ -300,9 +325,9 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <Button colorScheme='blue' mr={3} onClick={handleDelete} isLoading={isDeleting}>
-                        Delete
-                    </Button>
+                    {/*<Button colorScheme='blue' mr={3} onClick={handleDelete} isLoading={isDeleting}>*/}
+                    {/*    Delete*/}
+                    {/*</Button>*/}
                     <Button variant='ghost' onClick={onClose}>
                         Close
                     </Button>
@@ -322,7 +347,7 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
                         <Button colorScheme='blue' mr={3} onClick={confirmSubmission}>
                             Yes
                         </Button>
-                        <Button variant='ghost' onClick={() => setShowConfirmationModal(false)}>
+                        <Button variant='ghost' onClick={cancelSubmission}>
                             No
                         </Button>
                     </ModalFooter>
@@ -344,6 +369,36 @@ const ResponseModal = ({ isOpen, onClose, p_id, p_name, r_id, subject, request, 
                         </Button>
                         <Button variant='ghost' onClick={cancelForward}>
                             No
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+
+            {/* Options Modal with Dropdown */}
+            <Modal isOpen={showOptionsModal} onClose={() => setShowOptionsModal(false)}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Forward Request</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Select placeholder="Select another qae" value={selectedName} onChange={(e) => setSelectedName(e.target.value)}>
+                            {names.map((name, index) => (
+                                <option key={index} value={name}>
+                                    {name}
+                                </option>
+                            ))}
+                        </Select>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button
+                            colorScheme="blue"
+                            onClick={handleOptionSubmit}
+                            isDisabled={!selectedName}
+                        >
+                            Forward
+                        </Button>
+                        <Button variant="ghost" onClick={() => setShowOptionsModal(false)}>
+                            Cancel
                         </Button>
                     </ModalFooter>
                 </ModalContent>
