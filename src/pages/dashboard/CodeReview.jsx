@@ -22,9 +22,6 @@ const newTheme = {
             <Text mb={2} fontSize={'18px'} fontWeight='medium'>
                 {children}
             </Text>
-            
-            
-            
         );
     },
 };
