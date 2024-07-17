@@ -1,6 +1,6 @@
 import {
     Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Text, Box, Popover,
-    PopoverTrigger, PopoverContent, PopoverHeader, PopoverBody, PopoverFooter, useDisclosure
+    PopoverTrigger, PopoverContent, PopoverHeader, PopoverBody, PopoverFooter, useDisclosure, useToast
 } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
 import axios from "axios";
@@ -21,6 +21,7 @@ const RequestModal = ({ isOpen, onClose, p_name, subject, request, r_id, p_id })
         setSelectedRating(rating);
         onPopoverOpen(); // Open the popover when a star is clicked
     };
+    const toast = useToast(); // Toast hook for notifications
 
     useEffect(() => {
         const fetchData = async () => {
@@ -77,10 +78,23 @@ const RequestModal = ({ isOpen, onClose, p_name, subject, request, r_id, p_id })
                 user: user,
                 feedback: selectedRating,
             });
-            alert("Feedback submitted successfully");
             onPopoverClose();
+            toast({
+                title: "Feedback Submitted",
+                description: "Your feedback has been successfully submitted.",
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+            });
         } catch (error) {
             console.error("Error submitting feedback:", error);
+            toast({
+                title: "Feedback Failed",
+                description: "There was an error submitting your Feedback.",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            });
         }
     };
 
