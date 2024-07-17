@@ -70,7 +70,7 @@ export default function VerifyEmail() {
                 to_email: email,
                 verification_link: verificationUrl,
             };
-            await emailjs.send('service_vpkybcl', 'template_e23p3ef', templateParams, 'RpcqYlAsefwq23rYY');
+            await emailjs.send('service_19yrtm7', 'template_0wzgnnk', templateParams, 'QMOV04h5XPfI8pijD');
 
             alert('Verification email sent!');
 

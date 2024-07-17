@@ -1,6 +1,15 @@
 import logo from "../../assets/Devinsight.png";
 import React, { useState, useEffect } from 'react';
-import {Flex, Avatar, Wrap, WrapItem, Button, Text, Menu, MenuButton, MenuList, MenuItem, MenuDivider, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Tabs, TabList, Tab, Box,} from '@chakra-ui/react';
+import {Flex, Avatar, Wrap, WrapItem, Button, Text, Menu, MenuButton, MenuList, MenuItem, MenuDivider, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Tabs, TabList, Tab, Box,
+    Popover,
+  Portal,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverArrow,
+  PopoverCloseButton,
+} from '@chakra-ui/react';
 import { Link, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -119,8 +128,32 @@ export default function NavBarQAE({ button1, button2, button3, button4, button5 
                                      colorScheme={location.pathname === '/cs' ? 'blue' : 'gray'}>Submissions</Tab>
                                 <Tab as={Link} to="/uhr" isDisabled={button3}
                                      colorScheme={location.pathname === '/uhr' ? 'blue' : 'gray'}>Help Requests</Tab>
-                                <Tab as={Link} to="/cu" isDisabled={button4}
-                                     colorScheme={location.pathname === '/cu' ? 'blue' : 'gray'}>Help</Tab>
+                                     
+                                <Popover placement='right-start'>
+                                            <PopoverTrigger>
+                                            <Tab isDisabled={button4}
+                                               colorScheme={location.pathname === '/cu' ? 'blue' : 'gray'}>Contact</Tab>
+                                            </PopoverTrigger>
+                                            <Portal>
+                                                <PopoverContent width="200px" height="100px" >
+                                                <PopoverArrow />
+                                                <PopoverCloseButton />
+                                                <PopoverBody>
+                                                    <Link to="/cu">
+                                                    <Button   size="sm" colorScheme="blue" variant="outline" mb={2} width="80%">
+                                                        DevInsight
+                                                    </Button>
+                                                    </Link>
+                                                <br/>
+                                                    <Link to="/contact-manager">
+                                                    <Button colorScheme="blue" variant="outline" size="sm" width="80%" >
+                                                        Manager
+                                                    </Button>
+                                                    </Link>
+                                                </PopoverBody>
+                                                </PopoverContent>
+                                            </Portal>
+                                            </Popover>
                             </TabList>
                         </Tabs>
                     </Box>
