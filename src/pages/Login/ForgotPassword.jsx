@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import {
   Button,
   Flex,
+  Spinner,
   FormControl,
   Input,
   PinInput,
@@ -21,6 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import emailjs from 'emailjs-com';
 import logo from '../../assets/devsign.png';
 import image from '../../assets/fp.png';
+import BackButton from '../../components/Profile_page/BackButton';
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
@@ -30,9 +32,9 @@ export default function ForgotPassword() {
   const [code, setCode] = useState(new Array(6).fill(''));
   const [otp, setOtp] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [ResendsuccessMessage, setResendSuccessMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [isResend, setIsResend] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (successMessage || errorMessage) {
@@ -50,7 +52,7 @@ export default function ForgotPassword() {
   };
 
   const handleSendEmail = async () => {
-    // Check if the email exists in the database
+    setLoading(true);
     try {
       const response = await fetch('http://localhost:8000/api/check-email', {
         method: 'POST',
@@ -62,11 +64,13 @@ export default function ForgotPassword() {
       const data = await response.json();
       if (!data.exists) {
         setErrorMessage('Email does not exist.');
+        setLoading(false);
         return;
       }
     } catch (error) {
       console.error('Error:', error);
       setErrorMessage('An error occurred. Please try again.');
+      setLoading(false);
       return;
     }
 
@@ -81,16 +85,18 @@ export default function ForgotPassword() {
     };
 
     try {
-      await emailjs.send('service_f73ayri', 'template_u199sqi', templateParams, 'ONTqq_pxiNTzJ1ooG');
+      await emailjs.send('service_ax5vdad', 'template_9ngk2p7', templateParams, 'QMOV04h5XPfI8pijD');
       if (isResend) {
         setSuccessMessage('!');
         setIsResend(true);
       } else {
         setSuccessMessage("Please verify your email. If you don't see the email, please check spam.");
+        setLoading(false);
       }
     } catch (error) {
       console.error('Error:', error);
       setErrorMessage('An error occurred. Please try again.');
+      setLoading(false);
       setSuccessMessage('');
     }
   };
@@ -130,6 +136,10 @@ export default function ForgotPassword() {
   };
 
   return (
+    <>
+    <Box>
+      <BackButton />
+    </Box>
     <Flex minH={'100vh'}>
 
      {/* Left Side */}
@@ -182,8 +192,11 @@ export default function ForgotPassword() {
             color={'white'}
             onClick={handleSendEmail}
             disabled={!isEmailFilled}
-          >
-            Send Email
+            isLoading={loading}
+            spinner={<Spinner size="sm" color="white" />}
+            >
+              {loading ? '' : 'Send Email'}
+          
           </Button>
         </Stack>
 
@@ -242,5 +255,6 @@ export default function ForgotPassword() {
       
       </Flex>
     </Flex>
+    </>
   );
 }

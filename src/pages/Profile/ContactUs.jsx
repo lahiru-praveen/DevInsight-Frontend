@@ -15,19 +15,18 @@ import {
 } from '@chakra-ui/react';
 
 import MailSentImg from '../../assets/email.gif';
-import BackButton from '../../components/Profile_page/BackButton';
 import NavBarUser from "../../components/dashboard/NavBarUser.jsx";
 import NavBarQAE from "../../components/dashboard/NavBarQAE.jsx";
 
 
 const ContactUs = () => {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const role = sessionStorage.getItem('role');
+  const email = sessionStorage.getItem('email');
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -54,7 +53,6 @@ const ContactUs = () => {
 
         // Reset form fields after sending the email
         setName('');
-        setEmail('');
         setSubject('');
         setMessage('');
 
@@ -74,12 +72,10 @@ const ContactUs = () => {
         {role === 'Developer' ?
             <NavBarUser button1={false} button2={false} button3={false} button4={false}/> :
             <NavBarQAE button1={false} button2={false} button3={false} button4={false} button5={false}/>
-        };
+        }
       </div>
       <section className="bg-white">
-       <Box>
-      <BackButton />
-    </Box>
+       
         <div className="flex flex-col lg:flex-row mx-auto max-w-screen-md py-8 lg:py-16 px-4">
           <div className="flex-1 bg-gray-000 text-black p-8 rounded-lg">
             <Box textAlign="left">
@@ -165,8 +161,8 @@ const ContactUs = () => {
               <div>
                 <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">User
                   Email</label>
-                <Input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                       placeholder="email@example.com" isRequired/>
+                <Input type="email" id="email" value={email} isReadOnly
+                       placeholder="email@example.com" />
               </div>
               <div>
                 <label htmlFor="subject"

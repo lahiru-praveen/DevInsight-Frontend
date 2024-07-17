@@ -56,6 +56,7 @@ export default function LoginDeveloper() {
             // sessionStorage.setItem('email', response.data.email, 'password', response.data.password);
             sessionStorage.setItem('llm', "gemini");
             sessionStorage.setItem('role', response.data.role);
+            sessionStorage.setItem('companyEmail', response.data.companyEmail);
             
             navigate('/db');
         } catch (error) {
@@ -72,9 +73,7 @@ export default function LoginDeveloper() {
         }
     };
 
-    const handleBiometricsLogin = () => {
-        window.open('/face-login', '_blank', 'noopener,noreferrer');
-    };
+    
 
     return (
         <Flex minH={'100vh'}>
@@ -109,8 +108,8 @@ export default function LoginDeveloper() {
             >
                 <Stack spacing={6} w={'full'} maxW={'md'}>
                     {showLoggingInAlert && (
-                        <Alert status="info">
-                           <Spinner thickness='4px' speed='0.65s' emptyColor='gray.200' color='blue.500' size='md' />
+                        <Alert status="info" >
+                           <Spinner thickness='4px' speed='0.65s' emptyColor='gray.200' color='blue.500' size='md'  mr={3}/>
                             Logging in...
                         </Alert>
                     )}
@@ -165,16 +164,18 @@ export default function LoginDeveloper() {
                     </Text>
                 </Stack>
                    {/* Biometrics Button */}
+                   <Link to="/face-login">
                    <Box position="absolute" bottom="10px" right="10px">
                     <Button
                         colorScheme="teal"
                         leftIcon={<BiFingerprint />}
                         variant="solid"
-                        onClick={handleBiometricsLogin}
+                        
                     >
                         Login using Biometrics
                     </Button>
                 </Box>
+                </Link>
             </Flex>
         </Flex>
     );

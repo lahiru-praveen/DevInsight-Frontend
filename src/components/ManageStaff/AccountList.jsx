@@ -21,6 +21,9 @@ const MyComponent = () => {
     const [MemberCount, setMemeberCount] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [hasFetched, setHasFetched] = useState(false);
+    const { isOpen: isBlockConfirmModalOpen, onOpen: onBlockConfirmModalOpen, onClose: onBlockConfirmModalClose } = useDisclosure();
+    const [memberToBlockUnblock, setMemberToBlockUnblock] = useState(null);
+    const [blockUnblockAction, setBlockUnblockAction] = useState(null);
     const toast = useToast();
 
     useEffect(() => {
@@ -134,20 +137,27 @@ const MyComponent = () => {
         }
     };
 
-    const handleBlockOrUnblock = async (member, action) => {
+    const handleBlockOrUnblock = (member, action) => {
+        setMemberToBlockUnblock(member);
+        setBlockUnblockAction(action);
+        onBlockConfirmModalOpen();
+    };
+    
+    const confirmBlockOrUnblock = async () => {
+        if (!memberToBlockUnblock || !blockUnblockAction) return;
         try {
             onLoadingModalOpen(); // Show loading modal
-
+    
             // Call the API endpoint to block or unblock the member
             const response = await axios.put('http://127.0.0.1:8000/block-unblock-member', {
                 organization_email: organization_email, //from session storage
-                email: member.email,
-                action: action
+                email: memberToBlockUnblock.email,
+                action: blockUnblockAction
             });
-
+    
             if (response.status === 200) {
                 const updatedMembers = activeMembers.map(mem =>
-                    mem.email === member.email ? { ...mem, profileStatus: action === 'block' ? 'Suspend' : 'Active' } : mem
+                    mem.email === memberToBlockUnblock.email ? { ...mem, profileStatus: blockUnblockAction === 'block' ? 'Suspend' : 'Active' } : mem
                 );
                 setActiveMembers(updatedMembers);
                 setFilteredMembers(updatedMembers);
@@ -159,10 +169,8 @@ const MyComponent = () => {
                     status: "success",
                     duration: 5000,
                     isClosable: true,
-                  });
-
-                // Show success alert
-                
+                });
+    
             } else {
                 toast({
                     title: "Action Failed.",
@@ -170,8 +178,7 @@ const MyComponent = () => {
                     status: "error",
                     duration: 5000,
                     isClosable: true,
-                  });
-                  
+                });
             }
         } catch (error) {
             console.error('Error updating profile status:', error)
@@ -181,9 +188,10 @@ const MyComponent = () => {
                 status: "error",
                 duration: 5000,
                 isClosable: true,
-              });
+            });
         } finally {
             onLoadingModalClose(); // Hide loading modal
+            onBlockConfirmModalClose(); // Close confirm modal
         }
     };
 
@@ -246,6 +254,25 @@ const MyComponent = () => {
                         <Spinner size="xl" />
                         <Text mt={4}>Processing...</Text>
                     </ModalBody>
+                </ModalContent>
+            </Modal>
+            <Modal
+                isOpen={isBlockConfirmModalOpen}
+                onClose={onBlockConfirmModalClose}
+            >
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Confirm Action</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Text>Are you sure you want to {blockUnblockAction} the account of {memberToBlockUnblock?.username}?</Text>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme="blue" mr={3} onClick={confirmBlockOrUnblock}>
+                            Confirm
+                        </Button>
+                        <Button onClick={onBlockConfirmModalClose}>Cancel</Button>
+                    </ModalFooter>
                 </ModalContent>
             </Modal>
 
